@@ -154,8 +154,20 @@
   .ai-trend.neut { color: var(--muted); background: rgba(139,149,168,.1); }
   .ai-why { font-size: 12.5px; color: var(--muted); line-height: 1.5; margin-top: 10px; }
   ul.ai-list { list-style: none; max-height: 260px; overflow-y: auto; }
-  ul.ai-list li { padding: 8px 4px; border-bottom: 1px solid var(--border); font-size: 12.5px; }
+  ul.ai-list li { padding: 8px 4px; border-bottom: 1px solid var(--border); font-size: 12.5px; animation: slideIn .35s ease; }
   ul.ai-list li:last-child { border-bottom: none; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: none; } }
+  .ai-signal.buy { animation: sigPulseG 1.6s infinite; }
+  .ai-signal.sell { animation: sigPulseR 1.6s infinite; }
+  @keyframes sigPulseG { 50% { box-shadow: 0 0 18px rgba(46,204,113,.45); } }
+  @keyframes sigPulseR { 50% { box-shadow: 0 0 18px rgba(231,76,60,.45); } }
+  .ai-scan { height: 3px; border-radius: 2px; margin-top: 10px;
+    background: linear-gradient(90deg, transparent, var(--accent2), transparent) no-repeat;
+    background-size: 40% 100%; animation: scan 1.8s linear infinite; }
+  @keyframes scan { from { background-position: -60% 0; } to { background-position: 160% 0; } }
+  .ai-live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 5px; animation: blink 1s infinite; vertical-align: middle; }
+  @keyframes blink { 50% { opacity: .15; } }
+  .flash-up { animation: flashUp .6s; } .flash-down { animation: flashDown .6s; }
   @media (max-width: 900px) { .ai-grid { grid-template-columns: 1fr; } }
   @media (max-width: 720px) {
     .ai-section { padding: 0 10px 40px; }
@@ -337,6 +349,10 @@
     <button class="act buy" id="aiToggle">▶ Start bot</button>
   </div>
   <div class="ai-grid">
+    <div class="card" style="grid-column: 1 / -1;">
+      <h2><span data-i18n="aiLiveChart">Live chart</span> <span class="live-badge"><span class="ai-live-dot"></span>LIVE</span></h2>
+      <canvas id="aiChart" style="width:100%; height:220px; display:block;"></canvas>
+    </div>
     <div class="card">
       <h2 data-i18n="marketTitle">Market</h2>
       <select id="aiPairSel" style="width:100%; margin-bottom:12px;">
@@ -358,6 +374,7 @@
       <div class="ai-kv"><span class="k" data-i18n="volAnalysis">Volume</span><span class="v" id="aiVolLab">—</span></div>
       <div class="ai-kv"><span class="k" data-i18n="momentumLab">Momentum</span><span class="v" id="aiMom">—</span></div>
       <div class="ai-why" id="aiWhy"></div>
+      <div class="ai-scan"></div>
     </div>
     <div class="card">
       <h2 data-i18n="signalTitle">Trading Signal</h2>
@@ -437,7 +454,7 @@ const I18N = {
     portfolioTitle: "Portfolio", virtualBalance: "Virtual balance", availableBal: "Available",
     openPositionsLab: "Open positions", unrealizedPnl: "Unrealized P&L",
     perfTitle: "Performance", totalTradesLab: "Total trades", winningTrades: "Winning", losingTrades: "Losing",
-    noAiTrades: "No AI trades yet — start the bot.", noOpenPositions: "No open positions.", closeLab: "Close",
+    noAiTrades: "No AI trades yet — start the bot.", noOpenPositions: "No open positions.", closeLab: "Close", aiLiveChart: "Live chart",
     aiWhyBull: "{pair} trades above its EMA21, RSI at {rsi} and momentum {mom}. Volume {vol} — buyers in control.",
     aiWhyBear: "{pair} trades below its EMA21, RSI at {rsi} and momentum {mom}. Volume {vol} — sellers in control.",
     aiWhyNeutral: "EMAs are flat and RSI neutral ({rsi}) — no clear edge, the AI waits for a setup.",
@@ -499,7 +516,7 @@ const I18N = {
     portfolioTitle: "Portfolio", virtualBalance: "Virtuelles Guthaben", availableBal: "Verfügbar",
     openPositionsLab: "Offene Positionen", unrealizedPnl: "Nicht realisierter P&L",
     perfTitle: "Performance", totalTradesLab: "Trades gesamt", winningTrades: "Gewinner", losingTrades: "Verlierer",
-    noAiTrades: "Noch keine KI-Trades — starte den Bot.", noOpenPositions: "Keine offenen Positionen.", closeLab: "Schließen",
+    noAiTrades: "Noch keine KI-Trades — starte den Bot.", noOpenPositions: "Keine offenen Positionen.", closeLab: "Schließen", aiLiveChart: "Live-Chart",
     aiWhyBull: "{pair} handelt über seinem EMA21, RSI bei {rsi} und Momentum {mom}. Volumen {vol} — Käufer haben Kontrolle.",
     aiWhyBear: "{pair} handelt unter seinem EMA21, RSI bei {rsi} und Momentum {mom}. Volumen {vol} — Verkäufer haben Kontrolle.",
     aiWhyNeutral: "EMAs flach und RSI neutral ({rsi}) — kein klarer Vorteil, die KI wartet auf ein Setup.",
@@ -561,7 +578,7 @@ const I18N = {
     portfolioTitle: "Portefeuille", virtualBalance: "Solde virtuel", availableBal: "Disponible",
     openPositionsLab: "Positions ouvertes", unrealizedPnl: "P&L latent",
     perfTitle: "Performance", totalTradesLab: "Trades totaux", winningTrades: "Gagnants", losingTrades: "Perdants",
-    noAiTrades: "Aucun trade IA — démarre le bot.", noOpenPositions: "Aucune position ouverte.", closeLab: "Fermer",
+    noAiTrades: "Aucun trade IA — démarre le bot.", noOpenPositions: "Aucune position ouverte.", closeLab: "Fermer", aiLiveChart: "Graphique en direct",
     aiWhyBull: "{pair} est au-dessus de son EMA21, RSI à {rsi} et momentum {mom}. Volume {vol} — les acheteurs contrôlent.",
     aiWhyBear: "{pair} est sous son EMA21, RSI à {rsi} et momentum {mom}. Volume {vol} — les vendeurs contrôlent.",
     aiWhyNeutral: "EMAs plates et RSI neutre ({rsi}) — aucun avantage clair, l'IA attend un setup.",
@@ -623,7 +640,7 @@ const I18N = {
     portfolioTitle: "Portofoli", virtualBalance: "Saldo virtuale", availableBal: "I disponueshëm",
     openPositionsLab: "Pozicionet e hapura", unrealizedPnl: "P&L i palatuar",
     perfTitle: "Performanca", totalTradesLab: "Tregtime totale", winningTrades: "Fituese", losingTrades: "Humbëse",
-    noAiTrades: "Akoma asnjë tregtim AI — nise botin.", noOpenPositions: "Asnjë pozicion i hapur.", closeLab: "Mbyll",
+    noAiTrades: "Akoma asnjë tregtim AI — nise botin.", noOpenPositions: "Asnjë pozicion i hapur.", closeLab: "Mbyll", aiLiveChart: "Grafiku live",
     aiWhyBull: "{pair} është mbi EMA21, RSI në {rsi} dhe momentum {mom}. Volumi {vol} — blerësit kontrollojnë.",
     aiWhyBear: "{pair} është nën EMA21, RSI në {rsi} dhe momentum {mom}. Volumi {vol} — shitësit kontrollojnë.",
     aiWhyNeutral: "EMA të qeta dhe RSI neutral ({rsi}) — asnjë avantazh i qartë, AI pret një rast.",
@@ -1268,6 +1285,9 @@ async function fetchRealPrices() {
 const AI_PAIRS = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "XRPUSDT"];
 const aiPrices = {};
 const aiPairName = sym => sym.replace("USDT", "/USDT");
+const aiDisp = {};
+const aiPrevPrice = {};
+let aiLastTradeCount = -1, aiLastPosCount = -1;
 
 function ema(arr, n) {
   if (!arr.length) return 0;
@@ -1385,7 +1405,14 @@ function renderAi() {
   const sym = ai.pair || "BTCUSDT";
   const p = aiPrices[sym] || { price: 0, open: 0, vol: 0, hist: [] };
   const chg = p.open ? (p.price - p.open) / p.open * 100 : 0;
-  document.getElementById("aiPrice").textContent = p.price > 0 ? fmtUsd(p.price) : "…";
+  const priceEl = document.getElementById("aiPrice");
+  priceEl.textContent = p.price > 0 ? fmtUsd(p.price) : "…";
+  if (p.price > 0 && aiPrevPrice[sym] !== undefined && p.price !== aiPrevPrice[sym]) {
+    priceEl.classList.remove("flash-up", "flash-down");
+    void priceEl.offsetWidth;
+    priceEl.classList.add(p.price > aiPrevPrice[sym] ? "flash-up" : "flash-down");
+  }
+  if (p.price > 0) aiPrevPrice[sym] = p.price;
   const chgEl = document.getElementById("aiChg");
   chgEl.textContent = p.price > 0 ? fmtPct(chg) : "…";
   chgEl.className = "v " + (chg >= 0 ? "pos" : "neg");
@@ -1430,30 +1457,42 @@ function renderAi() {
   document.getElementById("aiWin").textContent = ai.stats.trades ? (ai.stats.wins / ai.stats.trades * 100).toFixed(1) + " %" : "—";
 
   const posUl = document.getElementById("aiPositions");
-  posUl.innerHTML = ai.positions.length
-    ? ai.positions.map((pos, i) => {
-        const pp = aiPrices[pos.pair] || { price: pos.entry };
-        const pl = (pp.price - pos.entry) * pos.qty;
-        return `<li><b>${aiPairName(pos.pair)}</b> — ${t("entryLab")} ${fmtUsd(pos.entry)} → ${fmtUsd(pp.price)}
-          <span class="${pl >= 0 ? "pos" : "neg"}" style="float:right;">${pl >= 0 ? "+" : ""}${fmtEur(pl)}</span>
-          <button class="act sell" data-aiclose="${i}" style="margin-left:8px; padding:3px 10px; font-size:11px;">${t("closeLab")}</button></li>`;
-      }).join("")
-    : `<li class="empty">${t("noOpenPositions")}</li>`;
-  posUl.querySelectorAll("[data-aiclose]").forEach(b => b.onclick = () => {
-    const pos = state.ai.positions[parseInt(b.dataset.aiclose, 10)];
-    const pp = pos && aiPrices[pos.pair];
-    if (pos && pp && pp.price > 0) { closeAiPos(pos, pp.price, "manual"); renderAi(); }
+  if (ai.positions.length !== aiLastPosCount) {
+    aiLastPosCount = ai.positions.length;
+    posUl.innerHTML = ai.positions.length
+      ? ai.positions.map((pos, i) =>
+          `<li><b>${aiPairName(pos.pair)}</b> — ${t("entryLab")} ${fmtUsd(pos.entry)} → <span data-aiprice="${i}"></span>
+            <span data-aipnl="${i}" style="float:right;"></span>
+            <button class="act sell" data-aiclose="${i}" style="margin-left:8px; padding:3px 10px; font-size:11px;">${t("closeLab")}</button></li>`).join("")
+      : `<li class="empty">${t("noOpenPositions")}</li>`;
+    posUl.querySelectorAll("[data-aiclose]").forEach(b => b.onclick = () => {
+      const pos = state.ai.positions[parseInt(b.dataset.aiclose, 10)];
+      const pp = pos && aiPrices[pos.pair];
+      if (pos && pp && pp.price > 0) { closeAiPos(pos, pp.price, "manual"); renderAi(); }
+    });
+  }
+  ai.positions.forEach((pos, i) => {
+    const pp = aiPrices[pos.pair];
+    if (!pp || pp.price <= 0) return;
+    const pl = (pp.price - pos.entry) * pos.qty;
+    const pe = posUl.querySelector(`[data-aipnl="${i}"]`);
+    if (pe) { pe.textContent = (pl >= 0 ? "+" : "") + fmtEur(pl); pe.className = pl >= 0 ? "pos" : "neg"; }
+    const re = posUl.querySelector(`[data-aiprice="${i}"]`);
+    if (re) re.textContent = fmtUsd(pp.price);
   });
 
   const trUl = document.getElementById("aiTrades");
-  trUl.innerHTML = ai.trades.length
-    ? ai.trades.slice(0, 12).map(tr => {
-        const d = new Date(tr.at).toLocaleString(LOCALES[lang] || "en-GB");
-        return `<li><b>${aiPairName(tr.pair)}</b> <span class="tag buy">${t("buySig")}</span> ${t("entryLab")} ${fmtUsd(tr.entry)} → ${t("exitLab")} ${fmtUsd(tr.exit)}
-          <span class="${tr.pnl >= 0 ? "pos" : "neg"}" style="float:right;">${tr.pnl >= 0 ? "+" : ""}${fmtEur(tr.pnl)}</span>
-          <span class="vol" style="float:right; margin-right:10px;">${d}</span></li>`;
-      }).join("")
-    : `<li class="empty">${t("noAiTrades")}</li>`;
+  if (ai.trades.length !== aiLastTradeCount) {
+    aiLastTradeCount = ai.trades.length;
+    trUl.innerHTML = ai.trades.length
+      ? ai.trades.slice(0, 12).map(tr => {
+          const d = new Date(tr.at).toLocaleString(LOCALES[lang] || "en-GB");
+          return `<li><b>${aiPairName(tr.pair)}</b> <span class="tag buy">${t("buySig")}</span> ${t("entryLab")} ${fmtUsd(tr.entry)} → ${t("exitLab")} ${fmtUsd(tr.exit)}
+            <span class="${tr.pnl >= 0 ? "pos" : "neg"}" style="float:right;">${tr.pnl >= 0 ? "+" : ""}${fmtEur(tr.pnl)}</span>
+            <span class="vol" style="float:right; margin-right:10px;">${d}</span></li>`;
+        }).join("")
+      : `<li class="empty">${t("noAiTrades")}</li>`;
+  }
 
   const st = ai.stats;
   document.getElementById("aiTotTrades").textContent = st.trades;
@@ -1465,6 +1504,99 @@ function renderAi() {
   tpEl.className = "scard-v " + (st.totalPnl >= 0 ? "pos" : "neg");
   document.getElementById("aiBest").textContent = st.best === null ? "—" : "+" + fmtEur(st.best);
   document.getElementById("aiWorst").textContent = st.worst === null ? "—" : "−" + fmtEur(Math.abs(st.worst));
+}
+
+function buildCandles(hist, disp, per = 5, maxC = 40) {
+  const pts = hist.slice();
+  if (disp && pts.length) pts[pts.length - 1] = disp;
+  const cs = [];
+  for (let i = 0; i < pts.length; i += per) {
+    const seg = pts.slice(i, i + per);
+    if (!seg.length) break;
+    cs.push({ o: seg[0], c: seg[seg.length - 1], h: Math.max(...seg), l: Math.min(...seg) });
+  }
+  return cs.slice(-maxC);
+}
+
+function drawAiCandles() {
+  const canvas = document.getElementById("aiChart");
+  if (!canvas) return;
+  const sym = state.ai.pair || "BTCUSDT";
+  const p = aiPrices[sym];
+  const dpr = window.devicePixelRatio || 1;
+  const wCss = canvas.clientWidth || 400, hCss = 220;
+  if (canvas.width !== Math.round(wCss * dpr)) { canvas.width = Math.round(wCss * dpr); canvas.height = Math.round(hCss * dpr); }
+  const ctx = canvas.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, wCss, hCss);
+  if (!p || p.hist.length < 6) {
+    ctx.fillStyle = "#8b95a8";
+    ctx.font = "13px Segoe UI, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(t("waitingPrices"), wCss / 2, hCss / 2);
+    return;
+  }
+  const disp = (aiDisp[sym] || {}).price;
+  const cs = buildCandles(p.hist, disp);
+  const vals = cs.flatMap(c => [c.h, c.l]);
+  let min = Math.min(...vals), max = Math.max(...vals);
+  const pad = (max - min) * 0.08 || max * 0.0005;
+  min -= pad; max += pad;
+  const span = max - min;
+  const cw = (wCss - 56) / cs.length;
+  const py = v => hCss - 8 - (v - min) / span * (hCss - 24);
+  ctx.strokeStyle = "rgba(37,45,61,.9)";
+  ctx.fillStyle = "#5a6478";
+  ctx.font = "10px Segoe UI, sans-serif";
+  ctx.textAlign = "left";
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 3; i++) {
+    const v = min + span * i / 3;
+    const y = py(v);
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(wCss - 56, y); ctx.stroke();
+    ctx.fillText(fmtUsd(v), wCss - 52, y + 3);
+  }
+  cs.forEach((c, i) => {
+    const x = i * cw + cw / 2;
+    const up = c.c >= c.o;
+    const col = up ? "#2ecc71" : "#e74c3c";
+    ctx.strokeStyle = col;
+    ctx.fillStyle = col;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x, py(c.h)); ctx.lineTo(x, py(c.l));
+    ctx.stroke();
+    const bw = Math.max(2, cw * 0.6);
+    const y1 = py(Math.max(c.o, c.c)), y2 = py(Math.min(c.o, c.c));
+    ctx.fillRect(x - bw / 2, y1, bw, Math.max(1.5, y2 - y1));
+  });
+  const last = cs[cs.length - 1].c;
+  const ly = py(last);
+  const upLast = last >= cs[cs.length - 1].o;
+  const col = upLast ? "#2ecc71" : "#e74c3c";
+  ctx.setLineDash([3, 3]);
+  ctx.strokeStyle = upLast ? "rgba(46,204,113,.6)" : "rgba(231,76,60,.6)";
+  ctx.beginPath(); ctx.moveTo(0, ly); ctx.lineTo(wCss - 56, ly); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = col;
+  ctx.shadowColor = col;
+  ctx.shadowBlur = 12;
+  ctx.beginPath();
+  ctx.arc(wCss - 58, ly, 3 + Math.sin(Date.now() / 280) * 1.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+}
+
+function aiFrame() {
+  const sym = state.ai.pair || "BTCUSDT";
+  const p = aiPrices[sym];
+  if (p && p.price > 0) {
+    const d = aiDisp[sym] || (aiDisp[sym] = { price: p.price });
+    d.price += (p.price - d.price) * 0.12;
+    if (Math.abs(p.price - d.price) < 0.0000001) d.price = p.price;
+  }
+  drawAiCandles();
+  requestAnimationFrame(aiFrame);
 }
 
 /* ================= DASHBOARD ================= */
@@ -1601,6 +1733,9 @@ document.getElementById("langSel").onchange = e => {
   applyI18n();
   render();
   renderBot();
+  aiLastTradeCount = -1;
+  aiLastPosCount = -1;
+  renderAi();
 };
 
 document.getElementById("langSel").value = lang;
@@ -1618,6 +1753,7 @@ aiPairSel.onchange = e => { state.ai.pair = e.target.value; saveState(); renderA
 render();
 renderBot();
 renderAi();
+requestAnimationFrame(aiFrame);
 fetchRealPrices();
 setInterval(fetchRealPrices, 30000);
 setInterval(tickMarkets, 30000);
