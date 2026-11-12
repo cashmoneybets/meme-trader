@@ -133,6 +133,28 @@
   .scard-l { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
   .scard-v { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
   @media (max-width: 720px) { .stat-cards { grid-template-columns: repeat(2, 1fr); } .scard-v { font-size: 15px; } }
+  .scard.dash { position: relative; overflow: hidden; }
+  .scard.dash::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, #ff3b30, #00cec9); opacity: .85; }
+  .dash-ico { position: absolute; top: 10px; right: 12px; font-size: 16px; opacity: .85; }
+  .dash-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .gauge-wrap { position: relative; width: 84px; height: 84px; margin: 6px auto 0; }
+  .gauge { width: 84px; height: 84px; transform: rotate(-90deg); }
+  .gauge-bg { fill: none; stroke: #1a2130; stroke-width: 8; }
+  .gauge-fg { fill: none; stroke: #2ecc71; stroke-width: 8; stroke-linecap: round; stroke-dasharray: 213.6; stroke-dashoffset: 213.6; transition: stroke-dashoffset 1s ease, stroke .6s ease; filter: drop-shadow(0 0 4px rgba(46,204,113,.55)); }
+  .gauge-val { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .eq-wrap { position: relative; }
+  .eq-dot { --dotcol: #2ecc71; --dotglow: rgba(46,204,113,.4); position: absolute; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%, -50%); background: var(--dotcol); display: none; pointer-events: none; }
+  .eq-dot.on { display: block; animation: eqPulse 1.6s ease-out infinite; }
+  @keyframes eqPulse { 0% { box-shadow: 0 0 0 3px var(--dotglow); } 70% { box-shadow: 0 0 0 10px rgba(0,0,0,0); } 100% { box-shadow: 0 0 0 3px var(--dotglow); } }
+  .eq-legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-size: 12px; color: var(--muted); }
+  .eq-legend b { font-variant-numeric: tabular-nums; color: var(--text); }
+  .pnl-bars { display: flex; align-items: flex-end; gap: 4px; height: 90px; padding: 6px 2px 0; }
+  .pnl-bars .pb { flex: 1; min-height: 3px; border-radius: 3px 3px 0 0; transition: height .7s ease; }
+  .pb.up { background: linear-gradient(180deg, #2ecc71, rgba(46,204,113,.25)); box-shadow: 0 0 6px rgba(46,204,113,.35); }
+  .pb.dn { background: linear-gradient(180deg, #e74c3c, rgba(231,76,60,.25)); box-shadow: 0 0 6px rgba(231,76,60,.35); }
+  .pb-empty { color: var(--muted); font-size: 13px; padding: 24px 0; }
+  .bump { animation: bump .5s ease; }
+  @keyframes bump { 0% { transform: scale(1); } 30% { transform: scale(1.12); } 100% { transform: scale(1); } }
   .ai-section { max-width: 1200px; margin: 0 auto; padding: 0 24px 60px; }
   .ai-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
   .ai-mode { font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 4px; background: rgba(0,206,201,.15); color: var(--accent2); text-transform: uppercase; }
@@ -457,16 +479,29 @@
   <section class="page" id="page-dashboard">
     <h2 data-i18n="dashTitle">📊 Performance</h2>
     <div class="stat-cards">
-      <div class="scard"><div class="scard-l" data-i18n="totalPnl">Total P&L</div><div class="scard-v" id="dPnl">—</div></div>
-      <div class="scard"><div class="scard-l" data-i18n="winRate">Win rate</div><div class="scard-v" id="dWin">—</div></div>
-      <div class="scard"><div class="scard-l" data-i18n="tradesCount">Trades</div><div class="scard-v" id="dTrades">—</div></div>
-      <div class="scard"><div class="scard-l" data-i18n="botPnlKey">Bot P&L</div><div class="scard-v" id="dBot">—</div></div>
-      <div class="scard"><div class="scard-l" data-i18n="bestTrade">Best trade</div><div class="scard-v" id="dBest">—</div></div>
-      <div class="scard"><div class="scard-l" data-i18n="worstTrade">Worst trade</div><div class="scard-v" id="dWorst">—</div></div>
+      <div class="scard dash"><div class="dash-ico">📈</div><div class="scard-l" data-i18n="totalPnl">Total P&L</div><div class="scard-v" id="dPnl">—</div><div class="dash-sub" id="dPnlPct">—</div></div>
+      <div class="scard dash"><div class="dash-ico">🔁</div><div class="scard-l" data-i18n="tradesCount">Trades</div><div class="scard-v" id="dTrades">—</div><div class="dash-sub"><span id="dWins" class="pos">0 W</span> · <span id="dLosses" class="neg">0 L</span></div></div>
+      <div class="scard dash"><div class="scard-l" data-i18n="winRate">Win rate</div>
+        <div class="gauge-wrap">
+          <svg class="gauge" viewBox="0 0 84 84"><circle class="gauge-bg" cx="42" cy="42" r="34"/><circle class="gauge-fg" id="dWinRing" cx="42" cy="42" r="34"/></svg>
+          <div class="gauge-val" id="dWin">—</div>
+        </div>
+      </div>
+      <div class="scard dash"><div class="dash-ico">🤖</div><div class="scard-l" data-i18n="botPnlKey">Bot P&L</div><div class="scard-v" id="dBot">—</div><div class="dash-sub" data-i18n="botPnlSub">all bots combined</div></div>
+      <div class="scard dash"><div class="dash-ico">🏆</div><div class="scard-l" data-i18n="bestTrade">Best trade</div><div class="scard-v" id="dBest">—</div></div>
+      <div class="scard dash"><div class="dash-ico">💀</div><div class="scard-l" data-i18n="worstTrade">Worst trade</div><div class="scard-v" id="dWorst">—</div></div>
     </div>
     <div class="card">
       <h2 data-i18n="equityTitle">💹 Portfolio value — live</h2>
-      <canvas id="eqchart" class="bigchart"></canvas>
+      <div class="eq-wrap">
+        <canvas id="eqchart" class="bigchart"></canvas>
+        <div class="eq-dot" id="eqDot"></div>
+      </div>
+      <div class="eq-legend" id="eqLegend"></div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="pnlBarsTitle">⚡ Last trades P&L</h2>
+      <div class="pnl-bars" id="pnlBars"></div>
     </div>
   </section>
 
@@ -694,6 +729,7 @@ const I18N = {
     dashTitle: "📊 Performance", equityTitle: "💹 Portfolio value — live",
     totalPnl: "Total P&L", winRate: "Win rate", tradesCount: "Trades", botPnlKey: "Bot P&L",
     bestTrade: "Best trade", worstTrade: "Worst trade", noDataYet: "The curve builds as prices arrive…",
+    pnlBarsTitle: "⚡ Last trades P&L", pnlBarsEmpty: "No closed trades yet.", botPnlSub: "all bots combined", dashNow: "Now", dashPeak: "Peak",
     aiTitle: "AI Trading Bot", paperTrading: "PAPER TRADING", botActive: "BOT ACTIVE", botPaused: "BOT PAUSED",
     aiAnalysis: "AI MARKET ANALYSIS", trendLab: "Trend", bullish: "BULLISH", bearish: "BEARISH", neutralLab: "NEUTRAL",
     confidence: "Confidence", rsiLab: "RSI (14)", emaLab: "EMA (9/21)", volAnalysis: "Volume", momentumLab: "Momentum",
@@ -773,6 +809,7 @@ const I18N = {
     dashTitle: "📊 Performance", equityTitle: "💹 Portfoliowert — live",
     totalPnl: "Gesamt-P&L", winRate: "Trefferquote", tradesCount: "Trades", botPnlKey: "Bot-P&L",
     bestTrade: "Bester Trade", worstTrade: "Schlechtester Trade", noDataYet: "Die Kurve entsteht, sobald Preise eintreffen…",
+    pnlBarsTitle: "⚡ Letzte Trades P&L", pnlBarsEmpty: "Noch keine abgeschlossenen Trades.", botPnlSub: "alle Bots zusammen", dashNow: "Jetzt", dashPeak: "Höchststand",
     aiTitle: "KI-Trading-Bot", paperTrading: "PAPER TRADING", botActive: "BOT AKTIV", botPaused: "BOT PAUSIERT",
     aiAnalysis: "KI-MARKTANALYSE", trendLab: "Trend", bullish: "BULLISCH", bearish: "BÄRISCH", neutralLab: "NEUTRAL",
     confidence: "Vertrauen", rsiLab: "RSI (14)", emaLab: "EMA (9/21)", volAnalysis: "Volumen", momentumLab: "Momentum",
@@ -852,6 +889,7 @@ const I18N = {
     dashTitle: "📊 Performance", equityTitle: "💹 Valeur du portefeuille — en direct",
     totalPnl: "P&L total", winRate: "Taux de réussite", tradesCount: "Trades", botPnlKey: "P&L du bot",
     bestTrade: "Meilleur trade", worstTrade: "Pire trade", noDataYet: "La courbe se construit à mesure que les prix arrivent…",
+    pnlBarsTitle: "⚡ P&L des derniers trades", pnlBarsEmpty: "Aucun trade clôturé pour le moment.", botPnlSub: "tous les bots réunis", dashNow: "Actuel", dashPeak: "Pic",
     aiTitle: "Bot de trading IA", paperTrading: "PAPER TRADING", botActive: "BOT ACTIF", botPaused: "BOT EN PAUSE",
     aiAnalysis: "ANALYSE DE MARCHÉ IA", trendLab: "Tendance", bullish: "HAUSSIER", bearish: "BAISSIER", neutralLab: "NEUTRE",
     confidence: "Confiance", rsiLab: "RSI (14)", emaLab: "EMA (9/21)", volAnalysis: "Volume", momentumLab: "Momentum",
@@ -931,6 +969,7 @@ const I18N = {
     dashTitle: "📊 Performanca", equityTitle: "💹 Vlera e portofolit — live",
     totalPnl: "P&L total", winRate: "Shkalla e suksesit", tradesCount: "Tregtime", botPnlKey: "P&L i botit",
     bestTrade: "Tregtimi më i mirë", worstTrade: "Tregtimi më i keq", noDataYet: "Kurba ndërtohet ndërsa çmimet arrijnë…",
+    pnlBarsTitle: "⚡ P&L e tregtimeve të fundit", pnlBarsEmpty: "Asnjë tregtim i mbyllur ende.", botPnlSub: "të gjithë botet bashkë", dashNow: "Tani", dashPeak: "Kulmi",
     aiTitle: "Boti i tregtisë me AI", paperTrading: "PAPER TRADING", botActive: "BOTI AKTIV", botPaused: "BOTI NË PAUZË",
     aiAnalysis: "ANALIZA E TREGUT ME AI", trendLab: "Trendi", bullish: "RRITËS", bearish: "RËNËS", neutralLab: "I PANDRUAR",
     confidence: "Besueshmëria", rsiLab: "RSI (14)", emaLab: "EMA (9/21)", volAnalysis: "Volumi", momentumLab: "Momentum",
@@ -1044,7 +1083,7 @@ let state = loadState() || {
   coinPrices: {},          // id -> { price, open, hist: [] }
   equity: [],
   equityLong: [],
-  stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0 },
+  stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [] },
 };
 
 seedPrices();
@@ -1056,7 +1095,7 @@ if (!state.botComm) state.botComm = { enabled: false, strategy: "auto", amount: 
 if (!state.botCrypto) state.botCrypto = { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 };
 if (!state.equity) state.equity = [];
 if (!state.equityLong) state.equityLong = [];
-if (!state.stats) state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0 };
+if (!state.stats) state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [] };
 if (!state.ai) state.ai = { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "BTCUSDT" };
 if (state.ai.balance !== undefined) { state.cash += state.ai.balance - 500; delete state.ai.balance; }
 
@@ -1105,6 +1144,7 @@ function resolveMarket(m) {
       if (won) st.wins++; else st.losses++;
       if (st.best === null || bpnl > st.best) st.best = bpnl;
       if (st.worst === null || bpnl < st.worst) st.worst = bpnl;
+      st.tradePnls = (st.tradePnls || []).concat([bpnl]).slice(-40);
     }
     log("resolve", t("logResolve", { q: mq(m), side: m.resolved, qty: b.shares.toFixed(1), outcome: won ? t("won") : t("lost") }));
   });
@@ -1168,6 +1208,7 @@ function sellCoin(id, amount, via) {
     if (pnl >= 0) st.wins++; else st.losses++;
     if (st.best === null || pnl > st.best) st.best = pnl;
     if (st.worst === null || pnl < st.worst) st.worst = pnl;
+    st.tradePnls = (st.tradePnls || []).concat([pnl]).slice(-40);
     if (via === "bot") st.botPnl += pnl;
   }
   log(via === "bot" ? "bot" : "sell", t("logSell", { id, amt: fmtEur(amount), proceeds: fmtEur(proceeds), pnl: (pnl >= 0 ? "+" : "") + fmtEur(pnl) }));
@@ -1700,6 +1741,8 @@ function closeAiPos(pos, price, reason) {
   st.totalPnl += pnl;
   if (st.best === null || pnl > st.best) st.best = pnl;
   if (st.worst === null || pnl < st.worst) st.worst = pnl;
+  const gst = state.stats;
+  gst.tradePnls = (gst.tradePnls || []).concat([pnl]).slice(-40);
   ai.trades.unshift({ pair: pos.pair, entry: pos.entry, exit: price, pnl, at: Date.now(), reason });
   if (ai.trades.length > 50) ai.trades.pop();
   ai.cooldown = Date.now() + 30000;
@@ -1955,8 +1998,20 @@ function sampleEquity() {
   }
 }
 
+function dashSet(el, txt, cls) {
+  if (el.textContent !== txt) {
+    el.textContent = txt;
+    el.classList.remove("bump");
+    void el.offsetWidth;
+    el.classList.add("bump");
+  }
+  if (cls !== undefined) el.className = cls;
+}
+
 function drawEquity() {
   const canvas = document.getElementById("eqchart");
+  const eqDot = document.getElementById("eqDot");
+  const eqLegend = document.getElementById("eqLegend");
   const pts = state.equityLong.length > 1 ? state.equityLong : state.equity;
   const dpr = window.devicePixelRatio || 1;
   const wCss = canvas.clientWidth || 600, hCss = 260;
@@ -1965,6 +2020,8 @@ function drawEquity() {
   ctx.scale(dpr, dpr);
   ctx.clearRect(0, 0, wCss, hCss);
   if (pts.length < 2) {
+    if (eqDot) eqDot.classList.remove("on");
+    if (eqLegend) eqLegend.innerHTML = "";
     ctx.fillStyle = "#8b95a8";
     ctx.font = "13px Segoe UI, sans-serif";
     ctx.textAlign = "center";
@@ -1978,6 +2035,18 @@ function drawEquity() {
   const last = pts[pts.length - 1].v;
   const up = last >= START_CASH;
   const col = up ? "#2ecc71" : "#e74c3c";
+  ctx.setLineDash([3, 5]);
+  ctx.strokeStyle = "rgba(139,149,168,.15)";
+  ctx.lineWidth = 1;
+  ctx.font = "10px Segoe UI, sans-serif";
+  ctx.textAlign = "left";
+  [0.25, 0.5, 0.75].forEach(f => {
+    const y = 15 + f * (hCss - 30);
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(wCss, y); ctx.stroke();
+    ctx.fillStyle = "rgba(139,149,168,.75)";
+    ctx.fillText(fmtEur(max - f * span), 4, y - 4);
+  });
+  ctx.setLineDash([]);
   ctx.beginPath();
   ctx.moveTo(px(0), hCss);
   pts.forEach((p, i) => ctx.lineTo(px(i), py(p.v)));
@@ -2001,10 +2070,45 @@ function drawEquity() {
   ctx.lineWidth = 1;
   ctx.beginPath(); ctx.moveTo(0, by); ctx.lineTo(wCss, by); ctx.stroke();
   ctx.setLineDash([]);
+  const lx = px(pts.length - 1), ly = py(last);
   ctx.fillStyle = col;
   ctx.beginPath();
-  ctx.arc(px(pts.length - 1), py(last), 3.5, 0, Math.PI * 2);
+  ctx.arc(lx, ly, 3.5, 0, Math.PI * 2);
   ctx.fill();
+  if (eqDot) {
+    eqDot.classList.add("on");
+    eqDot.style.left = lx + "px";
+    eqDot.style.top = ly + "px";
+    eqDot.style.setProperty("--dotcol", col);
+    eqDot.style.setProperty("--dotglow", up ? "rgba(46,204,113,.4)" : "rgba(231,76,60,.4)");
+  }
+  if (eqLegend) {
+    const chg = (last - START_CASH) / START_CASH * 100;
+    const peak = Math.max(...vals);
+    eqLegend.innerHTML =
+      '<span>' + t("ccStartBal") + ' <b>' + fmtEur(START_CASH) + '</b></span>' +
+      '<span>' + t("dashNow") + ' <b style="color:' + col + '">' + fmtEur(last) + '</b></span>' +
+      '<span>' + t("dashPeak") + ' <b>' + fmtEur(peak) + '</b></span>' +
+      '<span style="color:' + col + ';font-weight:700">' + fmtPct(chg) + '</span>';
+  }
+}
+
+function drawPnlBars() {
+  const wrap = document.getElementById("pnlBars");
+  if (!wrap) return;
+  const pnls = (state.stats.tradePnls || []).slice(-30);
+  const key = pnls.map(v => v.toFixed(2)).join("|");
+  if (wrap.dataset.key === key) return;
+  wrap.dataset.key = key;
+  if (!pnls.length) {
+    wrap.innerHTML = '<div class="pb-empty">' + t("pnlBarsEmpty") + "</div>";
+    return;
+  }
+  const maxAbs = Math.max(...pnls.map(v => Math.abs(v)), 0.01);
+  wrap.innerHTML = pnls.map(v => {
+    const h = Math.max(4, Math.round(Math.abs(v) / maxAbs * 100));
+    return '<div class="pb ' + (v >= 0 ? "up" : "dn") + '" style="height:' + h + '%" title="' + (v >= 0 ? "+" : "") + fmtEur(v) + '"></div>';
+  }).join("");
 }
 
 function drawDashboard() {
@@ -2013,21 +2117,29 @@ function drawDashboard() {
   const st = state.stats;
   const pnl = state.cash + cryptoValue() + betsValue() - START_CASH;
   const dPnl = document.getElementById("dPnl");
-  dPnl.textContent = (pnl >= 0 ? "+" : "") + fmtEur(pnl);
-  dPnl.className = "scard-v " + (pnl >= 0 ? "pos" : "neg");
-  document.getElementById("dWin").textContent = st.trades ? (st.wins / st.trades * 100).toFixed(1) + " %" : "—";
-  document.getElementById("dTrades").textContent = st.trades;
+  dashSet(dPnl, (pnl >= 0 ? "+" : "") + fmtEur(pnl), "scard-v " + (pnl >= 0 ? "pos" : "neg"));
+  const pct = pnl / START_CASH * 100;
+  dashSet(document.getElementById("dPnlPct"), fmtPct(pct), "dash-sub " + (pct >= 0 ? "pos" : "neg"));
+  const rate = st.trades ? st.wins / st.trades * 100 : null;
+  dashSet(document.getElementById("dWin"), st.trades ? rate.toFixed(1) + " %" : "\u2014");
+  const ring = document.getElementById("dWinRing");
+  if (ring) {
+    ring.style.strokeDashoffset = st.trades ? (213.6 * (1 - rate / 100)).toFixed(1) : "213.6";
+    ring.style.stroke = st.trades ? (rate >= 50 ? "#2ecc71" : rate >= 40 ? "#f6c85f" : "#e74c3c") : "#1a2130";
+  }
+  dashSet(document.getElementById("dTrades"), String(st.trades));
+  dashSet(document.getElementById("dWins"), st.wins + " W");
+  dashSet(document.getElementById("dLosses"), st.losses + " L");
   const dBot = document.getElementById("dBot");
-  dBot.textContent = (st.botPnl >= 0 ? "+" : "") + fmtEur(st.botPnl);
-  dBot.className = "scard-v " + (st.botPnl >= 0 ? "pos" : "neg");
+  dashSet(dBot, (st.botPnl >= 0 ? "+" : "") + fmtEur(st.botPnl), "scard-v " + (st.botPnl >= 0 ? "pos" : "neg"));
   const dBest = document.getElementById("dBest");
-  dBest.textContent = st.best === null ? "—" : "+" + fmtEur(st.best);
-  dBest.className = "scard-v pos";
+  dashSet(dBest, st.best === null ? "\u2014" : "+" + fmtEur(st.best), "scard-v pos");
   const dWorst = document.getElementById("dWorst");
-  dWorst.textContent = st.worst === null ? "—" : "−" + fmtEur(Math.abs(st.worst));
-  dWorst.className = "scard-v neg";
+  dashSet(dWorst, st.worst === null ? "\u2014" : "\u2212" + fmtEur(Math.abs(st.worst)), "scard-v neg");
+  drawPnlBars();
   drawEquity();
 }
+
 
 /* ================= AI COMMAND CENTER ================= */
 const CC_SIM_PAIRS = [
@@ -2832,13 +2944,13 @@ document.getElementById("btnReset").onclick = () => {
     botComm: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
     botCrypto: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
     equity: [], equityLong: [],
-    stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0 },
+    stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [] },
     ai: { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "BTCUSDT" },
   };
   seedPrices();
   state.equity = [];
   state.equityLong = [];
-  state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0 };
+  state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [] };
   state.ai = { enabled: false, balance: 500, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "BTCUSDT" };
   saveState(); render(); renderBot(); renderAi();
   toast(t("resetToast", { amt: fmtEur(START_CASH) }));
