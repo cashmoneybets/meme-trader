@@ -168,6 +168,97 @@
   .ai-live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--green); margin-right: 5px; animation: blink 1s infinite; vertical-align: middle; }
   @keyframes blink { 50% { opacity: .15; } }
   .flash-up { animation: flashUp .6s; } .flash-down { animation: flashDown .6s; }
+  .cc-section { max-width: 1200px; margin: 0 auto; padding: 0 24px 60px; }
+  .cc-section h2 { font-size: 14px; margin: 0 0 10px; text-transform: uppercase; letter-spacing: 1px; }
+  .cc-panel { background: #0d1220; border: 1px solid #1e2740; border-radius: 12px; padding: 14px; }
+  .cc-topbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .cc-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cc-badge { font-size: 9.5px; letter-spacing: 1px; font-weight: 700; padding: 4px 9px; border-radius: 4px; border: 1px solid; text-transform: uppercase; white-space: nowrap; }
+  .cc-badge.ok { color: #2ecc71; border-color: rgba(46,204,113,.35); background: rgba(46,204,113,.06); }
+  .cc-badge.sim { color: #f6c85f; border-color: rgba(246,200,95,.4); background: rgba(246,200,95,.07); }
+  .cc-blink { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: #2ecc71; margin-right: 6px; animation: blink 1.2s infinite; }
+  .cc-clock { font-family: Consolas, monospace; font-size: 13px; color: var(--accent2); display: flex; gap: 14px; }
+  .cc-stats-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .cc-stat { flex: 1; min-width: 130px; background: #0d1220; border: 1px solid #1e2740; border-radius: 10px; padding: 10px 12px; font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+  .cc-stat b { display: block; font-size: 17px; color: var(--text); margin-top: 3px; font-variant-numeric: tabular-nums; }
+  .cc-ticker { overflow: hidden; border: 1px solid #1e2740; border-radius: 8px; margin-bottom: 16px; background: #0d1220; }
+  .cc-ticker-track { display: inline-flex; gap: 30px; padding: 9px 0; white-space: nowrap; animation: ccTicker 32s linear infinite; font-family: Consolas, monospace; font-size: 12px; color: var(--muted); will-change: transform; }
+  .cc-ticker-track:hover { animation-play-state: paused; }
+  @keyframes ccTicker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .cc-titem b { color: var(--text); font-weight: 600; }
+  .cc-main { display: grid; grid-template-columns: 1.1fr 1fr 1.15fr; gap: 14px; margin-bottom: 14px; }
+  .cc-charts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; align-content: start; }
+  .cc-mpanel { background: #0d1220; border: 1px solid #1e2740; border-radius: 10px; padding: 10px; }
+  .cc-mpanel.cc-flash { animation: ccFlash 1s; }
+  @keyframes ccFlash { 0% { border-color: var(--accent2); box-shadow: 0 0 18px rgba(0,206,201,.5); } 100% { border-color: #1e2740; box-shadow: none; } }
+  .cc-mhead { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+  .cc-mhead b { color: var(--text); }
+  .cc-mprice { font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; margin: 2px 0 4px; }
+  .cc-mline { width: 100%; height: 46px; display: block; }
+  .cc-mvols { display: flex; gap: 2px; align-items: flex-end; height: 22px; margin-top: 6px; }
+  .cc-vb { flex: 1; background: rgba(108,92,231,.5); border-radius: 1px; transition: height .6s ease, background .6s; min-height: 2px; }
+  .cc-vb.up { background: rgba(46,204,113,.55); }
+  .cc-vb.dn { background: rgba(231,76,60,.55); }
+  .cc-sphere-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  #ccSphere { width: 100%; height: 320px; display: block; }
+  .cc-sphere-label { font-size: 11px; letter-spacing: 2px; color: var(--muted); margin-top: 8px; font-family: Consolas, monospace; }
+  .cc-sphere-label span { color: var(--accent2); }
+  .cc-agents h2 { margin-bottom: 8px; }
+  .cc-agent { display: flex; gap: 10px; align-items: center; background: #0d1220; border: 1px solid #1e2740; border-radius: 10px; padding: 8px 10px; margin-bottom: 7px; }
+  .cc-ag-ico { font-size: 16px; }
+  .cc-ag-main { flex: 1; min-width: 0; }
+  .cc-ag-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .cc-ag-top b { font-size: 11.5px; letter-spacing: .5px; }
+  .cc-ag-status { font-size: 9px; font-weight: 700; letter-spacing: 1px; padding: 2px 7px; border-radius: 3px; border: 1px solid; text-transform: uppercase; white-space: nowrap; }
+  .cc-ag-status.st-active { color: var(--accent2); border-color: rgba(0,206,201,.4); background: rgba(0,206,201,.07); }
+  .cc-ag-status.st-idle { color: var(--muted); border-color: var(--border); background: rgba(139,149,168,.06); }
+  .cc-ag-status.st-good { color: var(--green); border-color: rgba(46,204,113,.4); background: rgba(46,204,113,.08); }
+  .cc-ag-status.st-bad { color: var(--red); border-color: rgba(231,76,60,.4); background: rgba(231,76,60,.08); }
+  .cc-ag-status.st-warn { color: #f6c85f; border-color: rgba(246,200,95,.4); background: rgba(246,200,95,.08); }
+  .cc-ag-bar { height: 3px; background: #1a2130; border-radius: 2px; margin: 5px 0 4px; overflow: hidden; }
+  .cc-ag-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width .8s ease; }
+  .cc-ag-desc { font-size: 10.5px; color: var(--muted); }
+  .cc-ag-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent2); animation: blink 1.4s infinite; flex-shrink: 0; }
+  .cc-grid2 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .cc-ttop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .cc-ttop b { font-size: 15px; }
+  .cc-tside { font-size: 10px; font-weight: 800; letter-spacing: 1px; padding: 3px 9px; border-radius: 4px; }
+  .cc-tside.long { background: rgba(46,204,113,.15); color: var(--green); }
+  .cc-tside.short { background: rgba(231,76,60,.15); color: var(--red); }
+  .cc-tbig { font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; margin: 2px 0; }
+  .cc-tpct { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  .cc-empty { color: var(--muted); font-size: 12.5px; padding: 20px 0; text-align: center; }
+  .cc-eq-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+  .cc-eq-grid > div { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .3px; }
+  .cc-eq-grid b { display: block; font-size: 12.5px; color: var(--text); margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .cc-meter-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+  .cc-meter-l { font-size: 11px; color: var(--muted); width: 110px; flex-shrink: 0; }
+  .cc-meter { flex: 1; height: 6px; background: #1a2130; border-radius: 3px; overflow: hidden; }
+  .cc-meter-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #2ecc71, #00cec9); transition: width .9s ease; }
+  .cc-meter-fill.hot { background: linear-gradient(90deg, #f6c85f, #e74c3c); }
+  .cc-meter-v { font-size: 11px; width: 42px; text-align: right; font-variant-numeric: tabular-nums; }
+  .cc-siglist { display: flex; flex-wrap: wrap; gap: 7px; min-height: 60px; }
+  .cc-sig { font-size: 10px; font-weight: 700; letter-spacing: .5px; padding: 4px 9px; border-radius: 4px; border: 1px solid; animation: slideIn .4s ease; }
+  .cc-sig.sg-buy, .cc-sig.sg-sbuy { color: var(--green); border-color: rgba(46,204,113,.4); background: rgba(46,204,113,.08); }
+  .cc-sig.sg-sbuy { box-shadow: 0 0 10px rgba(46,204,113,.35); }
+  .cc-sig.sg-sell, .cc-sig.sg-ssell { color: var(--red); border-color: rgba(231,76,60,.4); background: rgba(231,76,60,.08); }
+  .cc-sig.sg-ssell { box-shadow: 0 0 10px rgba(231,76,60,.35); }
+  .cc-sig.sg-wait { color: var(--muted); border-color: var(--border); background: rgba(139,149,168,.06); }
+  .cc-sig.sg-vol { color: #f6c85f; border-color: rgba(246,200,95,.4); background: rgba(246,200,95,.07); }
+  .cc-sig.sg-brk { color: var(--accent2); border-color: rgba(0,206,201,.4); background: rgba(0,206,201,.08); }
+  .cc-sig.sg-rev { color: #a29bfe; border-color: rgba(162,155,254,.4); background: rgba(162,155,254,.08); }
+  .cc-sig.sg-mom { color: #74b9ff; border-color: rgba(116,185,255,.4); background: rgba(116,185,255,.08); }
+  .cc-loglist { list-style: none; max-height: 240px; overflow-y: auto; }
+  .cc-loglist li { padding: 6px 4px; border-bottom: 1px solid #1a2130; font-size: 12px; font-family: Consolas, monospace; animation: slideIn .35s ease; display: flex; gap: 8px; align-items: baseline; }
+  .cc-loglist li:last-child { border-bottom: none; }
+  .cc-ev-ag { color: var(--accent2); font-weight: 700; font-size: 10.5px; flex-shrink: 0; }
+  .cc-ev-msg { color: var(--text); }
+  .cc-ev.buy .cc-ev-msg, .cc-ev.profit .cc-ev-msg { color: var(--green); }
+  .cc-ev.sell .cc-ev-msg, .cc-ev.loss .cc-ev-msg { color: var(--red); }
+  .cc-ev.warn .cc-ev-msg { color: #f6c85f; }
+  .cc-ev-t { margin-left: auto; color: #5a6478; font-size: 10px; flex-shrink: 0; }
+  @media (max-width: 980px) { .cc-main { grid-template-columns: 1fr; } #ccSphere { height: 300px; } .cc-grid2 { grid-template-columns: 1fr; } }
+  @media (max-width: 720px) { .cc-section { padding: 0 10px 40px; } .cc-clock { font-size: 11px; } }
   @media (max-width: 900px) { .ai-grid { grid-template-columns: 1fr; } }
   @media (max-width: 720px) {
     .ai-section { padding: 0 10px 40px; }
@@ -417,6 +508,93 @@
   </div>
 </section>
 
+<section id="cc" class="cc-section">
+  <h2>🛰️ <span data-i18n="ccTitle">AI Command Center</span></h2>
+  <div class="cc-panel">
+    <div class="cc-topbar">
+      <div class="cc-badges">
+        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB1">AI SYSTEM ONLINE</span></span>
+        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB2">MARKET SCANNER ACTIVE</span></span>
+        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB3">AGENTS ONLINE</span></span>
+        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB4">MARKET DATA LIVE</span></span>
+        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB5">RISK ENGINE ACTIVE</span></span>
+        <span class="cc-badge sim" data-i18n="ccSimBadge">SIMULATION · PAPER TRADING</span>
+      </div>
+      <div class="cc-clock"><span id="ccClock">--:--:--</span><span data-i18n="ccSession">SESSION</span>&nbsp;<span id="ccSession">00:00</span></div>
+    </div>
+    <div class="cc-stats-row">
+      <div class="cc-stat"><span data-i18n="ccMarketsScanned">Markets scanned</span><b id="ccScanned">0</b></div>
+      <div class="cc-stat"><span data-i18n="ccSignalsDetected">Signals detected</span><b id="ccSignalsN">0</b></div>
+      <div class="cc-stat"><span data-i18n="ccTradesLabel">Trades</span><b id="ccTradesN">0</b></div>
+      <div class="cc-stat"><span data-i18n="ccStatusNominal">System status</span><b style="color:var(--green);">NOMINAL</b></div>
+    </div>
+    <div class="cc-ticker"><div class="cc-ticker-track" id="ccTicker"></div></div>
+    <div class="cc-main">
+      <div>
+        <h2 data-i18n="ccLiveCharts">Live markets</h2>
+        <div class="cc-charts" id="ccCharts"></div>
+      </div>
+      <div class="cc-panel cc-sphere-wrap">
+        <canvas id="ccSphere"></canvas>
+        <div class="cc-sphere-label"><span data-i18n="ccNeuralCore">NEURAL CORE</span> · <span id="ccNetState">PROCESSING</span></div>
+      </div>
+      <div class="cc-agents">
+        <h2 data-i18n="ccAgentsTitle">AI Trading Agents</h2>
+        <div id="ccAgents"></div>
+      </div>
+    </div>
+    <div class="cc-grid2">
+      <div class="cc-panel">
+        <h2 data-i18n="ccLiveTrade">Live trade</h2>
+        <div id="ccTNone" class="cc-empty" data-i18n="ccNoTrade">No open trade — agents are scanning the market.</div>
+        <div id="ccTBody" style="display:none;">
+          <div class="cc-ttop"><b id="ccTPair">—</b><span class="cc-tside long" id="ccTSide">LONG</span></div>
+          <div class="cc-tbig" id="ccTPnl">—</div>
+          <div class="cc-tpct" id="ccTPnlPct">—</div>
+          <div class="cc-eq-grid">
+            <div><span data-i18n="entryLab">Entry</span><b id="ccTEntry">—</b></div>
+            <div><span data-i18n="thPrice">Price</span><b id="ccTCur">—</b></div>
+            <div><span data-i18n="ccSize">Size</span><b id="ccTSize">—</b></div>
+            <div><span data-i18n="slLab2">Stop Loss</span><b id="ccTSL" style="color:var(--red);">—</b></div>
+            <div><span data-i18n="tpLab2">Take Profit</span><b id="ccTTP" style="color:var(--green);">—</b></div>
+            <div><span data-i18n="ccLev">Leverage</span><b id="ccTLev">—</b></div>
+            <div><span data-i18n="ccDuration">Duration</span><b id="ccTDur">—</b></div>
+            <div><span data-i18n="sigConfLab">Confidence</span><b id="ccTConf">—</b></div>
+            <div><span data-i18n="ccReason">Reason</span><b id="ccTReason">—</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="cc-panel">
+        <h2 data-i18n="ccEquityTitle">Equity / P&L</h2>
+        <canvas id="ccEquity" style="width:100%; height:90px; display:block;"></canvas>
+        <div class="cc-eq-grid">
+          <div><span data-i18n="ccStartBal">Start</span><b id="ccEqStart">—</b></div>
+          <div><span data-i18n="ccCurBal">Balance</span><b id="ccEqCur">—</b></div>
+          <div><span data-i18n="ccUnreal">Unrealized</span><b id="ccEqUnreal">—</b></div>
+          <div><span data-i18n="ccRealized">Realized</span><b id="ccEqReal">—</b></div>
+          <div><span data-i18n="winRate">Win rate</span><b id="ccEqWin">—</b></div>
+          <div><span data-i18n="totalTradesLab">Trades</span><b id="ccEqTrades">0</b></div>
+          <div><span data-i18n="ccWinsLab">Wins</span><b id="ccEqWins" style="color:var(--green);">0</b></div>
+          <div><span data-i18n="ccLossesLab">Losses</span><b id="ccEqLosses" style="color:var(--red);">0</b></div>
+          <div><span data-i18n="ccDrawdown">Drawdown</span><b id="ccEqDD">0.0%</b></div>
+        </div>
+      </div>
+      <div class="cc-panel">
+        <h2 data-i18n="ccRiskTitle">Risk monitor</h2>
+        <div id="ccMeters"></div>
+      </div>
+      <div class="cc-panel">
+        <h2 data-i18n="ccSignalsTitle">AI market signals</h2>
+        <div class="cc-siglist" id="ccSigList"></div>
+      </div>
+    </div>
+    <div class="cc-panel" style="margin-top:14px;">
+      <h2 data-i18n="ccTradeFlow">Live trade flow</h2>
+      <ul class="cc-loglist" id="ccLog"></ul>
+    </div>
+  </div>
+</section>
+
 <div id="toast"></div>
 
 <script>
@@ -458,6 +636,18 @@ const I18N = {
     aiWhyBull: "{pair} trades above its EMA21, RSI at {rsi} and momentum {mom}. Volume {vol} — buyers in control.",
     aiWhyBear: "{pair} trades below its EMA21, RSI at {rsi} and momentum {mom}. Volume {vol} — sellers in control.",
     aiWhyNeutral: "EMAs are flat and RSI neutral ({rsi}) — no clear edge, the AI waits for a setup.",
+    ccTitle: "AI Command Center", ccB1: "AI SYSTEM ONLINE", ccB2: "MARKET SCANNER ACTIVE", ccB3: "AGENTS ONLINE", ccB4: "MARKET DATA LIVE", ccB5: "RISK ENGINE ACTIVE",
+    ccSimBadge: "SIMULATION · PAPER TRADING", ccSession: "SESSION", ccNominal: "NOMINAL",
+    ccMarketsScanned: "Markets scanned", ccSignalsDetected: "Signals detected", ccTradesLabel: "Trades", ccStatusNominal: "System status",
+    ccLiveCharts: "Live markets", ccNeuralCore: "NEURAL CORE", ccNetProcessing: "PROCESSING", ccNetSignal: "SIGNAL DETECTED", ccNetTrade: "TRADE EXECUTION",
+    ccAgentsTitle: "AI Trading Agents", ccLiveTrade: "Live trade", ccNoTrade: "No open trade — agents are scanning the market.",
+    ccEquityTitle: "Equity / P&L", ccStartBal: "Start", ccCurBal: "Balance", ccUnreal: "Unrealized", ccRealized: "Realized", ccDrawdown: "Drawdown", ccWinsLab: "Wins", ccLossesLab: "Losses",
+    ccRiskTitle: "Risk monitor", ccMRisk: "Risk level", ccMExposure: "Exposure", ccMPosSize: "Position size", ccMDrawdown: "Drawdown", ccMVolatility: "Volatility", ccMMarketConf: "Market confidence", ccMTradeConf: "Trade confidence",
+    ccSignalsTitle: "AI market signals", ccSize: "Size", ccLev: "Leverage", ccDuration: "Duration", ccReason: "Reason",
+    ccAgScanner: "SCANNER", ccAgRisk: "RISK CHECK", ccAgAnalyzer: "ANALYZER", ccAgSignal: "SIGNAL", ccAgSizer: "SIZER", ccAgExecutor: "EXECUTOR", ccAgLogger: "LOGGER", ccAgEquity: "EQUITY", ccAgRegime: "MARKET REGIME",
+    ccSigBuy: "BUY", ccSigSell: "SELL", ccSigWait: "WAIT", ccSigStrongBuy: "STRONG BUY", ccSigStrongSell: "STRONG SELL", ccSigHighVol: "HIGH VOLATILITY", ccSigBreakout: "BREAKOUT", ccSigReversal: "REVERSAL", ccSigMomentum: "MOMENTUM",
+    ccEvBreakout: "Breakout detected", ccEvRiskOk: "Risk acceptable", ccEvMomentum: "Momentum increasing", ccEvLong: "LONG signal generated", ccEvShort: "SHORT signal generated", ccEvSized: "Position size calculated: {amt}", ccEvOpened: "Trade opened", ccEvRecorded: "Trade recorded", ccEvEquity: "Portfolio updated", ccEvTP: "Take profit hit", ccEvSL: "Stop loss hit", ccEvVolatility: "Volatility spike monitored", ccEvReversal: "Reversal pattern observed", ccEvClosed: "Trade closed",
+    ccSideLong: "LONG", ccSideShort: "SHORT",
     resetAccount: "↺ Reset account",
     marketTitle: "Market", marketSub: "real-time prices · BTC & gold live",
     thAsset: "Asset", thPrice: "Price", thChart: "Chart", thHeld: "Held", thTrade: "Trade (amount in €)",
@@ -520,6 +710,18 @@ const I18N = {
     aiWhyBull: "{pair} handelt über seinem EMA21, RSI bei {rsi} und Momentum {mom}. Volumen {vol} — Käufer haben Kontrolle.",
     aiWhyBear: "{pair} handelt unter seinem EMA21, RSI bei {rsi} und Momentum {mom}. Volumen {vol} — Verkäufer haben Kontrolle.",
     aiWhyNeutral: "EMAs flach und RSI neutral ({rsi}) — kein klarer Vorteil, die KI wartet auf ein Setup.",
+    ccTitle: "KI-Kommandozentrale", ccB1: "KI-SYSTEM ONLINE", ccB2: "MARKT-SCANNER AKTIV", ccB3: "AGENTEN ONLINE", ccB4: "MARKTDATEN LIVE", ccB5: "RISIKO-ENGINE AKTIV",
+    ccSimBadge: "SIMULATION · PAPER TRADING", ccSession: "SESSION", ccNominal: "NOMINAL",
+    ccMarketsScanned: "Märkte gescannt", ccSignalsDetected: "Signale erkannt", ccTradesLabel: "Trades", ccStatusNominal: "Systemstatus",
+    ccLiveCharts: "Live-Märkte", ccNeuralCore: "NEURALER KERN", ccNetProcessing: "VERARBEITUNG", ccNetSignal: "SIGNAL ERKANNT", ccNetTrade: "TRADE-AUSFÜHRUNG",
+    ccAgentsTitle: "KI-Handelsagenten", ccLiveTrade: "Live-Trade", ccNoTrade: "Kein offener Trade — die Agenten scannen den Markt.",
+    ccEquityTitle: "Equity / P&L", ccStartBal: "Start", ccCurBal: "Guthaben", ccUnreal: "Unrealisiert", ccRealized: "Realisiert", ccDrawdown: "Drawdown", ccWinsLab: "Gewinne", ccLossesLab: "Verluste",
+    ccRiskTitle: "Risiko-Monitor", ccMRisk: "Risikoniveau", ccMExposure: "Exposure", ccMPosSize: "Positionsgröße", ccMDrawdown: "Drawdown", ccMVolatility: "Volatilität", ccMMarketConf: "Marktvertrauen", ccMTradeConf: "Trade-Vertrauen",
+    ccSignalsTitle: "KI-Marktsignale", ccSize: "Größe", ccLev: "Hebel", ccDuration: "Dauer", ccReason: "Grund",
+    ccAgScanner: "SCANNER", ccAgRisk: "RISIKO-CHECK", ccAgAnalyzer: "ANALYZER", ccAgSignal: "SIGNAL", ccAgSizer: "SIZER", ccAgExecutor: "EXECUTOR", ccAgLogger: "LOGGER", ccAgEquity: "EQUITY", ccAgRegime: "MARKT-REGIME",
+    ccSigBuy: "KAUFEN", ccSigSell: "VERKAUFEN", ccSigWait: "WARTEN", ccSigStrongBuy: "STARK KAUFEN", ccSigStrongSell: "STARK VERKAUFEN", ccSigHighVol: "HOHE VOLATILITÄT", ccSigBreakout: "AUSBRUCH", ccSigReversal: "UMKEHR", ccSigMomentum: "MOMENTUM",
+    ccEvBreakout: "Ausbruch erkannt", ccEvRiskOk: "Risiko akzeptabel", ccEvMomentum: "Momentum steigt", ccEvLong: "LONG-Signal erzeugt", ccEvShort: "SHORT-Signal erzeugt", ccEvSized: "Positionsgröße berechnet: {amt}", ccEvOpened: "Trade eröffnet", ccEvRecorded: "Trade aufgezeichnet", ccEvEquity: "Portfolio aktualisiert", ccEvTP: "Take-Profit erreicht", ccEvSL: "Stop-Loss erreicht", ccEvVolatility: "Volatilitätsspitze überwacht", ccEvReversal: "Umkehrmuster beobachtet", ccEvClosed: "Trade geschlossen",
+    ccSideLong: "LONG", ccSideShort: "SHORT",
     resetAccount: "↺ Konto zurücksetzen",
     marketTitle: "Markt", marketSub: "echte Preise in Echtzeit · BTC & Gold live",
     thAsset: "Asset", thPrice: "Preis", thChart: "Chart", thHeld: "Gehalten", thTrade: "Handel (Betrag in €)",
@@ -582,6 +784,18 @@ const I18N = {
     aiWhyBull: "{pair} est au-dessus de son EMA21, RSI à {rsi} et momentum {mom}. Volume {vol} — les acheteurs contrôlent.",
     aiWhyBear: "{pair} est sous son EMA21, RSI à {rsi} et momentum {mom}. Volume {vol} — les vendeurs contrôlent.",
     aiWhyNeutral: "EMAs plates et RSI neutre ({rsi}) — aucun avantage clair, l'IA attend un setup.",
+    ccTitle: "Centre de commande IA", ccB1: "SYSTÈME IA EN LIGNE", ccB2: "SCANNER DE MARCHÉ ACTIF", ccB3: "AGENTS EN LIGNE", ccB4: "DONNÉES DE MARCHÉ LIVE", ccB5: "MOTEUR DE RISQUE ACTIF",
+    ccSimBadge: "SIMULATION · PAPER TRADING", ccSession: "SESSION", ccNominal: "NOMINAL",
+    ccMarketsScanned: "Marchés scannés", ccSignalsDetected: "Signaux détectés", ccTradesLabel: "Trades", ccStatusNominal: "Statut système",
+    ccLiveCharts: "Marchés en direct", ccNeuralCore: "NOYAU NEURAL", ccNetProcessing: "TRAITEMENT", ccNetSignal: "SIGNAL DÉTECTÉ", ccNetTrade: "EXÉCUTION TRADE",
+    ccAgentsTitle: "Agents de trading IA", ccLiveTrade: "Trade en direct", ccNoTrade: "Aucun trade ouvert — les agents scannent le marché.",
+    ccEquityTitle: "Capital / P&L", ccStartBal: "Départ", ccCurBal: "Solde", ccUnreal: "Non réalisé", ccRealized: "Réalisé", ccDrawdown: "Drawdown", ccWinsLab: "Gains", ccLossesLab: "Pertes",
+    ccRiskTitle: "Moniteur de risque", ccMRisk: "Niveau de risque", ccMExposure: "Exposition", ccMPosSize: "Taille de position", ccMDrawdown: "Drawdown", ccMVolatility: "Volatilité", ccMMarketConf: "Confiance marché", ccMTradeConf: "Confiance trade",
+    ccSignalsTitle: "Signaux de marché IA", ccSize: "Taille", ccLev: "Levier", ccDuration: "Durée", ccReason: "Raison",
+    ccAgScanner: "SCANNER", ccAgRisk: "VÉRIF. RISQUE", ccAgAnalyzer: "ANALYSEUR", ccAgSignal: "SIGNAL", ccAgSizer: "TAILLE", ccAgExecutor: "EXÉCUTEUR", ccAgLogger: "JOURNAL", ccAgEquity: "CAPITAL", ccAgRegime: "RÉGIME MARCHÉ",
+    ccSigBuy: "ACHAT", ccSigSell: "VENTE", ccSigWait: "ATTENDRE", ccSigStrongBuy: "FORT ACHAT", ccSigStrongSell: "FORTE VENTE", ccSigHighVol: "VOLATILITÉ HAUTE", ccSigBreakout: "CASSURE", ccSigReversal: "RETOURNEMENT", ccSigMomentum: "MOMENTUM",
+    ccEvBreakout: "Cassure détectée", ccEvRiskOk: "Risque acceptable", ccEvMomentum: "Momentum en hausse", ccEvLong: "Signal LONG généré", ccEvShort: "Signal SHORT généré", ccEvSized: "Taille de position calculée : {amt}", ccEvOpened: "Trade ouvert", ccEvRecorded: "Trade enregistré", ccEvEquity: "Portefeuille mis à jour", ccEvTP: "Take profit atteint", ccEvSL: "Stop loss atteint", ccEvVolatility: "Pic de volatilité surveillé", ccEvReversal: "Figure de retournement observée", ccEvClosed: "Trade clôturé",
+    ccSideLong: "LONG", ccSideShort: "SHORT",
     resetAccount: "↺ Réinitialiser le compte",
     marketTitle: "Marché", marketSub: "prix en temps réel · BTC & or en direct",
     thAsset: "Actif", thPrice: "Prix", thChart: "Graphique", thHeld: "Détenu", thTrade: "Trade (montant en €)",
@@ -644,6 +858,18 @@ const I18N = {
     aiWhyBull: "{pair} është mbi EMA21, RSI në {rsi} dhe momentum {mom}. Volumi {vol} — blerësit kontrollojnë.",
     aiWhyBear: "{pair} është nën EMA21, RSI në {rsi} dhe momentum {mom}. Volumi {vol} — shitësit kontrollojnë.",
     aiWhyNeutral: "EMA të qeta dhe RSI neutral ({rsi}) — asnjë avantazh i qartë, AI pret një rast.",
+    ccTitle: "Qendra e komandës AI", ccB1: "SISTEMI AI ONLINE", ccB2: "SKANERI I TREGUT AKTIV", ccB3: "AGJENTËT ONLINE", ccB4: "TË DHËNA TREGU LIVE", ccB5: "MOTORI I RISQUT AKTIV",
+    ccSimBadge: "SIMULIM · PAPER TRADING", ccSession: "SEANCA", ccNominal: "NOMINAL",
+    ccMarketsScanned: "Tregje të skanuara", ccSignalsDetected: "Sinjalet e zbuluara", ccTradesLabel: "Trades", ccStatusNominal: "Statusi i sistemit",
+    ccLiveCharts: "Tregjet live", ccNeuralCore: "BËRTHAMA NEURALE", ccNetProcessing: "PO PUNOHET", ccNetSignal: "SINALI I ZBULUAR", ccNetTrade: "EKZEKUTIMI I TRADE-IT",
+    ccAgentsTitle: "Agjentët e tregtisë AI", ccLiveTrade: "Trade live", ccNoTrade: "Asnjë trade e hapur — agjentët po skanojnë tregun.",
+    ccEquityTitle: "Kapitali / P&L", ccStartBal: "Fillimi", ccCurBal: "Balanca", ccUnreal: "Pa realizuar", ccRealized: "Realizuar", ccDrawdown: "Drawdown", ccWinsLab: "Fitore", ccLossesLab: "Humbje",
+    ccRiskTitle: "Monitorimi i rrezikut", ccMRisk: "Niveli i rrezikut", ccMExposure: "Ekspozimi", ccMPosSize: "Madhësia e pozicionit", ccMDrawdown: "Drawdown", ccMVolatility: "Volatiliteti", ccMMarketConf: "Besimi në treg", ccMTradeConf: "Besimi në trade",
+    ccSignalsTitle: "Sinjalet e tregut AI", ccSize: "Madhësia", ccLev: "Leva", ccDuration: "Kohëzgjatja", ccReason: "Arsyeja",
+    ccAgScanner: "SKANERI", ccAgRisk: "KONTROLLI I RISQUT", ccAgAnalyzer: "ANALIZUESI", ccAgSignal: "SINALI", ccAgSizer: "PËRMASAT", ccAgExecutor: "EKZEKUTORI", ccAgLogger: "REGJISTRI", ccAgEquity: "KAPITALI", ccAgRegime: "REZHIMI I TREGUT",
+    ccSigBuy: "BLERJE", ccSigSell: "SHITJE", ccSigWait: "PRIT", ccSigStrongBuy: "BLERJE E FORTË", ccSigStrongSell: "SHITJE E FORTË", ccSigHighVol: "VOLATILITET I LARTË", ccSigBreakout: "ZBRITJE", ccSigReversal: "KTHIM", ccSigMomentum: "MOMENTUM",
+    ccEvBreakout: "Thyerje e zbuluar", ccEvRiskOk: "Rreziku i pranueshëm", ccEvMomentum: "Momentum në rritje", ccEvLong: "Sinali LONG i gjeneruar", ccEvShort: "Sinali SHORT i gjeneruar", ccEvSized: "Madhësia e pozicionit e llogaritur: {amt}", ccEvOpened: "Trade e hapur", ccEvRecorded: "Trade e regjistruar", ccEvEquity: "Portofoli i përditësuar", ccEvTP: "Take profit i arritur", ccEvSL: "Stop loss i arritur", ccEvVolatility: "Thyerja e volatilitetit nën vëzhgim", ccEvReversal: "Modeli i kthimit i vërejtur", ccEvClosed: "Trade e mbyllur",
+    ccSideLong: "LONG", ccSideShort: "SHORT",
     resetAccount: "↺ Rivendis llogarinë",
     marketTitle: "Tregu", marketSub: "çmime reale në kohë reale · BTC & ari live",
     thAsset: "Aseti", thPrice: "Çmimi", thChart: "Grafiku", thHeld: "Në posedim", thTrade: "Tregto (shuma në €)",
@@ -1344,6 +1570,8 @@ function openAiPos(sym, price, a) {
   if (spend < 10 || price <= 0) return;
   ai.balance -= spend;
   ai.positions.push({ pair: sym, entry: price, sl: a.sl, tp: a.tp, qty: spend / price, at: Date.now() });
+  ccLogEvent("buy", "EXECUTOR", t("ccEvOpened") + " · " + aiPairName(sym));
+  ccPulse("#00cec9");
 }
 
 function closeAiPos(pos, price, reason) {
@@ -1363,6 +1591,8 @@ function closeAiPos(pos, price, reason) {
   if (ai.trades.length > 50) ai.trades.pop();
   ai.cooldown = Date.now() + 30000;
   saveState();
+  ccLogEvent(pnl >= 0 ? "profit" : "loss", "EQUITY", t("ccEvClosed") + " · " + aiPairName(pos.pair) + " " + (pnl >= 0 ? "+" : "") + fmtEur(pnl));
+  ccPulse(pnl >= 0 ? "#2ecc71" : "#e74c3c");
 }
 
 function aiTick() {
@@ -1686,6 +1916,517 @@ function drawDashboard() {
   drawEquity();
 }
 
+/* ================= AI COMMAND CENTER ================= */
+const CC_SIM_PAIRS = [
+  { sym: "BNB", base: 612, vol: 0.0016 },
+  { sym: "ADA", base: 0.62, vol: 0.0022 },
+  { sym: "DOGE", base: 0.163, vol: 0.003 },
+  { sym: "AVAX", base: 28.4, vol: 0.0026 },
+];
+const CC_REAL = [
+  { sym: "BTC", base: 74000, vol: 0.0012, ai: "BTCUSDT" },
+  { sym: "ETH", base: 3500, vol: 0.0016, ai: "ETHUSDT" },
+  { sym: "SOL", base: 180, vol: 0.0022, ai: "SOLUSDT" },
+  { sym: "XRP", base: 0.55, vol: 0.0022, ai: "XRPUSDT" },
+];
+const ccData = {};
+[...CC_SIM_PAIRS, ...CC_REAL].forEach(p => {
+  ccData[p.sym] = { price: p.base, open: p.base, hist: [p.base], vols: Array.from({ length: 12 }, () => 20 + Math.random() * 60), cfg: p };
+});
+const ccT0 = Date.now();
+const ccState = {
+  regime: "range", regimeT: Date.now() + 60000, scanned: 0, signals: 0, trades: 0, wins: 0, losses: 0,
+  equity: 500, start: 500, realized: 0, unrealized: 0, peak: 500, drawdown: 0,
+  trade: null, lastBull: null, lastReason: null, lastSym: null, lastSigAt: 0, mktConf: 62,
+  eqHist: [500], meters: [30, 18, 25, 0, 40, 62, 50], agProg: Array.from({ length: 9 }, () => 20 + Math.random() * 40),
+};
+const CC_AGENTS = [
+  { key: "ccAgScanner", ico: "🛰️", idle: "SCANNING", desc: ["ccEvBreakout", "ccEvVolatility", "ccEvMomentum"] },
+  { key: "ccAgRisk", ico: "🛡️", idle: "WAITING", desc: ["ccEvRiskOk", "ccEvVolatility"] },
+  { key: "ccAgAnalyzer", ico: "🧠", idle: "ANALYZING", desc: ["ccEvMomentum", "ccEvReversal", "ccEvBreakout"] },
+  { key: "ccAgSignal", ico: "⚡", idle: "WAITING", desc: ["ccEvLong", "ccEvShort"] },
+  { key: "ccAgSizer", ico: "📐", idle: "WAITING", desc: ["ccEvSized"] },
+  { key: "ccAgExecutor", ico: "🎯", idle: "MONITORING", desc: ["ccEvOpened", "ccEvTP", "ccEvSL"] },
+  { key: "ccAgLogger", ico: "📝", idle: "MONITORING", desc: ["ccEvRecorded"] },
+  { key: "ccAgEquity", ico: "💰", idle: "MONITORING", desc: ["ccEvEquity", "ccEvClosed"] },
+  { key: "ccAgRegime", ico: "🌐", idle: "MONITORING", desc: ["ccEvVolatility", "ccEvReversal", "ccEvMomentum"] },
+];
+const CC_METER_KEYS = ["ccMRisk", "ccMExposure", "ccMPosSize", "ccMDrawdown", "ccMVolatility", "ccMMarketConf", "ccMTradeConf"];
+const CC_SIGS = [
+  { key: "ccSigBuy", cls: "sg-buy", strong: false, bull: true },
+  { key: "ccSigStrongBuy", cls: "sg-sbuy", strong: true, bull: true },
+  { key: "ccSigSell", cls: "sg-sell", strong: false, bull: false },
+  { key: "ccSigStrongSell", cls: "sg-ssell", strong: true, bull: false },
+  { key: "ccSigWait", cls: "sg-wait", strong: false, bull: null },
+  { key: "ccSigHighVol", cls: "sg-vol", strong: false, bull: null },
+  { key: "ccSigBreakout", cls: "sg-brk", strong: true, bull: true },
+  { key: "ccSigReversal", cls: "sg-rev", strong: false, bull: null },
+  { key: "ccSigMomentum", cls: "sg-mom", strong: false, bull: true },
+];
+const ccSetText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+
+function ccBuildStatic() {
+  const charts = document.getElementById("ccCharts");
+  if (charts) charts.innerHTML = Object.keys(ccData).map(sym => `
+    <div class="cc-mpanel" id="ccmp-${sym}">
+      <div class="cc-mhead"><b>${sym}/USDT</b><span id="ccmp-${sym}-p">0.00%</span></div>
+      <div class="cc-mprice" id="ccmp-${sym}-v">—</div>
+      <canvas class="cc-mline" id="ccmc-${sym}" width="180" height="46"></canvas>
+      <div class="cc-mvols" id="ccmv-${sym}">${Array.from({ length: 12 }, () => '<i class="cc-vb" style="height:30%"></i>').join("")}</div>
+    </div>`).join("");
+  const ag = document.getElementById("ccAgents");
+  if (ag) ag.innerHTML = CC_AGENTS.map((a, i) => `
+    <div class="cc-agent">
+      <span class="cc-ag-ico">${a.ico}</span>
+      <div class="cc-ag-main">
+        <div class="cc-ag-top"><b>${t(a.key)}</b><span class="cc-ag-status st-idle" id="ccas-${i}">${a.idle}</span></div>
+        <div class="cc-ag-bar"><div class="cc-ag-fill" id="ccaf-${i}" style="width:20%"></div></div>
+        <div class="cc-ag-desc" id="ccad-${i}">—</div>
+      </div>
+      <span class="cc-ag-dot"></span>
+    </div>`).join("");
+  const mt = document.getElementById("ccMeters");
+  if (mt) mt.innerHTML = CC_METER_KEYS.map((k, i) => `
+    <div class="cc-meter-row"><span class="cc-meter-l">${t(k)}</span><div class="cc-meter"><div class="cc-meter-fill" id="ccmf-${i}" style="width:20%"></div></div><span class="cc-meter-v" id="ccmv2-${i}">20%</span></div>`).join("");
+  const tk = document.getElementById("ccTicker");
+  if (tk) {
+    const item = sym => `<span class="cc-titem" data-tsym="${sym}"><b>${sym}/USDT</b> <span data-tk="${sym}">—</span></span>`;
+    const syms = Object.keys(ccData);
+    tk.innerHTML = syms.map(item).join("") + syms.map(item).join("");
+  }
+}
+
+function ccLogEvent(type, agent, msg) {
+  const list = document.getElementById("ccLog");
+  if (!list) return;
+  const li = document.createElement("li");
+  li.className = "cc-ev " + type;
+  li.innerHTML = `<span class="cc-ev-ag">${agent}</span><span class="cc-ev-msg">${msg}</span><span class="cc-ev-t">${new Date().toLocaleTimeString(LOCALES[lang] || "en-US", { hour12: false })}</span>`;
+  list.prepend(li);
+  while (list.children.length > 30) list.removeChild(list.lastChild);
+}
+
+function ccSetAgent(idx, status, cls, hold) {
+  const st = document.getElementById("ccas-" + idx);
+  if (!st) return;
+  st.textContent = status;
+  st.className = "cc-ag-status " + (cls || "st-idle");
+  if (hold) {
+    ccSetAgent._t = ccSetAgent._t || {};
+    if (ccSetAgent._t[idx]) clearTimeout(ccSetAgent._t[idx]);
+    ccSetAgent._t[idx] = setTimeout(() => { st.className = "cc-ag-status st-idle"; }, hold);
+  }
+}
+
+const ccSphere = { nodes: [], waves: [], streams: [], ry: 0, boost: 1, lastGroup: "#00cec9", lastWaveT: 0, netUntil: 0 };
+(function ccInitSphere() {
+  const N = 260;
+  for (let i = 0; i < N; i++) {
+    const ph = Math.acos(1 - 2 * (i + 0.5) / N);
+    ccSphere.nodes.push({ th: i * 2.39996, ph, e: 0, sp: 0.3 + Math.random() * 0.7, ph2: Math.random() * Math.PI * 2 });
+  }
+})();
+function ccPulse(col) { ccSphere.boost = Math.min(3.5, ccSphere.boost + 1); ccSphere.lastGroup = col || "#00cec9"; }
+function ccSetNetState(key) { ccSetText("ccNetState", t(key)); ccSphere.netUntil = Date.now() + 2400; }
+
+function ccEmitSignal() {
+  let pool;
+  if (ccState.regime === "bull") pool = CC_SIGS.filter(s => s.bull !== false);
+  else if (ccState.regime === "bear") pool = CC_SIGS.filter(s => s.bull !== true);
+  else pool = CC_SIGS.filter(s => s.bull === null || s.key === "ccSigBuy" || s.key === "ccSigSell");
+  const sig = pool[Math.floor(Math.random() * pool.length)];
+  const syms = Object.keys(ccData);
+  const sym = ccState.lastSym || syms[Math.floor(Math.random() * syms.length)];
+  const list = document.getElementById("ccSigList");
+  if (list) {
+    const chip = document.createElement("span");
+    chip.className = "cc-sig " + sig.cls;
+    chip.textContent = t(sig.key) + " · " + sym;
+    list.prepend(chip);
+    while (list.children.length > 8) list.removeChild(list.lastChild);
+  }
+  ccState.signals++;
+  ccState.lastBull = sig.bull;
+  ccState.lastReason = sig.key;
+  ccState.lastSym = sym;
+  ccState.lastSigAt = Date.now();
+  ccLogEvent(sig.bull === false ? "sell" : sig.bull ? "buy" : "info", "SIGNAL", t(sig.key) + " · " + sym);
+  if (sig.strong) {
+    ccPulse("#00cec9");
+    ccSetNetState("ccNetSignal");
+    const panel = document.getElementById("ccmp-" + sym);
+    if (panel) { panel.classList.remove("cc-flash"); void panel.offsetWidth; panel.classList.add("cc-flash"); }
+    ccSetAgent(3, "SIGNAL FOUND", "st-active", 2600);
+  }
+}
+
+function ccOpenTrade() {
+  const cs = ccState;
+  const syms = Object.keys(ccData);
+  const sym = cs.lastSym || syms[0];
+  const dir = cs.lastBull === false ? -1 : 1;
+  const size = Math.max(20, cs.equity * 0.25);
+  const entry = ccData[sym].price;
+  cs.trade = { sym, dir, entry, cur: entry, size, lev: 10,
+    sl: dir === 1 ? entry * 0.994 : entry * 1.006,
+    tp: dir === 1 ? entry * 1.012 : entry * 0.988,
+    conf: Math.round(60 + Math.random() * 35), reason: cs.lastReason || "ccSigMomentum",
+    at: Date.now(), dur: 0, pnl: 0, pnlPct: 0 };
+  cs.trades++;
+  ccTDisp.entry = null; ccTDisp.cur = null; ccTDisp.pnl = null; ccTDisp.pnlPct = null;
+  ccLogEvent("info", "RISK CHECK", t("ccEvRiskOk"));
+  ccSetAgent(1, "RISK CHECK", "st-active", 1500);
+  setTimeout(() => {
+    if (!ccState.trade) return;
+    ccLogEvent("info", "SIZER", t("ccEvSized", { amt: fmtEur(size) }));
+    ccSetAgent(4, "SIZING", "st-active", 1500);
+  }, 380);
+  setTimeout(() => {
+    if (!ccState.trade) return;
+    ccLogEvent(ccState.trade.dir === 1 ? "buy" : "sell", "EXECUTOR", t(ccState.trade.dir === 1 ? "ccEvLong" : "ccEvShort") + " · " + sym);
+    ccSetAgent(5, "EXECUTING", "st-active", 1500);
+    ccPulse("#74b9ff");
+    ccSetNetState("ccNetTrade");
+  }, 760);
+}
+
+function ccCloseTrade(evKey) {
+  const cs = ccState;
+  const tr = cs.trade;
+  if (!tr) return;
+  const pnl = tr.pnl || 0;
+  cs.realized += pnl;
+  cs.unrealized = 0;
+  cs.equity = cs.start + cs.realized;
+  if (pnl >= 0) cs.wins++; else cs.losses++;
+  cs.lastTrade = Object.assign({}, tr, { pnl });
+  cs.trade = null;
+  ccLogEvent(pnl >= 0 ? "profit" : "loss", "LOGGER", t("ccEvRecorded") + " · " + tr.sym);
+  ccSetAgent(6, "LOGGING", "st-active", 1500);
+  setTimeout(() => {
+    ccLogEvent(pnl >= 0 ? "profit" : "loss", "EQUITY", t("ccEvClosed") + " · " + tr.sym + " " + (pnl >= 0 ? "+" : "") + fmtEur(pnl));
+    ccSetAgent(7, "UPDATED", "st-active", 1500);
+    ccSetAgent(5, pnl >= 0 ? "PROFIT" : "LOSS", pnl >= 0 ? "st-good" : "st-bad", 2600);
+  }, 400);
+  ccPulse(pnl >= 0 ? "#2ecc71" : "#e74c3c");
+}
+
+function ccEngineTick() {
+  const cs = ccState;
+  if (Date.now() > cs.regimeT) {
+    const regimes = ["bull", "bear", "range"];
+    cs.regime = regimes[Math.floor(Math.random() * 3)];
+    cs.regimeT = Date.now() + 45000 + Math.random() * 45000;
+    ccSetAgent(8, cs.regime === "bull" ? "BULL DETECTED" : cs.regime === "bear" ? "BEAR DETECTED" : "RANGE", "st-warn", 3000);
+    ccLogEvent("info", "REGIME", cs.regime === "bull" ? t("ccEvMomentum") : cs.regime === "bear" ? t("ccEvReversal") : t("ccEvVolatility"));
+  }
+  let volSum = 0;
+  Object.keys(ccData).forEach(sym => {
+    const d = ccData[sym];
+    const aiSym = d.cfg.ai;
+    let price;
+    if (aiSym && aiPrices[aiSym] && aiPrices[aiSym].price > 0) {
+      price = aiPrices[aiSym].price;
+    } else {
+      const drift = cs.regime === "bull" ? 0.00025 : cs.regime === "bear" ? -0.00025 : 0;
+      price = d.price * (1 + drift + (Math.random() - 0.5) * d.cfg.vol * 2);
+    }
+    const chg = d.price ? (price - d.price) / d.price * 100 : 0;
+    d.price = price;
+    d.hist.push(price);
+    if (d.hist.length > 90) d.hist.shift();
+    d.vols.push(clamp(Math.abs(chg) * 40 + 8 + Math.random() * 25, 4, 100));
+    if (d.vols.length > 12) d.vols.shift();
+    volSum += d.vols[d.vols.length - 1];
+    cs.scanned++;
+  });
+  const volAvg = volSum / Object.keys(ccData).length;
+
+  if (cs.trade) {
+    const tr = cs.trade;
+    const cur = ccData[tr.sym].price;
+    tr.cur = cur;
+    tr.pnl = (cur / tr.entry - 1) * tr.size * tr.dir * tr.lev;
+    tr.pnlPct = (cur / tr.entry - 1) * 100 * tr.dir * tr.lev;
+    cs.unrealized = tr.pnl;
+    cs.equity = cs.start + cs.realized + cs.unrealized;
+    tr.dur = Math.floor((Date.now() - tr.at) / 1000);
+    if (tr.dir === 1 && cur <= tr.sl) ccCloseTrade("ccEvSL");
+    else if (tr.dir === 1 && cur >= tr.tp) ccCloseTrade("ccEvTP");
+    else if (tr.dir === -1 && cur >= tr.sl) ccCloseTrade("ccEvSL");
+    else if (tr.dir === -1 && cur <= tr.tp) ccCloseTrade("ccEvTP");
+    else if (tr.dur > 90) ccCloseTrade("ccEvClosed");
+  } else {
+    cs.unrealized = 0;
+    cs.equity = cs.start + cs.realized;
+  }
+
+  cs.peak = Math.max(cs.peak, cs.equity);
+  cs.drawdown = cs.peak > 0 ? (cs.peak - cs.equity) / cs.peak * 100 : 0;
+  cs.eqHist.push(cs.equity);
+  if (cs.eqHist.length > 240) cs.eqHist.shift();
+  cs.mktConf = clamp(cs.mktConf + (Math.random() - 0.5) * 6, 25, 95);
+
+  if (Math.random() < (volAvg > 55 ? 0.16 : 0.09)) ccEmitSignal();
+  if (!cs.trade && cs.lastSigAt && Date.now() - cs.lastSigAt < 4000 && Math.random() < 0.35) ccOpenTrade();
+
+  ccRenderTick(volAvg);
+}
+
+function ccRenderTick(volAvg) {
+  const cs = ccState;
+  const loc = LOCALES[lang] || "en-US";
+  const clock = document.getElementById("ccClock");
+  if (clock) clock.textContent = new Date().toLocaleTimeString(loc, { hour12: false });
+  const sess = document.getElementById("ccSession");
+  if (sess) { const s = Math.floor((Date.now() - ccT0) / 1000); sess.textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0"); }
+  ccSetText("ccScanned", cs.scanned.toLocaleString(loc));
+  ccSetText("ccSignalsN", String(cs.signals));
+  ccSetText("ccTradesN", String(cs.trades));
+  Object.keys(ccData).forEach(sym => {
+    const d = ccData[sym];
+    const pct = d.open ? (d.price - d.open) / d.open * 100 : 0;
+    const tk = document.querySelector('[data-tk="' + sym + '"]');
+    if (tk) { tk.textContent = fmtPrice(d.price) + " " + (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%"; tk.style.color = pct >= 0 ? "var(--green)" : "var(--red)"; }
+    const pv = document.getElementById("ccmp-" + sym + "-p");
+    if (pv) { pv.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%"; pv.style.color = pct >= 0 ? "var(--green)" : "var(--red)"; }
+    const mv = document.getElementById("ccmp-" + sym + "-v");
+    if (mv) mv.textContent = fmtPrice(d.price);
+    ccDrawMini(sym);
+    const bars = document.querySelectorAll("#ccmv-" + sym + " .cc-vb");
+    bars.forEach((b, i) => {
+      const v = d.vols[i];
+      if (v === undefined) return;
+      b.style.height = clamp(v, 6, 100) + "%";
+      b.className = "cc-vb" + (i > 0 && d.vols[i - 1] !== undefined ? (v >= d.vols[i - 1] ? " up" : " dn") : "");
+    });
+  });
+  CC_AGENTS.forEach((a, i) => {
+    cs.agProg[i] = clamp(cs.agProg[i] + (Math.random() - 0.5) * 30, 10, 100);
+    const fill = document.getElementById("ccaf-" + i);
+    if (fill) fill.style.width = Math.round(cs.agProg[i]) + "%";
+    const st = document.getElementById("ccas-" + i);
+    if (st && st.classList.contains("st-idle")) st.textContent = a.idle;
+    const desc = document.getElementById("ccad-" + i);
+    if (desc) desc.textContent = t(a.desc[Math.floor(Date.now() / 7000) % a.desc.length]);
+  });
+  const targets = [
+    clamp(30 + volAvg * 0.5 + cs.drawdown * 2, 5, 100),
+    cs.trade ? 65 : 18 + Math.random() * 10,
+    cs.trade ? 55 : 25,
+    clamp(cs.drawdown * 4, 0, 100),
+    clamp(volAvg, 5, 100),
+    cs.mktConf,
+    cs.trade ? cs.trade.conf : 50,
+  ];
+  targets.forEach((tv, i) => {
+    cs.meters[i] += (tv - cs.meters[i]) * 0.25;
+    const v = Math.round(clamp(cs.meters[i], 0, 100));
+    const fill = document.getElementById("ccmf-" + i);
+    if (fill) { fill.style.width = v + "%"; fill.className = "cc-meter-fill" + (i < 5 && v > 70 ? " hot" : ""); }
+    const lab = document.getElementById("ccmv2-" + i);
+    if (lab) lab.textContent = v + "%";
+  });
+  ccSetText("ccEqStart", fmtEur(cs.start));
+  ccSetText("ccEqCur", fmtEur(cs.equity));
+  ccSetText("ccEqUnreal", fmtEur(cs.unrealized));
+  ccSetText("ccEqReal", fmtEur(cs.realized));
+  ccSetText("ccEqWin", cs.trades ? Math.round(cs.wins / cs.trades * 100) + "%" : "—");
+  ccSetText("ccEqTrades", String(cs.trades));
+  ccSetText("ccEqWins", String(cs.wins));
+  ccSetText("ccEqLosses", String(cs.losses));
+  ccSetText("ccEqDD", cs.drawdown.toFixed(1) + "%");
+  const none = document.getElementById("ccTNone");
+  const body = document.getElementById("ccTBody");
+  if (none && body) { none.style.display = cs.trade ? "none" : ""; body.style.display = cs.trade ? "" : "none"; }
+  if (cs.trade) {
+    const tr = cs.trade;
+    ccSetText("ccTPair", tr.sym + "/USDT");
+    const side = document.getElementById("ccTSide");
+    if (side) { side.textContent = tr.dir === 1 ? t("ccSideLong") : t("ccSideShort"); side.className = "cc-tside " + (tr.dir === 1 ? "long" : "short"); }
+    ccSetText("ccTSL", fmtPrice(tr.sl));
+    ccSetText("ccTTP", fmtPrice(tr.tp));
+    ccSetText("ccTSize", fmtEur(tr.size));
+    ccSetText("ccTLev", "×" + tr.lev);
+    ccSetText("ccTDur", Math.floor(tr.dur / 60) + "m " + (tr.dur % 60) + "s");
+    ccSetText("ccTConf", tr.conf + "%");
+    ccSetText("ccTReason", t(tr.reason));
+    ccDrawEquity();
+  }
+}
+
+function ccDrawMini(sym) {
+  const c = document.getElementById("ccmc-" + sym);
+  if (!c || !c.getContext) return;
+  const ctx = c.getContext("2d");
+  const d = ccData[sym];
+  const h = d.hist.slice(-40);
+  if (h.length < 2) return;
+  const w = c.width, hh = c.height;
+  const min = Math.min(...h), max = Math.max(...h);
+  const rng = max - min || 1;
+  ctx.clearRect(0, 0, w, hh);
+  ctx.beginPath();
+  h.forEach((v, i) => {
+    const x = i / (h.length - 1) * w;
+    const y = hh - 3 - (v - min) / rng * (hh - 6);
+    if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+  });
+  const up = h[h.length - 1] >= h[0];
+  ctx.strokeStyle = up ? "#2ecc71" : "#e74c3c";
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.lineTo(w, hh); ctx.lineTo(0, hh); ctx.closePath();
+  ctx.fillStyle = up ? "rgba(46,204,113,.08)" : "rgba(231,76,60,.08)";
+  ctx.fill();
+}
+
+function ccDrawEquity() {
+  const c = document.getElementById("ccEquity");
+  if (!c || !c.getContext) return;
+  const ctx = c.getContext("2d");
+  const W = c.clientWidth || 300, H = 90;
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const h = ccState.eqHist;
+  if (h.length < 2) return;
+  const min = Math.min(...h, ccState.start), max = Math.max(...h, ccState.start);
+  const rng = max - min || 1;
+  ctx.clearRect(0, 0, W, H);
+  const yOf = v => H - 4 - (v - min) / rng * (H - 8);
+  ctx.setLineDash([3, 4]);
+  ctx.strokeStyle = "rgba(139,149,168,.35)";
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, yOf(ccState.start)); ctx.lineTo(W, yOf(ccState.start)); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  h.forEach((v, i) => { const x = i / (h.length - 1) * W, y = yOf(v); if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); });
+  const up = h[h.length - 1] >= ccState.start;
+  const col = up ? "#2ecc71" : "#e74c3c";
+  ctx.strokeStyle = col;
+  ctx.lineWidth = 1.6;
+  ctx.shadowColor = col;
+  ctx.shadowBlur = 6;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
+  ctx.fillStyle = up ? "rgba(46,204,113,.07)" : "rgba(231,76,60,.07)";
+  ctx.fill();
+}
+
+const ccTDisp = { entry: null, cur: null, pnl: null, pnlPct: null };
+
+function ccDrawSphere() {
+  const c = document.getElementById("ccSphere");
+  if (!c || !c.getContext) return;
+  const ctx = c.getContext("2d");
+  const W = c.clientWidth || 320, H = c.clientHeight || 320;
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const S = ccSphere;
+  const t = Date.now();
+  S.ry += 0.0032;
+  const rx = Math.sin(t * 0.00013) * 0.4;
+  const breath = 1 + Math.sin(t * 0.0006) * 0.05;
+  const R = Math.min(W, H) * 0.34 * breath * (0.9 + S.boost * 0.05);
+  ctx.clearRect(0, 0, W, H);
+  const cy = Math.cos(S.ry), sy = Math.sin(S.ry), cx = Math.cos(rx), sx = Math.sin(rx);
+  const pos = S.nodes.map(n => {
+    const th = n.th + t * 0.00006 * n.sp;
+    const ph = clamp(n.ph + Math.sin(t * 0.0003 + n.ph2) * 0.08, 0.05, Math.PI - 0.05);
+    const wr = 1 + 0.045 * Math.sin(t * 0.001 * n.sp + n.ph2);
+    const x = Math.cos(th) * Math.sin(ph) * wr, y = Math.cos(ph) * wr, z = Math.sin(th) * Math.sin(ph) * wr;
+    const x1 = x * cy + z * sy, z1 = -x * sy + z * cy;
+    const y2 = y * cx - z1 * sx, z2 = y * sx + z1 * cx;
+    return { x, y, z: z2, e: n.e };
+  });
+  S.nodes.forEach((n, i) => {
+    n.e *= 0.94;
+    for (const w of S.waves) {
+      const p = pos[i];
+      const ang = Math.acos(clamp(p.x * w.x + p.y * w.y + p.z * w.z, -1, 1));
+      if (Math.abs(ang - w.r) < 0.16) n.e = Math.min(1, n.e + 0.5 * w.p);
+    }
+    if (Math.random() < 0.003) n.e = Math.min(1, n.e + 0.6);
+  });
+  const edges = [];
+  const N = S.nodes.length;
+  for (let i = 0; i < N; i++) {
+    for (let j = i + 1; j < N; j++) {
+      const a = pos[i], b = pos[j];
+      if (a.x * b.x + a.y * b.y + a.z * b.z > 0.94) { edges.push([i, j]); if (edges.length > 1200) break; }
+    }
+    if (edges.length > 1200) break;
+  }
+  ctx.lineWidth = 1;
+  for (const [i, j] of edges) {
+    const a = proj2d(pos[i]), b = proj2d(pos[j]);
+    const depth = (a.z + b.z) / 2;
+    const ex = Math.min(1, a.e + b.e);
+    const alpha = clamp(0.05 + (depth + 1) / 2 * 0.12 + ex * 0.5, 0, 0.8);
+    ctx.strokeStyle = ex > 0.25 ? "rgba(0,206,201," + alpha + ")" : "rgba(110,140,255," + alpha + ")";
+    ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+  }
+  function proj2d(p) {
+    const f = 2.8 / (2.8 - p.z);
+    return { x: W / 2 + p.x * f * R, y: H / 2 + p.y * f * R, z: p.z, e: p.e };
+  }
+  const order = pos.map((p, i) => i).sort((a, b) => pos[a].z - pos[b].z);
+  for (const i of order) {
+    const p = proj2d(pos[i]);
+    const depth = (p.z + 1) / 2;
+    const size = clamp(1 + depth * 2.2 + p.e * 2.5, 0.6, 6) * (W / 320);
+    const flick = Math.random() < 0.03 ? 1.8 : 1;
+    const alpha = clamp(0.25 + depth * 0.55 + p.e * 0.4, 0, 1) * flick;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, size, 0, 6.283);
+    ctx.fillStyle = "rgba(" + Math.round(110 + p.e * 145) + "," + Math.round(190 + p.e * 60) + ",255," + alpha + ")";
+    ctx.fill();
+  }
+  if (t - S.lastWaveT > 5200) {
+    S.lastWaveT = t;
+    const i = Math.floor(Math.random() * N);
+    const n = pos[i];
+    S.waves.push({ x: n.x, y: n.y, z: n.z, r: 0, p: 1, col: t % 10400 < 5200 ? "#a29bfe" : S.lastGroup });
+    S.nodes[i].e = 1;
+  }
+  S.waves.forEach(w => { w.r += 0.035; w.p *= 0.985; });
+  S.waves = S.waves.filter(w => w.r < 3.2);
+  if (S.streams.length < 7 && Math.random() < 0.1 && edges.length) {
+    const e = edges[Math.floor(Math.random() * edges.length)];
+    S.streams.push({ a: e[0], b: e[1], p: 0, sp: 0.01 + Math.random() * 0.02, col: ["#00cec9", "#a29bfe", "#74b9ff", "#2ecc71"][Math.floor(Math.random() * 4)] });
+  }
+  for (const st of S.streams) {
+    const a = proj2d(pos[st.a]), b = proj2d(pos[st.b]);
+    ctx.beginPath();
+    ctx.arc(a.x + (b.x - a.x) * st.p, a.y + (b.y - a.y) * st.p, 2.2, 0, 6.283);
+    ctx.fillStyle = st.col;
+    ctx.fill();
+    st.p += st.sp;
+  }
+  S.streams = S.streams.filter(st => st.p <= 1);
+  S.boost *= 0.96;
+}
+
+function ccFrame() {
+  ccDrawSphere();
+  const tr = ccState.trade;
+  if (tr) {
+    ["entry", "cur", "pnl", "pnlPct"].forEach(k => {
+      ccTDisp[k] = ccTDisp[k] === null ? tr[k] : ccTDisp[k] + (tr[k] - ccTDisp[k]) * 0.18;
+    });
+    const pnlEl = document.getElementById("ccTPnl");
+    if (pnlEl) { pnlEl.textContent = (ccTDisp.pnl >= 0 ? "+" : "") + fmtEur(ccTDisp.pnl); pnlEl.style.color = ccTDisp.pnl >= 0 ? "var(--green)" : "var(--red)"; }
+    const pctEl = document.getElementById("ccTPnlPct");
+    if (pctEl) { pctEl.textContent = (ccTDisp.pnlPct >= 0 ? "+" : "") + ccTDisp.pnlPct.toFixed(2) + " %"; pctEl.style.color = ccTDisp.pnlPct >= 0 ? "var(--green)" : "var(--red)"; }
+    ccSetText("ccTEntry", fmtPrice(ccTDisp.entry));
+    ccSetText("ccTCur", fmtPrice(ccTDisp.cur));
+  }
+  if (Date.now() > ccSphere.netUntil) {
+    const el = document.getElementById("ccNetState");
+    if (el && el.textContent !== t("ccNetProcessing")) el.textContent = t("ccNetProcessing");
+  }
+  requestAnimationFrame(ccFrame);
+}
+
 /* ================= NAVIGATION & INIT ================= */
 document.querySelectorAll("nav button").forEach(b => {
   b.onclick = () => {
@@ -1736,6 +2477,7 @@ document.getElementById("langSel").onchange = e => {
   aiLastTradeCount = -1;
   aiLastPosCount = -1;
   renderAi();
+  ccBuildStatic();
 };
 
 document.getElementById("langSel").value = lang;
@@ -1754,6 +2496,9 @@ render();
 renderBot();
 renderAi();
 requestAnimationFrame(aiFrame);
+ccBuildStatic();
+setInterval(ccEngineTick, 1000);
+requestAnimationFrame(ccFrame);
 fetchRealPrices();
 setInterval(fetchRealPrices, 30000);
 setInterval(tickMarkets, 30000);
