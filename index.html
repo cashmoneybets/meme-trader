@@ -113,6 +113,7 @@
   .bot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
   @media (min-width: 1101px) { .bot-grid { grid-template-columns: 1fr 1fr 1fr; } }
   @media (max-width: 900px) { .bot-grid { grid-template-columns: 1fr; } }
+  .ai-auto-info { font-size: 12px; color: var(--muted); padding: 4px 0 2px; line-height: 1.4; }
   .fee-card { margin-bottom: 20px; }
   .fee-row { display: flex; gap: 30px; flex-wrap: wrap; }
   .fee-item { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
@@ -527,6 +528,13 @@
       <div class="card">
         <h2><span data-i18n="botTitleAI">🤖 Bot — AI · 14 pairs</span> <small id="botStatusAITop">stopped</small></h2>
         <div class="bot-controls">
+          <label><span data-i18n="aiPairLabel">Pair</span>
+            <select id="aiPairTop"></select>
+          </label>
+          <label><span data-i18n="aiStakeLabel">Stake per trade (% of cash)</span>
+            <input type="number" id="aiStakeTop" min="5" max="100" step="5" value="20">
+          </label>
+          <div class="ai-auto-info" data-i18n="aiAutoInfo">🧠 The AI picks the pair and trend itself — TP/SL are calculated automatically.</div>
           <button class="act buy" id="aiToggleTop" data-i18n="startBot">▶ Start bot</button>
         </div>
       </div>
@@ -1075,7 +1083,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Live Bot Activity", ngCore: "DEKA CORE", ngScanning: "SCANNING", ngBuying: "BUYING", ngSelling: "SELLING",
     ngFeedTitle: "Live bot feed", ngPosTitle: "Open positions — where they're going", ngChartsTitle: "All markets — live",
-    ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.", ngStatTrades: "bot trades", ngStatHot: "top mover", ngStatHeld: "held", lqTitle: "Live Quant Control Center", botTitleAI: "🤖 Bot \u2014 AI \u00b7 14 pairs", feeBoxTitle: "REAL TRADING FEES", feePaid: "Fees paid (total)", feeRateLab: "Fee rate", feeRoundTrip: "Round trip (stake)", feeTradesLab: "Trades",
+    ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.", ngStatTrades: "bot trades", ngStatHot: "top mover", ngStatHeld: "held", lqTitle: "Live Quant Control Center", botTitleAI: "🤖 Bot \u2014 AI \u00b7 14 pairs", aiPairLabel: "Pair", aiStakeLabel: "Stake per trade (% of cash)", aiAutoInfo: "🧠 The AI picks the pair and trend itself \u2014 TP/SL are calculated automatically.", feeBoxTitle: "REAL TRADING FEES", feePaid: "Fees paid (total)", feeRateLab: "Fee rate", feeRoundTrip: "Round trip (stake)", feeTradesLab: "Trades",
     resetAccount: "↺ Reset account",
     marketTitle: "Market", marketSub: "real-time prices · BTC & gold live",
     thAsset: "Asset", thPrice: "Price", thChart: "Chart", thHeld: "Held", thTrade: "Trade (amount in €)",
@@ -1157,7 +1165,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Bot-Aktivität live", ngCore: "DEKA-KERN", ngScanning: "SCANNT", ngBuying: "KAUF", ngSelling: "VERKAUF",
     ngFeedTitle: "Bot-Feed live", ngPosTitle: "Offene Positionen — wohin sie gehen", ngChartsTitle: "Alle Märkte — live",
-    ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.", ngStatTrades: "Bot-Trades", ngStatHot: "Top-Beweger", ngStatHeld: "gehalten", lqTitle: "Live-Quant-Kontrollzentrum", botTitleAI: "🤖 Bot \u2014 KI \u00b7 14 Paare", feeBoxTitle: "ECHTE HANDELSGEB\u00dcHREN", feePaid: "Bezahlte Geb\u00fchren", feeRateLab: "Geb\u00fchrensatz", feeRoundTrip: "Roundtrip (Einsatz)", feeTradesLab: "Trades",
+    ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.", ngStatTrades: "Bot-Trades", ngStatHot: "Top-Beweger", ngStatHeld: "gehalten", lqTitle: "Live-Quant-Kontrollzentrum", botTitleAI: "🤖 Bot \u2014 KI \u00b7 14 Paare", aiPairLabel: "Paar", aiStakeLabel: "Einsatz pro Trade (% vom Guthaben)", aiAutoInfo: "🧠 Die KI wählt Paar und Trend selbst \u2014 TP/SL werden automatisch berechnet.", feeBoxTitle: "ECHTE HANDELSGEB\u00dcHREN", feePaid: "Bezahlte Geb\u00fchren", feeRateLab: "Geb\u00fchrensatz", feeRoundTrip: "Roundtrip (Einsatz)", feeTradesLab: "Trades",
     resetAccount: "↺ Konto zurücksetzen",
     marketTitle: "Markt", marketSub: "echte Preise in Echtzeit · BTC & Gold live",
     thAsset: "Asset", thPrice: "Preis", thChart: "Chart", thHeld: "Gehalten", thTrade: "Handel (Betrag in €)",
@@ -1239,7 +1247,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Activité des bots en direct", ngCore: "CŒUR DEKA", ngScanning: "SCAN EN COURS", ngBuying: "ACHAT", ngSelling: "VENTE",
     ngFeedTitle: "Flux des bots en direct", ngPosTitle: "Positions ouvertes — où elles vont", ngChartsTitle: "Tous les marchés — en direct",
-    ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.", ngStatTrades: "trades bots", ngStatHot: "plus actif", ngStatHeld: "détenus", lqTitle: "Centre de contrôle Quant en direct", botTitleAI: "🤖 Bot \u2014 IA \u00b7 14 paires", feeBoxTitle: "FRAIS DE TRADING R\u00c9ELS", feePaid: "Frais pay\u00e9s (total)", feeRateLab: "Taux de frais", feeRoundTrip: "Aller-retour (mise)", feeTradesLab: "Trades",
+    ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.", ngStatTrades: "trades bots", ngStatHot: "plus actif", ngStatHeld: "détenus", lqTitle: "Centre de contrôle Quant en direct", botTitleAI: "🤖 Bot \u2014 IA \u00b7 14 paires", aiPairLabel: "Paire", aiStakeLabel: "Mise par trade (% du cash)", aiAutoInfo: "🧠 L\u2019IA choisit elle-même la paire et la tendance \u2014 TP/SL calculés automatiquement.", feeBoxTitle: "FRAIS DE TRADING R\u00c9ELS", feePaid: "Frais pay\u00e9s (total)", feeRateLab: "Taux de frais", feeRoundTrip: "Aller-retour (mise)", feeTradesLab: "Trades",
     resetAccount: "↺ Réinitialiser le compte",
     marketTitle: "Marché", marketSub: "prix en temps réel · BTC & or en direct",
     thAsset: "Actif", thPrice: "Prix", thChart: "Graphique", thHeld: "Détenu", thTrade: "Trade (montant en €)",
@@ -1321,7 +1329,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Aktiviteti i botëve live", ngCore: "BËRTHAMA DEKA", ngScanning: "PO SKANON", ngBuying: "BLERJE", ngSelling: "SHITJE",
     ngFeedTitle: "Fluxi i botëve live", ngPosTitle: "Pozicionet e hapura — ku po shkojnë", ngChartsTitle: "Të gjitha tregjet — live",
-    ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.", ngStatTrades: "tregtime botesh", ngStatHot: "më aktiv", ngStatHeld: "të mbajtura", lqTitle: "Qendra e kontrollit Quant Live", botTitleAI: "🤖 Boti \u2014 AI \u00b7 14 çifte", feeBoxTitle: "TARIFAT REALE T\u00cb TRADINGUT", feePaid: "Tarifat e paguara", feeRateLab: "Shkalla e tarif\u00ebs", feeRoundTrip: "Round trip (mish\u00eb)", feeTradesLab: "Tregtime",
+    ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.", ngStatTrades: "tregtime botesh", ngStatHot: "më aktiv", ngStatHeld: "të mbajtura", lqTitle: "Qendra e kontrollit Quant Live", botTitleAI: "🤖 Boti \u2014 AI \u00b7 14 çifte", aiPairLabel: "Çift", aiStakeLabel: "Mishë për tregti (% nga keshi)", aiAutoInfo: "🧠 AI zgjedh vetë çiftin dhe trendin \u2014 TP/SL llogariten automatikisht.", feeBoxTitle: "TARIFAT REALE T\u00cb TRADINGUT", feePaid: "Tarifat e paguara", feeRateLab: "Shkalla e tarif\u00ebs", feeRoundTrip: "Round trip (mish\u00eb)", feeTradesLab: "Tregtime",
     resetAccount: "↺ Rivendis llogarinë",
     marketTitle: "Tregu", marketSub: "çmime reale në kohë reale · BTC & ari live",
     thAsset: "Aseti", thPrice: "Çmimi", thChart: "Grafiku", thHeld: "Në posedim", thTrade: "Tregto (shuma në €)",
@@ -2067,7 +2075,7 @@ const aiFocusPair = () => (state.ai.pair && state.ai.pair !== "AUTO") ? state.ai
 
 function openAiPos(sym, price, a) {
   const ai = state.ai;
-  const spend = Math.min(state.cash * 0.2, state.cash);
+  const spend = Math.min(state.cash * ((state.ai.stake || 20) / 100), state.cash);
   if (spend < 10 || price <= 0) return;
   state.cash -= spend;
   const fee = spend * FEE_RATE;
@@ -3903,6 +3911,28 @@ function lqDrawSpark() {
   }
 }
 
+function lqDrawSigma() {
+  const C = lqCtx("lq2sigma", 96); if (!C) return;
+  const { ctx, w, h } = C;
+  ctx.clearRect(0, 0, w, h);
+  const s = lqB.b2.sigma, mid = h / 2, band = h * 0.32;
+  ctx.fillStyle = "rgba(0,206,201,.07)"; ctx.fillRect(0, mid - band, w, band * 2);
+  ctx.strokeStyle = "rgba(127,139,163,.5)"; ctx.setLineDash([3, 3]);
+  ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(w, mid); ctx.stroke(); ctx.setLineDash([]);
+  if (s.length > 1) {
+    const mx = Math.max(0.3, ...s.map(Math.abs));
+    ctx.strokeStyle = "#00cec9"; ctx.lineWidth = 1.4; ctx.beginPath();
+    s.forEach((v, i) => { const x = i / (s.length - 1) * w, y = mid - v / mx * (h / 2 - 6); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.stroke();
+    const last = s[s.length - 1];
+    ctx.fillStyle = last < -mx * 0.6 ? "#2ecc71" : last > mx * 0.6 ? "#e74c3c" : "#00cec9";
+    ctx.beginPath(); ctx.arc(w - 3, mid - last / mx * (h / 2 - 6), 3, 0, 6.283); ctx.fill();
+  }
+  ctx.font = "8px Consolas, monospace"; ctx.textAlign = "left";
+  ctx.fillStyle = "#2ecc71"; ctx.fillText("CHEAP", 4, 10);
+  ctx.fillStyle = "#e74c3c"; ctx.fillText("EXPENSIVE", 4, h - 4);
+}
+
 function lqDrawHedge2() {
   const C = lqCtx("lq2hedge", 96); if (!C) return;
   const { ctx, w, h } = C;
@@ -3916,6 +3946,66 @@ function lqDrawHedge2() {
   ctx.font = "8px Consolas, monospace"; ctx.textAlign = "left";
   ctx.fillStyle = "rgba(127,139,163,.9)";
   ctx.fillText("HEDGE RATIO " + (s.length ? Math.min(1, Math.max(0, s[s.length - 1])).toFixed(2) : "0.00"), 4, 10);
+}
+
+function lqDrawMinis() {
+  for (let i = 0; i < 8; i++) {
+    const C = lqCtx("lq3m" + i, 60); if (!C) continue;
+    const { ctx, w, h } = C;
+    const s = lqB.b3.minis[i];
+    ctx.clearRect(0, 0, w, h);
+    if (s.length > 1) {
+      let mn = Math.min(...s), mx = Math.max(...s); if (mx === mn) mx = mn + 0.001;
+      ctx.strokeStyle = s[s.length - 1] >= s[0] ? "#2ecc71" : "#e74c3c";
+      ctx.lineWidth = 1.3; ctx.beginPath();
+      s.forEach((v, j) => { const x = j / (s.length - 1) * w, y = h - 3 - (v - mn) / (mx - mn) * (h - 8); j ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.stroke();
+    }
+  }
+}
+
+function lqDrawNet() {
+  const C = lqCtx("lq3net", 112); if (!C) return;
+  const { ctx, w, h } = C;
+  ctx.clearRect(0, 0, w, h);
+  const b3 = lqB.b3, cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.38;
+  ctx.lineWidth = 1;
+  for (const l of b3.links) {
+    const A = b3.net[l[0]], B = b3.net[l[1]];
+    ctx.strokeStyle = "rgba(0,206,201," + (0.08 + l[2] * 0.45) + ")";
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(A.a) * R, cy + Math.sin(A.a) * R);
+    ctx.lineTo(cx + Math.cos(B.a) * R, cy + Math.sin(B.a) * R);
+    ctx.stroke();
+  }
+  for (const n of b3.net) {
+    const x = cx + Math.cos(n.a) * R, y = cy + Math.sin(n.a) * R;
+    ctx.fillStyle = "#00cec9"; ctx.globalAlpha = 0.35 + n.w * 0.65;
+    ctx.beginPath(); ctx.arc(x, y, 2.5 + n.w * 2, 0, 6.283); ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.font = "7.5px Consolas, monospace"; ctx.textAlign = "center";
+    ctx.fillStyle = "rgba(200,210,228,.85)";
+    ctx.fillText(n.n, x, y - 6);
+  }
+}
+
+function lqDrawChart4() {
+  const C = lqCtx("lq4chart", 96); if (!C) return;
+  const { ctx, w, h } = C;
+  const s = lqB.b4.hist;
+  ctx.clearRect(0, 0, w, h);
+  if (s.length > 1) {
+    let mn = Math.min(...s), mx = Math.max(...s); if (mx === mn) mx = mn + 0.01;
+    ctx.strokeStyle = "#00cec9"; ctx.lineWidth = 1.4; ctx.beginPath();
+    s.forEach((v, i) => { const x = i / (s.length - 1) * w, y = h - 3 - (v - mn) / (mx - mn) * (h - 8); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.stroke();
+    const fair = Math.min(0.95, Math.max(0.05, 0.5));
+    const fy = h - 3 - (fair - mn) / (mx - mn) * (h - 8);
+    ctx.setLineDash([3, 3]); ctx.strokeStyle = "rgba(255,110,199,.8)"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, fy); ctx.lineTo(w, fy); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font = "8px Consolas, monospace"; ctx.textAlign = "left";
+    ctx.fillStyle = "rgba(255,110,199,.9)"; ctx.fillText("FAIR 0.50", 4, fy - 3);
+  }
 }
 
 function lqDrawPnl4() {
@@ -4108,8 +4198,23 @@ document.getElementById("aiToggle").onclick = aiToggleFn;
 const aiTopBtn = document.getElementById("aiToggleTop");
 if (aiTopBtn) aiTopBtn.onclick = aiToggleFn;
 const aiPairSel = document.getElementById("aiPairSel");
+const aiPairTop = document.getElementById("aiPairTop");
+if (aiPairTop) {
+  aiPairSel.querySelectorAll("option").forEach(o => {
+    const opt = document.createElement("option");
+    opt.value = o.value; opt.textContent = o.textContent;
+    aiPairTop.appendChild(opt);
+  });
+  aiPairTop.value = state.ai.pair || "AUTO";
+  aiPairTop.onchange = e => { state.ai.pair = e.target.value; aiPairSel.value = e.target.value; saveState(); renderAi(); };
+}
 aiPairSel.value = state.ai.pair || "AUTO";
-aiPairSel.onchange = e => { state.ai.pair = e.target.value; saveState(); renderAi(); };
+aiPairSel.onchange = e => { state.ai.pair = e.target.value; if (aiPairTop) aiPairTop.value = e.target.value; saveState(); renderAi(); };
+const aiStakeTop = document.getElementById("aiStakeTop");
+if (aiStakeTop) {
+  aiStakeTop.value = state.ai.stake || 20;
+  aiStakeTop.onchange = () => { state.ai.stake = Math.min(100, Math.max(5, parseFloat(aiStakeTop.value) || 20)); aiStakeTop.value = state.ai.stake; saveState(); };
+}
 const goalInput = document.getElementById("goalInput");
 goalInput.value = state.goal.amount;
 goalInput.onchange = () => { state.goal.amount = Math.max(5, parseFloat(goalInput.value) || 30); goalInput.value = state.goal.amount; saveState(); drawGoal(); };
