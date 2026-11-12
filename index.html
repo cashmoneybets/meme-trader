@@ -25,13 +25,15 @@
     min-height: 100vh;
   }
   header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 24px; border-bottom: 1px solid var(--border);
-    background: var(--panel); position: sticky; top: 0; z-index: 10; flex-wrap: wrap; gap: 10px;
+    display: flex; flex-direction: column; align-items: stretch; gap: 12px;
+    padding: 18px 24px 12px; border-bottom: 1px solid var(--border);
+    background: var(--panel);
   }
-  .logo { font-size: 20px; font-weight: 700; letter-spacing: .5px; display: flex; align-items: center; gap: 10px; }
-  .logo span { color: #ff3b30; }
-  .logo-cv { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: rgba(0,0,0,.35); flex-shrink: 0; }
+  .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .logo { font-size: 27px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; display: flex; align-items: center; gap: 13px; }
+  .logo span { color: #ff3b30; text-shadow: 0 0 12px rgba(255,59,48,.4); animation: logoPulse 2.6s ease-in-out infinite; }
+  @keyframes logoPulse { 0%, 100% { text-shadow: 0 0 10px rgba(255,59,48,.3); } 50% { text-shadow: 0 0 24px rgba(255,59,48,.75); } }
+  .logo-cv { width: 46px; height: 46px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,.35); flex-shrink: 0; box-shadow: 0 0 16px rgba(0,206,201,.15); }
   .lang-dd { position: relative; }
   .lang-btn { display: flex; align-items: center; gap: 7px; background: var(--panel2); border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 600; }
   .lang-btn:hover { border-color: var(--accent2); }
@@ -43,7 +45,17 @@
   .lang-opt { display: flex; align-items: center; gap: 9px; width: 100%; background: none; border: none; color: var(--text); padding: 8px 10px; font-size: 13.5px; cursor: pointer; border-radius: 6px; text-align: left; font-weight: 600; }
   .lang-opt:hover { background: rgba(255,255,255,.06); }
   .lang-opt.on { color: var(--accent2); }
-  .stats { display: flex; gap: 22px; flex-wrap: wrap; }
+  .stats { display: flex; gap: 22px; flex-wrap: wrap; justify-content: space-between; }
+  .px-ticker { overflow: hidden; border: 1px solid var(--border); border-radius: 8px; background: rgba(0,0,0,.35); }
+  .px-ticker-inner { display: flex; width: max-content; animation: pxScroll 48s linear infinite; will-change: transform; }
+  .px-ticker:hover .px-ticker-inner { animation-play-state: paused; }
+  .px-ticker-track { display: inline-flex; gap: 30px; padding: 8px 15px; white-space: nowrap; font-family: Consolas, monospace; font-size: 12.5px; align-items: baseline; }
+  .px-item { display: inline-flex; gap: 7px; align-items: baseline; }
+  .px-item .sym { color: var(--muted); letter-spacing: 1px; }
+  .px-item .dot { width: 7px; height: 7px; border-radius: 50%; align-self: center; flex-shrink: 0; }
+  .px-item .val { color: var(--text); font-variant-numeric: tabular-nums; font-weight: 600; }
+  .px-item .chg { font-variant-numeric: tabular-nums; }
+  @keyframes pxScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
   .stat { text-align: right; }
   .stat .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
   .stat .value { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
@@ -409,14 +421,13 @@
     .ai-signal { font-size: 22px; }
   }
   @media (max-width: 720px) {
-    header { padding: 10px 14px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 10px; }
-    .logo { grid-row: 1; font-size: 17px; }
-    .lang-dd { grid-row: 1; grid-column: 2; justify-self: end; }
+    header { padding: 12px 14px 8px; gap: 10px; }
+    .brand-row { gap: 8px; }
     .lang-btn { padding: 6px 8px; font-size: 13px; }
-    .logo-cv { width: 26px; height: 26px; }
-    .logo { font-size: 14px; gap: 8px; }
-    .stats { grid-row: 2; grid-column: 1 / -1; gap: 12px; }
-    .stats { gap: 12px; }
+    .logo { font-size: 16px; gap: 8px; letter-spacing: 1.5px; }
+    .logo-cv { width: 30px; height: 30px; border-radius: 8px; }
+    .stats { gap: 12px; justify-content: flex-start; }
+    .px-ticker-track { font-size: 11.5px; gap: 20px; padding: 7px 10px; }
     .stat { text-align: left; }
     .stat .value { font-size: 14px; }
     nav { padding: 10px 12px 0; overflow-x: auto; }
@@ -453,14 +464,8 @@
 <body>
 
 <header>
+  <div class="brand-row">
   <div class="logo"><canvas id="logoCv" class="logo-cv"></canvas>DORIAN&nbsp;<span>- TRADING BOT</span></div>
-  <div class="stats">
-    <div class="stat"><div class="label" data-i18n="cash">Cash</div><div class="value" id="stCash">—</div></div>
-    <div class="stat"><div class="label" data-i18n="cryptoPos">Crypto position</div><div class="value" id="stCrypto">—</div></div>
-    <div class="stat"><div class="label" data-i18n="betsPos">Bets position</div><div class="value" id="stBets">—</div></div>
-    <div class="stat"><div class="label" data-i18n="total">Total</div><div class="value" id="stTotal">—</div></div>
-    <div class="stat"><div class="label" data-i18n="pnl">Overall P&L</div><div class="value" id="stPnl">—</div></div>
-  </div>
   <div class="lang-dd" id="langDD">
     <button class="lang-btn" id="langBtn" aria-label="Language">
       <span class="lang-flag" id="langCurFlag"></span><span id="langCurCode">EN</span><span class="lang-caret">▾</span>
@@ -472,6 +477,15 @@
       <button class="lang-opt" data-lang="sq"><span class="lang-flag"><svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#E41E20"/><path d="M10 2.6 L11.4 4.8 L14 3.8 L12.7 6.1 L15.2 7 L12.7 7.9 L14 10.2 L11.4 9.2 L10 11.4 L8.6 9.2 L6 10.2 L7.3 7.9 L4.8 7 L7.3 6.1 L6 3.8 L8.6 4.8 Z" fill="#000"/></svg></span>AL &middot; Shqip</button>
     </div>
   </div>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="label" data-i18n="cash">Cash</div><div class="value" id="stCash">—</div></div>
+    <div class="stat"><div class="label" data-i18n="cryptoPos">Crypto position</div><div class="value" id="stCrypto">—</div></div>
+    <div class="stat"><div class="label" data-i18n="betsPos">Bets position</div><div class="value" id="stBets">—</div></div>
+    <div class="stat"><div class="label" data-i18n="total">Total</div><div class="value" id="stTotal">—</div></div>
+    <div class="stat"><div class="label" data-i18n="pnl">Overall P&L</div><div class="value" id="stPnl">—</div></div>
+  </div>
+  <div class="px-ticker"><div class="px-ticker-inner"><div class="px-ticker-track" id="pxTicker"></div><div class="px-ticker-track" id="pxTicker2" aria-hidden="true"></div></div></div>
 </header>
 
 <nav>
@@ -1693,6 +1707,7 @@ function render() {
   const pnlEl = document.getElementById("stPnl");
   pnlEl.textContent = `${pnl >= 0 ? "+" : ""}${fmtEur(pnl)} (${fmtPct(pnl / START_CASH * 100)})`;
   pnlEl.className = "value " + (pnl >= 0 ? "pos" : "neg");
+  renderPxTicker();
 
   renderCoins();
   renderChart();
@@ -4079,35 +4094,79 @@ function lqFrame() {
 }
 
 /* ================= LOGO ANIME ================= */
+const LOGO_SIZE = 46;
 const logoCandles = [];
 let logoLast = 0;
 function logoFrame() {
   const c = document.getElementById("logoCv");
   if (c) {
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    if (c.width !== Math.round(34 * dpr)) { c.width = Math.round(34 * dpr); c.height = Math.round(34 * dpr); }
+    if (c.width !== Math.round(LOGO_SIZE * dpr)) { c.width = Math.round(LOGO_SIZE * dpr); c.height = Math.round(LOGO_SIZE * dpr); }
     const ctx = c.getContext("2d");
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, 34, 34);
+    ctx.clearRect(0, 0, LOGO_SIZE, LOGO_SIZE);
     const now = Date.now();
     if (now - logoLast > 420) {
       logoLast = now;
-      const prev = logoCandles.length ? logoCandles[logoCandles.length - 1].c : 17;
-      const cl = Math.max(5, Math.min(29, prev + (Math.random() - 0.47) * 9));
+      const prev = logoCandles.length ? logoCandles[logoCandles.length - 1].c : LOGO_SIZE / 2;
+      const cl = Math.max(LOGO_SIZE * 0.14, Math.min(LOGO_SIZE * 0.86, prev + (Math.random() - 0.47) * LOGO_SIZE * 0.26));
       logoCandles.push({ o: prev, c: cl });
       if (logoCandles.length > 6) logoCandles.shift();
     }
+    const step = LOGO_SIZE / 6.6, w = step * 0.76;
     logoCandles.forEach((cd, i) => {
-      const x = 4.5 + i * 4.4;
+      const x = LOGO_SIZE * 0.1 + i * step;
       const col = cd.c >= cd.o ? "#2ecc71" : "#e74c3c";
       ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(x + 1.7, 4); ctx.lineTo(x + 1.7, 30); ctx.stroke();
-      ctx.fillRect(x, Math.min(cd.o, cd.c), 3.4, Math.max(1.8, Math.abs(cd.c - cd.o)));
+      ctx.beginPath(); ctx.moveTo(x + w / 2, LOGO_SIZE * 0.1); ctx.lineTo(x + w / 2, LOGO_SIZE * 0.9); ctx.stroke();
+      ctx.fillRect(x, Math.min(cd.o, cd.c), w, Math.max(2.2, Math.abs(cd.c - cd.o)));
     });
   }
   requestAnimationFrame(logoFrame);
 }
 requestAnimationFrame(logoFrame);
+
+/* ================= TICKER PRIX (bande defilante header) ================= */
+const pxTickerData = [];
+ALL_ASSETS.forEach(a => pxTickerData.push({
+  sym: a.id, color: a.color,
+  get: () => { const s = state.coinPrices[a.id]; return s && s.price > 0 ? { price: s.price, open: s.open } : null; }
+}));
+AI_PAIRS.forEach(sym => {
+  if (sym === "BTCUSDT") return;
+  pxTickerData.push({
+    sym: sym.replace("USDT", ""), color: "#00cec9",
+    get: () => { const p = aiPrices[sym]; return p && p.price > 0 ? { price: p.price, open: p.open } : null; }
+  });
+});
+const fmtPxTick = n => n >= 1000 ? n.toLocaleString("en-US", { maximumFractionDigits: 0 }) : n >= 1 ? n.toFixed(2) : n.toPrecision(3);
+function pxItemHTML(d) {
+  return '<span class="px-item"><span class="dot" style="background:' + d.color + '"></span><span class="sym">' + d.sym + '</span><span class="val">\u2014</span><span class="chg"></span></span>';
+}
+function renderPxTicker() {
+  const track1 = document.getElementById("pxTicker");
+  if (!track1) return;
+  if (!track1.children.length) {
+    const html = pxTickerData.map(pxItemHTML).join("");
+    track1.innerHTML = html;
+    const track2 = document.getElementById("pxTicker2");
+    if (track2) track2.innerHTML = html;
+  }
+  [track1, document.getElementById("pxTicker2")].forEach(tr => {
+    if (!tr) return;
+    pxTickerData.forEach((d, i) => {
+      const el = tr.children[i];
+      if (!el) return;
+      const v = d.get();
+      const val = el.querySelector(".val"), chg = el.querySelector(".chg");
+      if (!v) { val.textContent = "\u2014"; chg.textContent = ""; chg.className = "chg"; return; }
+      val.textContent = "$" + fmtPxTick(v.price);
+      const pct = v.open ? (v.price - v.open) / v.open * 100 : 0;
+      chg.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%";
+      chg.className = "chg " + (pct >= 0 ? "pos" : "neg");
+    });
+  });
+}
 
 /* ================= NAVIGATION & INIT ================= */
 document.querySelectorAll("nav button").forEach(b => {
