@@ -1,0 +1,4 @@
+requests>=2.31
+python-dotenv>=1.0
+# Uniquement pour le MODE=live (ordres réels) :
+# py-clob-client>=0.34
