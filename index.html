@@ -98,6 +98,8 @@
   .tag.payout { background: rgba(108,92,231,.25); color: #a29bfe; }
   .tag.resolve { background: rgba(0,206,201,.15); color: var(--accent2); }
   .tag.bot { background: rgba(108,92,231,.25); color: #a29bfe; }
+  .bot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  @media (max-width: 900px) { .bot-grid { grid-template-columns: 1fr; } }
   .bot-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .bot-controls label { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
   #toast {
@@ -332,6 +334,58 @@
   <!-- PAGE MARCHÉ -->
   <section class="page active" id="page-coins">
     <div class="reset-row"><button id="btnReset" data-i18n="resetAccount">↺ Reset account</button></div>
+    <div class="bot-grid">
+      <div class="card">
+        <h2><span data-i18n="botTitleComm">🛢️ Bot — Commodities</span> <small id="botStatusComm">stopped</small></h2>
+        <div class="bot-controls">
+          <label><span data-i18n="strategy">Strategy</span>
+            <select id="botStrategyComm">
+              <option value="auto" data-i18n="stratAuto">🤖 Auto — bot picks the trend</option>
+              <option value="momentum" data-i18n="stratMomentum">Momentum — buys rallies</option>
+              <option value="meanrev" data-i18n="stratBounce">Bounce — buys dips</option>
+            </select>
+          </label>
+          <label><span data-i18n="stakeLabel">Stake per trade (€)</span>
+            <input type="number" id="botAmountComm" min="10" step="10" value="50">
+          </label>
+          <label><span data-i18n="tpLabel">Take-profit (%)</span>
+            <input type="number" id="botTPComm" min="0.5" step="0.5" value="2">
+          </label>
+          <label><span data-i18n="slLabel">Stop-loss (%)</span>
+            <input type="number" id="botSLComm" min="0.5" step="0.5" value="1.5">
+          </label>
+          <button class="act buy" id="botToggleComm" data-i18n="startBot">▶ Start bot</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2><span data-i18n="botTitleCrypto">₿ Bot — Crypto</span> <small id="botStatusCrypto">stopped</small></h2>
+        <div class="bot-controls">
+          <label><span data-i18n="strategy">Strategy</span>
+            <select id="botStrategyCrypto">
+              <option value="auto" data-i18n="stratAuto">🤖 Auto — bot picks the trend</option>
+              <option value="momentum" data-i18n="stratMomentum">Momentum — buys rallies</option>
+              <option value="meanrev" data-i18n="stratBounce">Bounce — buys dips</option>
+            </select>
+          </label>
+          <label><span data-i18n="stakeLabel">Stake per trade (€)</span>
+            <input type="number" id="botAmountCrypto" min="10" step="10" value="50">
+          </label>
+          <label><span data-i18n="tpLabel">Take-profit (%)</span>
+            <input type="number" id="botTPCrypto" min="0.5" step="0.5" value="2">
+          </label>
+          <label><span data-i18n="slLabel">Stop-loss (%)</span>
+            <input type="number" id="botSLCrypto" min="0.5" step="0.5" value="1.5">
+          </label>
+          <button class="act buy" id="botToggleCrypto" data-i18n="startBot">▶ Start bot</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:20px;">
+      <div class="vol" data-i18n="botDesc2_html">
+        Two independent bots. The <b>commodities bot</b> trades only gold, silver, oil and gas; the <b>crypto bot</b> trades
+        only bitcoin. Start just the one you want — they never touch each other's assets. Virtual money only.
+      </div>
+    </div>
     <div class="grid2">
       <div>
         <h2><span data-i18n="marketTitle">Market</span> <small id="tickInfo" data-i18n="marketSub">real prices · updates every 30 s</small></h2>
@@ -364,32 +418,6 @@
           These assets are volatile: with real money you can lose your entire stake. No strategy guarantees profits.
           Never trade money you need.
         </div>
-      </div>
-    </div>
-    <div class="card" style="margin-top:20px;">
-      <h2><span data-i18n="botTitle">🤖 Auto-trading bot</span> <small id="botStatus">stopped</small></h2>
-      <div class="bot-controls">
-        <label><span data-i18n="strategy">Strategy</span>
-          <select id="botStrategy">
-            <option value="auto" data-i18n="stratAuto">🤖 Auto — bot picks the trend</option>
-            <option value="momentum" data-i18n="stratMomentum">Momentum — buys rallies</option>
-            <option value="meanrev" data-i18n="stratBounce">Bounce — buys dips</option>
-          </select>
-        </label>
-        <label><span data-i18n="stakeLabel">Stake per trade (€)</span>
-          <input type="number" id="botAmount" min="10" step="10" value="50">
-        </label>
-        <label><span data-i18n="tpLabel">Take-profit (%)</span>
-          <input type="number" id="botTP" min="0.5" step="0.5" value="2">
-        </label>
-        <label><span data-i18n="slLabel">Stop-loss (%)</span>
-          <input type="number" id="botSL" min="0.5" step="0.5" value="1.5">
-        </label>
-        <button class="act buy" id="botToggle" data-i18n="startBot">▶ Start bot</button>
-      </div>
-      <div class="vol" style="margin-top:12px;" data-i18n="botDesc_html">
-        In <b>Auto</b> mode the bot scans every asset every 30 s: on a strong trend it rides the rally; on a dip inside an
-        uptrend it buys the bounce. It sells automatically at take-profit (+) or stop-loss (−). Virtual money only.
       </div>
     </div>
   </section>
@@ -654,6 +682,8 @@ const I18N = {
     chartTitle: "📈 Chart", positionsTitle: "💼 My positions", importantTitle: "⚠️ Important",
     disclaimer_html: "You are trading <b>real market prices</b> (bitcoin, gold, silver, oil, gas) with <b>virtual money</b> — no risk. These assets are volatile: with real money you can lose your entire stake. No strategy guarantees profits. Never trade money you need.",
     botTitle: "🤖 Auto-trading bot", strategy: "Strategy",
+    botTitleComm: "🛢️ Bot — Commodities", botTitleCrypto: "₿ Bot — Crypto",
+    botDesc2_html: "Two independent bots. The <b>commodities bot</b> trades only gold, silver, oil and gas; the <b>crypto bot</b> trades only bitcoin. Start just the one you want — they never touch each other's assets. Virtual money only.",
     stratAuto: "🤖 Auto — bot picks the trend", stratMomentum: "Momentum — buys rallies", stratBounce: "Bounce — buys dips",
     stakeLabel: "Stake per trade (€)", tpLabel: "Take-profit (%)", slLabel: "Stop-loss (%)",
     startBot: "▶ Start bot", stopBot: "⏸ Stop bot",
@@ -728,6 +758,8 @@ const I18N = {
     chartTitle: "📈 Chart", positionsTitle: "💼 Meine Positionen", importantTitle: "⚠️ Wichtig",
     disclaimer_html: "Du handelst mit <b>echten Marktpreisen</b> (Bitcoin, Gold, Silber, Öl, Gas) und <b>virtuellem Geld</b> — ohne Risiko. Diese Assets sind volatil: mit echtem Geld kannst du deinen gesamten Einsatz verlieren. Keine Strategie garantiert Gewinne. Handle nie mit Geld, das du brauchst.",
     botTitle: "🤖 Auto-Trading-Bot", strategy: "Strategie",
+    botTitleComm: "🛢️ Bot — Rohstoffe", botTitleCrypto: "₿ Bot — Krypto",
+    botDesc2_html: "Zwei unabhängige Bots. Der <b>Rohstoffe-Bot</b> handelt nur Gold, Silber, Öl und Gas; der <b>Krypto-Bot</b> handelt nur Bitcoin. Starte nur den, den du willst — sie handeln nie die Assets des anderen. Nur virtuelles Geld.",
     stratAuto: "🤖 Auto — Bot wählt den Trend", stratMomentum: "Momentum — kauft Rallyes", stratBounce: "Bounce — kauft Einbrüche",
     stakeLabel: "Einsatz pro Trade (€)", tpLabel: "Take-profit (%)", slLabel: "Stop-loss (%)",
     startBot: "▶ Bot starten", stopBot: "⏸ Bot stoppen",
@@ -802,6 +834,8 @@ const I18N = {
     chartTitle: "📈 Graphique", positionsTitle: "💼 Mes positions", importantTitle: "⚠️ Important",
     disclaimer_html: "Tu trades des <b>prix réels du marché</b> (bitcoin, or, argent, pétrole, gaz) avec de <b>l'argent virtuel</b> — aucun risque. Ces actifs sont volatils : avec de l'argent réel tu peux perdre toute ta mise. Aucune stratégie ne garantit de profits. Ne trade jamais l'argent dont tu as besoin.",
     botTitle: "🤖 Bot de trading auto", strategy: "Stratégie",
+    botTitleComm: "🛢️ Bot — Matières premières", botTitleCrypto: "₿ Bot — Crypto",
+    botDesc2_html: "Deux bots indépendants. Le <b>bot matières premières</b> trade uniquement or, argent, pétrole et gaz ; le <b>bot crypto</b> trade uniquement le bitcoin. Démarre seulement celui que tu veux — ils ne touchent jamais aux actifs de l'autre. Argent virtuel uniquement.",
     stratAuto: "🤖 Auto — le bot choisit la tendance", stratMomentum: "Momentum — achète les hausses", stratBounce: "Rebond — achète les baisses",
     stakeLabel: "Mise par trade (€)", tpLabel: "Take-profit (%)", slLabel: "Stop-loss (%)",
     startBot: "▶ Démarrer le bot", stopBot: "⏸ Arrêter le bot",
@@ -876,6 +910,8 @@ const I18N = {
     chartTitle: "📈 Grafiku", positionsTitle: "💼 Pozicionet e mia", importantTitle: "⚠️ E rëndësishme",
     disclaimer_html: "Ti tregton <b>çmime reale të tregut</b> (bitcoin, ari, argjend, naftë, gaz) me <b>para virtuale</b> — pa rrezik. Këto asete janë të paqëndrueshme: me para reale mund të humbasësh gjithë shumën. Asnjë strategji nuk garanton fitime. Mos tregto kurrë paratë që të duhen.",
     botTitle: "🤖 Bot tregtimi automatik", strategy: "Strategjia",
+    botTitleComm: "🛢️ Bot — Mallrat", botTitleCrypto: "₿ Bot — Kripto",
+    botDesc2_html: "Dy botë të pavarur. <b>Boti i mallrave</b> tregton vetëm ari, argjendi, naftën dhe gazin; <b>boti i kriptove</b> tregton vetëm Bitcoinin. Nis vetëm atë që dëshiron — ata nuk preken kurrë asetet e njëri-tjetrit. Vetëm para virtuale.",
     stratAuto: "🤖 Auto — boti zgjedh trendin", stratMomentum: "Momentum — blej rritjet", stratBounce: "Rikthim — blej rëniet",
     stakeLabel: "Shuma për tregti (€)", tpLabel: "Fitim-prerje (%)", slLabel: "Humbje-prerje (%)",
     startBot: "▶ Nis botin", stopBot: "⏸ Ndalo botin",
@@ -957,7 +993,12 @@ let state = loadState() || {
 };
 
 seedPrices();
-if (!state.bot) state.bot = { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 };
+if (!state.botComm && !state.botCrypto) {
+  state.botComm = Object.assign({ enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 }, state.bot || {});
+  delete state.bot;
+}
+if (!state.botComm) state.botComm = { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 };
+if (!state.botCrypto) state.botCrypto = { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 };
 if (!state.equity) state.equity = [];
 if (!state.equityLong) state.equityLong = [];
 if (!state.stats) state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0 };
@@ -1108,8 +1149,10 @@ function histVolatility(hist, n) {
   return sum / n;
 }
 
-function botSignal(s) {
-  const b = state.bot;
+const COMM_IDS = ["XAU", "XAG", "WTI", "NG"];
+const CRYPTO_IDS = ["BTC"];
+
+function botSignal(s, b) {
   const short = histTrend(s.hist, 8);
   const long = histTrend(s.hist, 30);
   const vol = histVolatility(s.hist, 20);
@@ -1122,37 +1165,45 @@ function botSignal(s) {
   return null;
 }
 
-function botTick() {
-  const b = state.bot;
+function botTickFor(b, ids) {
   if (!b || !b.enabled) return;
-  ALL_ASSETS.forEach(c => {
-    const s = state.coinPrices[c.id];
-    if (s.price <= 0) return;
-    const h = state.holdings[c.id];
+  ids.forEach(id => {
+    const s = state.coinPrices[id];
+    if (!s || s.price <= 0) return;
+    const h = state.holdings[id];
     if (h) {
       const pnlPct = (h.qty * s.price - h.cost) / h.cost * 100;
       if (pnlPct >= b.tp || pnlPct <= -b.sl) {
-        sellCoin(c.id, h.cost, "bot");
+        sellCoin(id, h.cost, "bot");
       }
       return;
     }
     if (state.cash < b.amount) return;
-    const sig = botSignal(s);
-    if (sig) buyCoin(c.id, b.amount, "bot", t(sig));
+    const sig = botSignal(s, b);
+    if (sig) buyCoin(id, b.amount, "bot", t(sig));
   });
 }
 
-function renderBot() {
-  const b = state.bot;
-  const status = document.getElementById("botStatus");
+function botTick() {
+  botTickFor(state.botComm, COMM_IDS);
+  botTickFor(state.botCrypto, CRYPTO_IDS);
+}
+
+function renderBotFor(b, prefix) {
+  const status = document.getElementById("botStatus" + prefix);
   const stratLabel = { auto: "stratNameAuto", momentum: "stratNameMomentum", meanrev: "stratNameBounce" }[b.strategy];
   status.textContent = b.enabled
     ? t("statusActive", { strat: stratLabel ? t(stratLabel) : b.strategy, amt: fmtEur(b.amount), tp: b.tp, sl: b.sl })
     : t("statusStopped");
   status.style.color = b.enabled ? "var(--green)" : "var(--muted)";
-  const btn = document.getElementById("botToggle");
+  const btn = document.getElementById("botToggle" + prefix);
   btn.textContent = b.enabled ? t("stopBot") : t("startBot");
   btn.className = "act " + (b.enabled ? "sell" : "buy");
+}
+
+function renderBot() {
+  renderBotFor(state.botComm, "Comm");
+  renderBotFor(state.botCrypto, "Crypto");
 }
 
 /* ================= VALEURS ================= */
@@ -2443,7 +2494,8 @@ document.getElementById("btnReset").onclick = () => {
   state = {
     cash: START_CASH, holdings: {}, bets: [], history: [],
     markets: buildMarkets(), coinPrices: {},
-    bot: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
+    botComm: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
+    botCrypto: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
     equity: [], equityLong: [],
     stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0 },
     ai: { enabled: false, balance: 500, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "BTCUSDT" },
@@ -2457,16 +2509,20 @@ document.getElementById("btnReset").onclick = () => {
   toast(t("resetToast", { amt: fmtEur(START_CASH) }));
 };
 
-document.getElementById("botToggle").onclick = () => {
-  const b = state.bot;
-  b.enabled = !b.enabled;
-  b.strategy = document.getElementById("botStrategy").value;
-  b.amount = Math.max(10, parseFloat(document.getElementById("botAmount").value) || 50);
-  b.tp = Math.max(1, parseFloat(document.getElementById("botTP").value) || 5);
-  b.sl = Math.max(1, parseFloat(document.getElementById("botSL").value) || 3);
-  saveState(); renderBot();
-  toast(b.enabled ? t("botStarted") : t("botStopped"));
-};
+function bindBotToggle(prefix, key) {
+  document.getElementById("botToggle" + prefix).onclick = () => {
+    const b = state[key];
+    b.enabled = !b.enabled;
+    b.strategy = document.getElementById("botStrategy" + prefix).value;
+    b.amount = Math.max(10, parseFloat(document.getElementById("botAmount" + prefix).value) || 50);
+    b.tp = Math.max(1, parseFloat(document.getElementById("botTP" + prefix).value) || 5);
+    b.sl = Math.max(1, parseFloat(document.getElementById("botSL" + prefix).value) || 3);
+    saveState(); renderBot();
+    toast(b.enabled ? t("botStarted") : t("botStopped"));
+  };
+}
+bindBotToggle("Comm", "botComm");
+bindBotToggle("Crypto", "botCrypto");
 
 document.getElementById("langSel").onchange = e => {
   lang = e.target.value;
