@@ -320,6 +320,9 @@
   #ccSphere { width: 100%; height: 320px; display: block; }
   .cc-sphere-label { font-size: 11px; letter-spacing: 2px; color: var(--muted); margin-top: 8px; font-family: Consolas, monospace; }
   .cc-sphere-label span { color: var(--accent2); }
+  .cc-sphere-info { font-size: 11.5px; color: var(--muted); line-height: 1.5; margin-top: 8px; max-width: 460px; text-align: center; padding: 0 10px; }
+  .cc-legend { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 8px; font-size: 10px; font-family: Consolas, monospace; letter-spacing: 1px; text-transform: uppercase; color: #8b95a8; }
+  .cc-legend i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: middle; box-shadow: 0 0 6px currentColor; }
   .cc-agents h2 { margin-bottom: 8px; }
   .cc-agent { display: flex; gap: 10px; align-items: center; background: #0d1220; border: 1px solid #1e2740; border-radius: 10px; padding: 8px 10px; margin-bottom: 7px; }
   .cc-ag-ico { font-size: 16px; }
@@ -373,6 +376,8 @@
   .cc-ev.buy .cc-ev-msg, .cc-ev.profit .cc-ev-msg { color: var(--green); }
   .cc-ev.sell .cc-ev-msg, .cc-ev.loss .cc-ev-msg { color: var(--red); }
   .cc-ev.warn .cc-ev-msg { color: #f6c85f; }
+  .cc-ev.info .cc-ev-msg { color: var(--muted); }
+  .cc-ev.info .cc-ev-ag { color: #74b9ff; }
   .cc-ev-t { margin-left: auto; color: #5a6478; font-size: 10px; flex-shrink: 0; }
   @media (max-width: 980px) { .cc-main { grid-template-columns: 1fr; } #ccSphere { height: 300px; } .cc-grid2 { grid-template-columns: 1fr; } }
   @media (max-width: 720px) { .cc-section { padding: 0 10px 40px; } .cc-clock { font-size: 11px; } }
@@ -384,6 +389,7 @@
   .ng-stats { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 8px; font-size: 11px; font-family: Consolas, monospace; color: var(--muted); }
   .ng-stats b { color: var(--accent2); font-variant-numeric: tabular-nums; }
   .ng-feed { min-height: 120px; max-height: 430px; }
+  .ng-feed-empty { color: var(--muted); font-size: 12px; padding: 14px 4px; text-align: center; line-height: 1.5; }
   .ng-side { font-size: 9px; font-weight: 800; letter-spacing: 1px; padding: 2px 6px; border-radius: 3px; flex-shrink: 0; }
   .ng-side.buy { color: var(--green); background: rgba(46,204,113,.12); }
   .ng-side.sell { color: var(--red); background: rgba(231,76,60,.12); }
@@ -939,6 +945,16 @@
       <div class="cc-panel cc-sphere-wrap">
         <canvas id="ccSphere"></canvas>
         <div class="cc-sphere-label"><span data-i18n="ccNeuralCore">NEURAL CORE</span> · <span id="ccNetState">PROCESSING</span></div>
+        <div class="cc-sphere-info">
+          <span data-i18n="ccCoreInfo">Each particle is a live market data point processed by the AI agents. Expanding waves = analysis in progress — the whole network lights up on a signal or a trade.</span>
+          <span class="cc-legend">
+            <span><i style="background:#00cec9;"></i><span data-i18n="ccLegSignal">signal</span></span>
+            <span><i style="background:#74b9ff;"></i><span data-i18n="ccLegOrder">order</span></span>
+            <span><i style="background:#2ecc71;"></i><span data-i18n="ccLegProfit">profit</span></span>
+            <span><i style="background:#e74c3c;"></i><span data-i18n="ccLegLoss">loss</span></span>
+            <span><i style="background:#a29bfe;"></i><span data-i18n="ccLegScan">scanning</span></span>
+          </span>
+        </div>
       </div>
       <div class="cc-agents">
         <h2 data-i18n="ccAgentsTitle">AI Trading Agents</h2>
@@ -1011,7 +1027,7 @@
     </div>
     <div class="cc-panel">
       <h2 data-i18n="ngFeedTitle">Live bot feed</h2>
-      <ul class="cc-loglist ng-feed" id="ngFeed"></ul>
+      <ul class="cc-loglist ng-feed" id="ngFeed"><li class="ng-feed-empty" id="ngFeedEmpty" data-i18n="ngFeedEmpty">No bot activity yet — the bots scan the market live here.</li></ul>
     </div>
     <div class="cc-panel">
       <h2 data-i18n="ngPosTitle">Open positions — where they're going</h2>
@@ -1072,7 +1088,7 @@ const I18N = {
     ccTitle: "AI Command Center", ccB1: "AI SYSTEM ONLINE", ccB2: "MARKET SCANNER ACTIVE", ccB3: "AGENTS ONLINE", ccB4: "MARKET DATA LIVE", ccB5: "RISK ENGINE ACTIVE",
     ccSimBadge: "SIMULATION · PAPER TRADING", ccSession: "SESSION", ccNominal: "NOMINAL",
     ccMarketsScanned: "Markets scanned", ccSignalsDetected: "Signals detected", ccTradesLabel: "Trades", ccStatusNominal: "System status",
-    ccLiveCharts: "Live markets", ccNeuralCore: "NEURAL CORE", ccNetProcessing: "PROCESSING", ccNetSignal: "SIGNAL DETECTED", ccNetTrade: "TRADE EXECUTION",
+    ccLiveCharts: "Live markets", ccNeuralCore: "NEURAL CORE", ccNetProcessing: "PROCESSING", ccNetSignal: "SIGNAL DETECTED", ccNetTrade: "TRADE EXECUTION", ccCoreInfo: "Each particle is a live market data point processed by the AI agents. Expanding waves = analysis in progress \u2014 the whole network lights up on a signal or a trade.", ccLegSignal: "signal", ccLegOrder: "order", ccLegProfit: "profit", ccLegLoss: "loss", ccLegScan: "scanning",
     ccAgentsTitle: "AI Trading Agents", ccLiveTrade: "Live trade", ccNoTrade: "No open trade — agents are scanning the market.",
     ccEquityTitle: "Equity / P&L", ccStartBal: "Start", ccCurBal: "Balance", ccUnreal: "Unrealized", ccRealized: "Realized", ccDrawdown: "Drawdown", ccWinsLab: "Wins", ccLossesLab: "Losses",
     ccRiskTitle: "Risk monitor", ccMRisk: "Risk level", ccMExposure: "Exposure", ccMPosSize: "Position size", ccMDrawdown: "Drawdown", ccMVolatility: "Volatility", ccMMarketConf: "Market confidence", ccMTradeConf: "Trade confidence",
@@ -1082,7 +1098,7 @@ const I18N = {
     ccEvBreakout: "Breakout detected", ccEvRiskOk: "Risk acceptable", ccEvMomentum: "Momentum increasing", ccEvLong: "LONG signal generated", ccEvShort: "SHORT signal generated", ccEvSized: "Position size calculated: {amt}", ccEvOpened: "Trade opened", ccEvRecorded: "Trade recorded", ccEvEquity: "Portfolio updated", ccEvTP: "Take profit hit", ccEvSL: "Stop loss hit", ccEvVolatility: "Volatility spike monitored", ccEvReversal: "Reversal pattern observed", ccEvClosed: "Trade closed",
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Live Bot Activity", ngCore: "DEKA CORE", ngScanning: "SCANNING", ngBuying: "BUYING", ngSelling: "SELLING",
-    ngFeedTitle: "Live bot feed", ngPosTitle: "Open positions — where they're going", ngChartsTitle: "All markets — live",
+    ngFeedTitle: "Live bot feed", ngFeedEmpty: "No bot activity yet \u2014 the bots scan the market live here.", ngFScan: "SCAN", ngFSig: "SIGNAL", ngFRisk: "RISK", ngPosTitle: "Open positions — where they're going", ngChartsTitle: "All markets — live",
     ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.", ngStatTrades: "bot trades", ngStatHot: "top mover", ngStatHeld: "held", lqTitle: "Live Quant Control Center", botTitleAI: "🤖 Bot \u2014 AI \u00b7 14 pairs", aiPairLabel: "Pair", aiStakeLabel: "Stake per trade (% of cash)", aiAutoInfo: "🧠 The AI picks the pair and trend itself \u2014 TP/SL are calculated automatically.", feeBoxTitle: "REAL TRADING FEES", feePaid: "Fees paid (total)", feeRateLab: "Fee rate", feeRoundTrip: "Round trip (stake)", feeTradesLab: "Trades",
     resetAccount: "↺ Reset account",
     marketTitle: "Market", marketSub: "real-time prices · BTC & gold live",
@@ -1154,7 +1170,7 @@ const I18N = {
     ccTitle: "KI-Kommandozentrale", ccB1: "KI-SYSTEM ONLINE", ccB2: "MARKT-SCANNER AKTIV", ccB3: "AGENTEN ONLINE", ccB4: "MARKTDATEN LIVE", ccB5: "RISIKO-ENGINE AKTIV",
     ccSimBadge: "SIMULATION · PAPER TRADING", ccSession: "SESSION", ccNominal: "NOMINAL",
     ccMarketsScanned: "Märkte gescannt", ccSignalsDetected: "Signale erkannt", ccTradesLabel: "Trades", ccStatusNominal: "Systemstatus",
-    ccLiveCharts: "Live-Märkte", ccNeuralCore: "NEURALER KERN", ccNetProcessing: "VERARBEITUNG", ccNetSignal: "SIGNAL ERKANNT", ccNetTrade: "TRADE-AUSFÜHRUNG",
+    ccLiveCharts: "Live-Märkte", ccNeuralCore: "NEURALER KERN", ccNetProcessing: "VERARBEITUNG", ccNetSignal: "SIGNAL ERKANNT", ccNetTrade: "TRADE-AUSFÜHRUNG", ccCoreInfo: "Jedes Partikel ist ein Marktdatenpunkt, den die KI-Agenten verarbeiten. Ausbreitende Wellen = laufende Analyse \u2014 bei einem Signal oder Trade leuchtet das ganze Netzwerk auf.", ccLegSignal: "Signal", ccLegOrder: "Order", ccLegProfit: "Gewinn", ccLegLoss: "Verlust", ccLegScan: "Scan",
     ccAgentsTitle: "KI-Handelsagenten", ccLiveTrade: "Live-Trade", ccNoTrade: "Kein offener Trade — die Agenten scannen den Markt.",
     ccEquityTitle: "Equity / P&L", ccStartBal: "Start", ccCurBal: "Guthaben", ccUnreal: "Unrealisiert", ccRealized: "Realisiert", ccDrawdown: "Drawdown", ccWinsLab: "Gewinne", ccLossesLab: "Verluste",
     ccRiskTitle: "Risiko-Monitor", ccMRisk: "Risikoniveau", ccMExposure: "Exposure", ccMPosSize: "Positionsgröße", ccMDrawdown: "Drawdown", ccMVolatility: "Volatilität", ccMMarketConf: "Marktvertrauen", ccMTradeConf: "Trade-Vertrauen",
@@ -1164,7 +1180,7 @@ const I18N = {
     ccEvBreakout: "Ausbruch erkannt", ccEvRiskOk: "Risiko akzeptabel", ccEvMomentum: "Momentum steigt", ccEvLong: "LONG-Signal erzeugt", ccEvShort: "SHORT-Signal erzeugt", ccEvSized: "Positionsgröße berechnet: {amt}", ccEvOpened: "Trade eröffnet", ccEvRecorded: "Trade aufgezeichnet", ccEvEquity: "Portfolio aktualisiert", ccEvTP: "Take-Profit erreicht", ccEvSL: "Stop-Loss erreicht", ccEvVolatility: "Volatilitätsspitze überwacht", ccEvReversal: "Umkehrmuster beobachtet", ccEvClosed: "Trade geschlossen",
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Bot-Aktivität live", ngCore: "DEKA-KERN", ngScanning: "SCANNT", ngBuying: "KAUF", ngSelling: "VERKAUF",
-    ngFeedTitle: "Bot-Feed live", ngPosTitle: "Offene Positionen — wohin sie gehen", ngChartsTitle: "Alle Märkte — live",
+    ngFeedTitle: "Bot-Feed live", ngFeedEmpty: "Noch keine Bot-Aktivität \u2014 die Bots scannen hier live den Markt.", ngFScan: "SCAN", ngFSig: "SIGNAL", ngFRisk: "RISIKO", ngPosTitle: "Offene Positionen — wohin sie gehen", ngChartsTitle: "Alle Märkte — live",
     ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.", ngStatTrades: "Bot-Trades", ngStatHot: "Top-Beweger", ngStatHeld: "gehalten", lqTitle: "Live-Quant-Kontrollzentrum", botTitleAI: "🤖 Bot \u2014 KI \u00b7 14 Paare", aiPairLabel: "Paar", aiStakeLabel: "Einsatz pro Trade (% vom Guthaben)", aiAutoInfo: "🧠 Die KI wählt Paar und Trend selbst \u2014 TP/SL werden automatisch berechnet.", feeBoxTitle: "ECHTE HANDELSGEB\u00dcHREN", feePaid: "Bezahlte Geb\u00fchren", feeRateLab: "Geb\u00fchrensatz", feeRoundTrip: "Roundtrip (Einsatz)", feeTradesLab: "Trades",
     resetAccount: "↺ Konto zurücksetzen",
     marketTitle: "Markt", marketSub: "echte Preise in Echtzeit · BTC & Gold live",
@@ -1236,7 +1252,7 @@ const I18N = {
     ccTitle: "Centre de commande IA", ccB1: "SYSTÈME IA EN LIGNE", ccB2: "SCANNER DE MARCHÉ ACTIF", ccB3: "AGENTS EN LIGNE", ccB4: "DONNÉES DE MARCHÉ LIVE", ccB5: "MOTEUR DE RISQUE ACTIF",
     ccSimBadge: "SIMULATION · PAPER TRADING", ccSession: "SESSION", ccNominal: "NOMINAL",
     ccMarketsScanned: "Marchés scannés", ccSignalsDetected: "Signaux détectés", ccTradesLabel: "Trades", ccStatusNominal: "Statut système",
-    ccLiveCharts: "Marchés en direct", ccNeuralCore: "NOYAU NEURAL", ccNetProcessing: "TRAITEMENT", ccNetSignal: "SIGNAL DÉTECTÉ", ccNetTrade: "EXÉCUTION TRADE",
+    ccLiveCharts: "Marchés en direct", ccNeuralCore: "NOYAU NEURAL", ccNetProcessing: "TRAITEMENT", ccNetSignal: "SIGNAL DÉTECTÉ", ccNetTrade: "EXÉCUTION TRADE", ccCoreInfo: "Chaque particule est un point de données de marché traité par les agents IA. Les ondes qui s\u2019étendent = analyse en cours \u2014 tout le réseau s\u2019illumine à chaque signal ou trade.", ccLegSignal: "signal", ccLegOrder: "ordre", ccLegProfit: "profit", ccLegLoss: "perte", ccLegScan: "scan",
     ccAgentsTitle: "Agents de trading IA", ccLiveTrade: "Trade en direct", ccNoTrade: "Aucun trade ouvert — les agents scannent le marché.",
     ccEquityTitle: "Capital / P&L", ccStartBal: "Départ", ccCurBal: "Solde", ccUnreal: "Non réalisé", ccRealized: "Réalisé", ccDrawdown: "Drawdown", ccWinsLab: "Gains", ccLossesLab: "Pertes",
     ccRiskTitle: "Moniteur de risque", ccMRisk: "Niveau de risque", ccMExposure: "Exposition", ccMPosSize: "Taille de position", ccMDrawdown: "Drawdown", ccMVolatility: "Volatilité", ccMMarketConf: "Confiance marché", ccMTradeConf: "Confiance trade",
@@ -1246,7 +1262,7 @@ const I18N = {
     ccEvBreakout: "Cassure détectée", ccEvRiskOk: "Risque acceptable", ccEvMomentum: "Momentum en hausse", ccEvLong: "Signal LONG généré", ccEvShort: "Signal SHORT généré", ccEvSized: "Taille de position calculée : {amt}", ccEvOpened: "Trade ouvert", ccEvRecorded: "Trade enregistré", ccEvEquity: "Portefeuille mis à jour", ccEvTP: "Take profit atteint", ccEvSL: "Stop loss atteint", ccEvVolatility: "Pic de volatilité surveillé", ccEvReversal: "Figure de retournement observée", ccEvClosed: "Trade clôturé",
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Activité des bots en direct", ngCore: "CŒUR DEKA", ngScanning: "SCAN EN COURS", ngBuying: "ACHAT", ngSelling: "VENTE",
-    ngFeedTitle: "Flux des bots en direct", ngPosTitle: "Positions ouvertes — où elles vont", ngChartsTitle: "Tous les marchés — en direct",
+    ngFeedTitle: "Flux des bots en direct", ngFeedEmpty: "Aucune activité pour le moment \u2014 les bots scannent le marché en direct ici.", ngFScan: "SCAN", ngFSig: "SIGNAL", ngFRisk: "RISQUE", ngPosTitle: "Positions ouvertes — où elles vont", ngChartsTitle: "Tous les marchés — en direct",
     ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.", ngStatTrades: "trades bots", ngStatHot: "plus actif", ngStatHeld: "détenus", lqTitle: "Centre de contrôle Quant en direct", botTitleAI: "🤖 Bot \u2014 IA \u00b7 14 paires", aiPairLabel: "Paire", aiStakeLabel: "Mise par trade (% du cash)", aiAutoInfo: "🧠 L\u2019IA choisit elle-même la paire et la tendance \u2014 TP/SL calculés automatiquement.", feeBoxTitle: "FRAIS DE TRADING R\u00c9ELS", feePaid: "Frais pay\u00e9s (total)", feeRateLab: "Taux de frais", feeRoundTrip: "Aller-retour (mise)", feeTradesLab: "Trades",
     resetAccount: "↺ Réinitialiser le compte",
     marketTitle: "Marché", marketSub: "prix en temps réel · BTC & or en direct",
@@ -1318,7 +1334,7 @@ const I18N = {
     ccTitle: "Qendra e komandës AI", ccB1: "SISTEMI AI ONLINE", ccB2: "SKANERI I TREGUT AKTIV", ccB3: "AGJENTËT ONLINE", ccB4: "TË DHËNA TREGU LIVE", ccB5: "MOTORI I RISQUT AKTIV",
     ccSimBadge: "SIMULIM · PAPER TRADING", ccSession: "SEANCA", ccNominal: "NOMINAL",
     ccMarketsScanned: "Tregje të skanuara", ccSignalsDetected: "Sinjalet e zbuluara", ccTradesLabel: "Trades", ccStatusNominal: "Statusi i sistemit",
-    ccLiveCharts: "Tregjet live", ccNeuralCore: "BËRTHAMA NEURALE", ccNetProcessing: "PO PUNOHET", ccNetSignal: "SINALI I ZBULUAR", ccNetTrade: "EKZEKUTIMI I TRADE-IT",
+    ccLiveCharts: "Tregjet live", ccNeuralCore: "BËRTHAMA NEURALE", ccNetProcessing: "PO PUNOHET", ccNetSignal: "SINALI I ZBULUAR", ccNetTrade: "EKZEKUTIMI I TRADE-IT", ccCoreInfo: "Çdo grimcë është një pikë e të dhënave të tregut që përpunohet nga agjentët e AI. Valët që përhapen = analizë në zhvillim \u2014 gjithë rrjeti ndriçon në çdo sinjal ose tregti.", ccLegSignal: "sinjal", ccLegOrder: "urdhër", ccLegProfit: "fitim", ccLegLoss: "humbje", ccLegScan: "skanim",
     ccAgentsTitle: "Agjentët e tregtisë AI", ccLiveTrade: "Trade live", ccNoTrade: "Asnjë trade e hapur — agjentët po skanojnë tregun.",
     ccEquityTitle: "Kapitali / P&L", ccStartBal: "Fillimi", ccCurBal: "Balanca", ccUnreal: "Pa realizuar", ccRealized: "Realizuar", ccDrawdown: "Drawdown", ccWinsLab: "Fitore", ccLossesLab: "Humbje",
     ccRiskTitle: "Monitorimi i rrezikut", ccMRisk: "Niveli i rrezikut", ccMExposure: "Ekspozimi", ccMPosSize: "Madhësia e pozicionit", ccMDrawdown: "Drawdown", ccMVolatility: "Volatiliteti", ccMMarketConf: "Besimi në treg", ccMTradeConf: "Besimi në trade",
@@ -1328,7 +1344,7 @@ const I18N = {
     ccEvBreakout: "Thyerje e zbuluar", ccEvRiskOk: "Rreziku i pranueshëm", ccEvMomentum: "Momentum në rritje", ccEvLong: "Sinali LONG i gjeneruar", ccEvShort: "Sinali SHORT i gjeneruar", ccEvSized: "Madhësia e pozicionit e llogaritur: {amt}", ccEvOpened: "Trade e hapur", ccEvRecorded: "Trade e regjistruar", ccEvEquity: "Portofoli i përditësuar", ccEvTP: "Take profit i arritur", ccEvSL: "Stop loss i arritur", ccEvVolatility: "Thyerja e volatilitetit nën vëzhgim", ccEvReversal: "Modeli i kthimit i vërejtur", ccEvClosed: "Trade e mbyllur",
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Aktiviteti i botëve live", ngCore: "BËRTHAMA DEKA", ngScanning: "PO SKANON", ngBuying: "BLERJE", ngSelling: "SHITJE",
-    ngFeedTitle: "Fluxi i botëve live", ngPosTitle: "Pozicionet e hapura — ku po shkojnë", ngChartsTitle: "Të gjitha tregjet — live",
+    ngFeedTitle: "Fluxi i botëve live", ngFeedEmpty: "Asgjë për momentin \u2014 botët po skanojnë tregun live këtu.", ngFScan: "SKANIM", ngFSig: "SINAL", ngFRisk: "RREZIK", ngPosTitle: "Pozicionet e hapura — ku po shkojnë", ngChartsTitle: "Të gjitha tregjet — live",
     ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.", ngStatTrades: "tregtime botesh", ngStatHot: "më aktiv", ngStatHeld: "të mbajtura", lqTitle: "Qendra e kontrollit Quant Live", botTitleAI: "🤖 Boti \u2014 AI \u00b7 14 çifte", aiPairLabel: "Çift", aiStakeLabel: "Mishë për tregti (% nga keshi)", aiAutoInfo: "🧠 AI zgjedh vetë çiftin dhe trendin \u2014 TP/SL llogariten automatikisht.", feeBoxTitle: "TARIFAT REALE T\u00cb TRADINGUT", feePaid: "Tarifat e paguara", feeRateLab: "Shkalla e tarif\u00ebs", feeRoundTrip: "Round trip (mish\u00eb)", feeTradesLab: "Tregtime",
     resetAccount: "↺ Rivendis llogarinë",
     marketTitle: "Tregu", marketSub: "çmime reale në kohë reale · BTC & ari live",
@@ -3163,9 +3179,29 @@ function ngBuildStatic() {
     </div>`).join("");
 }
 
+function ngFeedClearEmpty() { const em = document.getElementById("ngFeedEmpty"); if (em) em.remove(); }
+
+function ngAmbientFeed() {
+  const list = document.getElementById("ngFeed");
+  if (!list) return;
+  ngFeedClearEmpty();
+  const a = NG_ASSETS[Math.floor(Math.random() * NG_ASSETS.length)];
+  const d = a.get();
+  const pct = d && d.open && d.price > 0 ? (d.price - d.open) / d.open * 100 : Math.random() * 2 - 1;
+  const kind = Math.floor(Math.random() * 3);
+  const agent = kind === 0 ? t("ngFScan") : kind === 1 ? t("ngFSig") : t("ngFRisk");
+  const detail = kind === 0 ? "vol " + (2 + Math.random() * 6).toFixed(1) : kind === 1 ? "mom " + (Math.random() * 10).toFixed(1) : "spread " + (Math.random() * 4).toFixed(1) + "bp";
+  const li = document.createElement("li");
+  li.className = "cc-ev info";
+  li.innerHTML = `<span class="cc-ev-ag">${agent}</span><span class="cc-ev-msg"><b style="color:${a.color};">${a.id}</b> · ${(pct >= 0 ? "+" : "") + pct.toFixed(2)}% · ${detail}</span><span class="cc-ev-t">${new Date().toLocaleTimeString(LOCALES[lang] || "en-US", { hour12: false })}</span>`;
+  list.prepend(li);
+  while (list.children.length > 25) list.removeChild(list.lastChild);
+}
+
 function ngBotTrade(id, side, price, pnl) {
   const a = NG_ASSETS.find(x => x.id === id);
   if (!a) return;
+  ngFeedClearEmpty();
   const bot = COMM_IDS.includes(id) ? t("ngBotComm") : t("ngBotCrypto");
   ngPulses.push({ id, dir: side === "buy" ? 1 : -1, p: 0, col: side === "buy" ? "#2ecc71" : pnl >= 0 ? "#2ecc71" : "#e74c3c" });
   const list = document.getElementById("ngFeed");
@@ -3272,6 +3308,7 @@ function ngTick() {
   const heldEl = document.getElementById("ngHeld");
   if (heldEl) heldEl.textContent = Object.keys(state.holdings).length + (state.ai && state.ai.positions ? state.ai.positions.length : 0);
   ngRenderPositions();
+  if (Math.random() < 0.22) ngAmbientFeed();
 }
 
 function ngDrawMap() {
