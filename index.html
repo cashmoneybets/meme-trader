@@ -219,7 +219,7 @@
           </select>
         </label>
         <label>Mise par trade (€)
-          <input type="number" id="botAmount" min="10" step="50" value="500">
+          <input type="number" id="botAmount" min="10" step="10" value="50">
         </label>
         <label>Take-profit (%)
           <input type="number" id="botTP" min="1" step="1" value="5">
@@ -260,7 +260,7 @@
 "use strict";
 
 /* ================= ÉTAT ================= */
-const START_CASH = 10000;
+const START_CASH = 500;
 const LS_KEY = "memetrader_v1";
 
 const COINS = [
@@ -291,7 +291,7 @@ COINS.forEach(c => {
     state.coinPrices[c.id] = { price: c.price, open: c.price, hist: Array(60).fill(c.price) };
   }
 });
-if (!state.bot) state.bot = { enabled: false, strategy: "momentum", amount: 500, tp: 5, sl: 3 };
+if (!state.bot) state.bot = { enabled: false, strategy: "momentum", amount: 50, tp: 5, sl: 3 };
 
 function loadState() {
   try { const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : null; }
@@ -670,22 +670,22 @@ document.querySelectorAll("nav button").forEach(b => {
 });
 
 document.getElementById("btnReset").onclick = () => {
-  if (!confirm("Réinitialiser le compte avec 10 000 € virtuels ? L'historique sera effacé.")) return;
+  if (!confirm(`Réinitialiser le compte avec ${fmtEur(START_CASH)} virtuels ? L'historique sera effacé.`)) return;
   state = {
     cash: START_CASH, holdings: {}, bets: [], history: [],
     markets: buildMarkets(), coinPrices: {},
-    bot: { enabled: false, strategy: "momentum", amount: 500, tp: 5, sl: 3 },
+    bot: { enabled: false, strategy: "momentum", amount: 50, tp: 5, sl: 3 },
   };
   COINS.forEach(c => state.coinPrices[c.id] = { price: c.price, open: c.price, hist: Array(60).fill(c.price) });
   saveState(); render(); renderBot();
-  toast("Compte réinitialisé : 10 000 € virtuels");
+  toast(`Compte réinitialisé : ${fmtEur(START_CASH)} virtuels`);
 };
 
 document.getElementById("botToggle").onclick = () => {
   const b = state.bot;
   b.enabled = !b.enabled;
   b.strategy = document.getElementById("botStrategy").value;
-  b.amount = Math.max(10, parseFloat(document.getElementById("botAmount").value) || 500);
+  b.amount = Math.max(10, parseFloat(document.getElementById("botAmount").value) || 50);
   b.tp = Math.max(1, parseFloat(document.getElementById("botTP").value) || 5);
   b.sl = Math.max(1, parseFloat(document.getElementById("botSL").value) || 3);
   saveState(); renderBot();

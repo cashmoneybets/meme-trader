@@ -24,7 +24,7 @@ STATE_PATH = Path(__file__).parent / "bot_state.json"
 
 MODE = os.getenv("MODE", "paper").lower()
 STRATEGY = os.getenv("STRATEGY", "momentum").lower()
-STAKE = float(os.getenv("STAKE_USDC", "50"))
+STAKE = float(os.getenv("STAKE_USDC", "25"))
 TAKE_PROFIT = float(os.getenv("TAKE_PROFIT_PCT", "10")) / 100
 STOP_LOSS = float(os.getenv("STOP_LOSS_PCT", "10")) / 100
 POLL_SECONDS = int(os.getenv("POLL_SECONDS", "60"))
@@ -44,8 +44,8 @@ def load_state():
     if STATE_PATH.exists():
         return json.loads(STATE_PATH.read_text())
     return {
-        "bankroll": 1000.0,
-        "starting_bankroll": 1000.0,
+        "bankroll": 500.0,
+        "starting_bankroll": 500.0,
         "positions": {},
         "history": [],
         "price_history": {},

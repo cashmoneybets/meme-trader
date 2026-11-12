@@ -24,7 +24,7 @@ python bot.py
 ```
 
 Le bot affiche chaque cycle les marchés suivis, ses achats/ventes et votre P&L.
-Tout l'état est sauvegardé dans `bot_state.json` (bankroll virtuelle de 1 000 USDC
+Tout l'état est sauvegardé dans `bot_state.json` (bankroll virtuelle de 500 USDC
 au premier lancement). Supprimez ce fichier pour repartir de zéro.
 
 Laissez-le tourner plusieurs jours en paper avant de songer au live. Si la
