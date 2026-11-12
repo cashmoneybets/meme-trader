@@ -220,24 +220,26 @@
       <div class="bot-controls">
         <label>Stratégie
           <select id="botStrategy">
+            <option value="auto">🤖 Auto — le bot choisit la tendance</option>
             <option value="momentum">Tendance — achète la hausse</option>
-            <option value="meanrev">Contre-tendance — achète les chutes</option>
+            <option value="meanrev">Rebond — achète les chutes</option>
           </select>
         </label>
         <label>Mise par trade (€)
           <input type="number" id="botAmount" min="10" step="10" value="50">
         </label>
         <label>Take-profit (%)
-          <input type="number" id="botTP" min="1" step="1" value="5">
+          <input type="number" id="botTP" min="0.5" step="0.5" value="2">
         </label>
         <label>Stop-loss (%)
-          <input type="number" id="botSL" min="1" step="1" value="3">
+          <input type="number" id="botSL" min="0.5" step="0.5" value="1.5">
         </label>
         <button class="act buy" id="botToggle">▶ Démarrer le bot</button>
       </div>
       <div class="vol" style="margin-top:12px;">
-        Le bot ouvre une position quand son signal se déclenche, puis vend automatiquement au take-profit (+) ou au stop-loss (−).
-        Il n'utilise que l'argent virtuel du simulateur.
+        En mode <b>Auto</b>, le bot analyse chaque actif toutes les 30 s : s'il détecte une tendance nette, il suit la hausse ;
+        s'il détecte un creux dans une tendance haussière, il achète le rebond. Vend automatiquement au take-profit (+) ou au
+        stop-loss (−). Argent virtuel uniquement.
       </div>
     </div>
   </section>
@@ -303,7 +305,7 @@ let state = loadState() || {
 };
 
 seedPrices();
-if (!state.bot) state.bot = { enabled: false, strategy: "momentum", amount: 50, tp: 5, sl: 3 };
+if (!state.bot) state.bot = { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 };
 
 function loadState() {
   try { const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : null; }
@@ -366,7 +368,7 @@ function log(type, msg) {
   if (state.history.length > 200) state.history.pop();
 }
 
-function buyCoin(id, amount, via) {
+function buyCoin(id, amount, via, note) {
   amount = parseFloat(amount);
   const s = state.coinPrices[id];
   if (!amount || amount <= 0) return toast("Montant invalide");
@@ -378,7 +380,7 @@ function buyCoin(id, amount, via) {
   h.qty += qty;
   h.cost += amount;
   state.holdings[id] = h;
-  log(via === "bot" ? "bot" : "buy", `${via === "bot" ? "[BOT] " : ""}Achat ${id} : ${fmtEur(amount)} → ${qty.toLocaleString("fr-FR", { maximumFractionDigits: 4 })} unités à ${fmtPrice(s.price)}`);
+  log(via === "bot" ? "bot" : "buy", `${via === "bot" ? "[BOT] " : ""}Achat ${id}${note ? " — " + note : ""} : ${fmtEur(amount)} → ${qty.toLocaleString("fr-FR", { maximumFractionDigits: 4 })} unités à ${fmtPrice(s.price)}`);
   saveState(); render();
   if (via !== "bot") toast(`Acheté ${id} pour ${fmtEur(amount)}`);
 }
@@ -419,6 +421,35 @@ function buyBet(marketId, side, amount) {
 }
 
 /* ================= BOT AUTOMATIQUE ================= */
+function histTrend(hist, n) {
+  if (hist.length < n + 1) return 0;
+  const past = hist[hist.length - 1 - n];
+  return past ? (hist[hist.length - 1] - past) / past * 100 : 0;
+}
+
+function histVolatility(hist, n) {
+  if (hist.length < n + 1) return 0;
+  let sum = 0;
+  for (let i = hist.length - n; i < hist.length; i++) {
+    sum += hist[i - 1] ? Math.abs(hist[i] - hist[i - 1]) / hist[i - 1] * 100 : 0;
+  }
+  return sum / n;
+}
+
+function botSignal(s) {
+  const b = state.bot;
+  const short = histTrend(s.hist, 8);
+  const long = histTrend(s.hist, 30);
+  const vol = histVolatility(s.hist, 20);
+  const thresh = Math.max(0.25, 2.5 * vol);
+  if (Math.abs(short) < thresh) return null;
+  if (b.strategy === "momentum") return short >= thresh ? "hausse détectée" : null;
+  if (b.strategy === "meanrev") return short <= -thresh ? "creux détecté" : null;
+  if (short >= thresh && long >= 0) return "hausse détectée (auto)";
+  if (short <= -thresh && long > 0) return "rebond dans la tendance (auto)";
+  return null;
+}
+
 function botTick() {
   const b = state.bot;
   if (!b || !b.enabled) return;
@@ -426,25 +457,25 @@ function botTick() {
     const s = state.coinPrices[c.id];
     if (s.price <= 0) return;
     const h = state.holdings[c.id];
-    const past = s.hist[s.hist.length - 11] || s.price;
-    const trend = (s.price - past) / past * 100;
     if (h) {
       const pnlPct = (h.qty * s.price - h.cost) / h.cost * 100;
       if (pnlPct >= b.tp || pnlPct <= -b.sl) {
         sellCoin(c.id, h.cost, "bot");
       }
-    } else if (state.cash >= b.amount) {
-      const go = b.strategy === "momentum" ? trend >= 1.5 : trend <= -2;
-      if (go) buyCoin(c.id, b.amount, "bot");
+      return;
     }
+    if (state.cash < b.amount) return;
+    const sig = botSignal(s);
+    if (sig) buyCoin(c.id, b.amount, "bot", sig);
   });
 }
 
 function renderBot() {
   const b = state.bot;
   const status = document.getElementById("botStatus");
+  const stratLabel = { auto: "auto", momentum: "tendance", meanrev: "rebond" }[b.strategy] || b.strategy;
   status.textContent = b.enabled
-    ? `actif · ${b.strategy === "momentum" ? "tendance" : "contre-tendance"} · mise ${fmtEur(b.amount)} · TP +${b.tp} % / SL −${b.sl} %`
+    ? `actif · ${stratLabel} · mise ${fmtEur(b.amount)} · TP +${b.tp} % / SL −${b.sl} %`
     : "arrêté";
   status.style.color = b.enabled ? "var(--green)" : "var(--muted)";
   const btn = document.getElementById("botToggle");
@@ -763,7 +794,7 @@ document.getElementById("btnReset").onclick = () => {
   state = {
     cash: START_CASH, holdings: {}, bets: [], history: [],
     markets: buildMarkets(), coinPrices: {},
-    bot: { enabled: false, strategy: "momentum", amount: 50, tp: 5, sl: 3 },
+    bot: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
   };
   seedPrices();
   saveState(); render(); renderBot();
