@@ -97,6 +97,9 @@
   .tag.sell { background: rgba(231,76,60,.2); color: var(--red); }
   .tag.payout { background: rgba(108,92,231,.25); color: #a29bfe; }
   .tag.resolve { background: rgba(0,206,201,.15); color: var(--accent2); }
+  .tag.bot { background: rgba(108,92,231,.25); color: #a29bfe; }
+  .bot-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .bot-controls label { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
   #toast {
     position: fixed; bottom: 24px; right: 24px; background: var(--accent); color: #fff;
     padding: 12px 20px; border-radius: 8px; font-weight: 600; opacity: 0;
@@ -171,6 +174,31 @@
         </div>
       </div>
     </div>
+    <div class="card" style="margin-top:20px;">
+      <h2>🤖 Bot de trading automatique <small id="botStatus">arrêté</small></h2>
+      <div class="bot-controls">
+        <label>Stratégie
+          <select id="botStrategy">
+            <option value="momentum">Tendance — achète la hausse</option>
+            <option value="meanrev">Contre-tendance — achète les chutes</option>
+          </select>
+        </label>
+        <label>Mise par trade (€)
+          <input type="number" id="botAmount" min="10" step="50" value="500">
+        </label>
+        <label>Take-profit (%)
+          <input type="number" id="botTP" min="1" step="1" value="5">
+        </label>
+        <label>Stop-loss (%)
+          <input type="number" id="botSL" min="1" step="1" value="3">
+        </label>
+        <button class="act buy" id="botToggle">▶ Démarrer le bot</button>
+      </div>
+      <div class="vol" style="margin-top:12px;">
+        Le bot ouvre une position quand son signal se déclenche, puis vend automatiquement au take-profit (+) ou au stop-loss (−).
+        Il n'utilise que l'argent virtuel du simulateur.
+      </div>
+    </div>
   </section>
 
   <!-- PAGE POLYMARKET -->
@@ -228,6 +256,7 @@ COINS.forEach(c => {
     state.coinPrices[c.id] = { price: c.price, open: c.price, hist: Array(60).fill(c.price) };
   }
 });
+if (!state.bot) state.bot = { enabled: false, strategy: "momentum", amount: 500, tp: 5, sl: 3 };
 
 function loadState() {
   try { const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : null; }
@@ -266,6 +295,7 @@ function tickPrices() {
     m.prob = clamp(m.prob + shock, 0.02, 0.98);
     if (Date.now() > m.endTs) resolveMarket(m);
   });
+  botTick();
   saveState();
   render();
 }
@@ -300,7 +330,7 @@ function log(type, msg) {
   if (state.history.length > 200) state.history.pop();
 }
 
-function buyCoin(id, amount) {
+function buyCoin(id, amount, via) {
   amount = parseFloat(amount);
   const s = state.coinPrices[id];
   if (!amount || amount <= 0) return toast("Montant invalide");
@@ -311,12 +341,12 @@ function buyCoin(id, amount) {
   h.qty += qty;
   h.cost += amount;
   state.holdings[id] = h;
-  log("buy", `Achat ${id} : ${fmtEur(amount)} → ${qty.toLocaleString("fr-FR", { maximumFractionDigits: 4 })} unités à ${fmtPrice(s.price)}`);
+  log(via === "bot" ? "bot" : "buy", `${via === "bot" ? "[BOT] " : ""}Achat ${id} : ${fmtEur(amount)} → ${qty.toLocaleString("fr-FR", { maximumFractionDigits: 4 })} unités à ${fmtPrice(s.price)}`);
   saveState(); render();
-  toast(`Acheté ${id} pour ${fmtEur(amount)}`);
+  if (via !== "bot") toast(`Acheté ${id} pour ${fmtEur(amount)}`);
 }
 
-function sellCoin(id, amount) {
+function sellCoin(id, amount, via) {
   amount = parseFloat(amount);
   const h = state.holdings[id];
   const s = state.coinPrices[id];
@@ -331,9 +361,9 @@ function sellCoin(id, amount) {
   h.cost -= amount;
   if (h.qty < 1e-12) delete state.holdings[id];
   const pnl = proceeds - amount;
-  log("sell", `Vente ${id} : ${fmtEur(amount)} → +${fmtEur(proceeds)} (P&L ${pnl >= 0 ? "+" : ""}${fmtEur(pnl)})`);
+  log(via === "bot" ? "bot" : "sell", `${via === "bot" ? "[BOT] " : ""}Vente ${id} : ${fmtEur(amount)} → +${fmtEur(proceeds)} (P&L ${pnl >= 0 ? "+" : ""}${fmtEur(pnl)})`);
   saveState(); render();
-  toast(`Vendu ${id} : ${pnl >= 0 ? "+" : ""}${fmtEur(pnl)}`);
+  if (via !== "bot") toast(`Vendu ${id} : ${pnl >= 0 ? "+" : ""}${fmtEur(pnl)}`);
 }
 
 function buyBet(marketId, side, amount) {
@@ -349,6 +379,39 @@ function buyBet(marketId, side, amount) {
   log("buy", `Pari ${side === "YES" ? "OUI" : "NON"} à ${(price * 100).toFixed(0)} % : ${fmtEur(amount)} → ${shares.toFixed(1)} parts — « ${m.q} »`);
   saveState(); render();
   toast(`Pari placé : ${shares.toFixed(1)} parts ${side === "YES" ? "OUI" : "NON"}`);
+}
+
+/* ================= BOT AUTOMATIQUE ================= */
+function botTick() {
+  const b = state.bot;
+  if (!b || !b.enabled) return;
+  COINS.forEach(c => {
+    const s = state.coinPrices[c.id];
+    const h = state.holdings[c.id];
+    const past = s.hist[s.hist.length - 11] || s.price;
+    const trend = (s.price - past) / past * 100;
+    if (h) {
+      const pnlPct = (h.qty * s.price - h.cost) / h.cost * 100;
+      if (pnlPct >= b.tp || pnlPct <= -b.sl) {
+        sellCoin(c.id, h.cost, "bot");
+      }
+    } else if (state.cash >= b.amount) {
+      const go = b.strategy === "momentum" ? trend >= 1.5 : trend <= -2;
+      if (go) buyCoin(c.id, b.amount, "bot");
+    }
+  });
+}
+
+function renderBot() {
+  const b = state.bot;
+  const status = document.getElementById("botStatus");
+  status.textContent = b.enabled
+    ? `actif · ${b.strategy === "momentum" ? "tendance" : "contre-tendance"} · mise ${fmtEur(b.amount)} · TP +${b.tp} % / SL −${b.sl} %`
+    : "arrêté";
+  status.style.color = b.enabled ? "var(--green)" : "var(--muted)";
+  const btn = document.getElementById("botToggle");
+  btn.textContent = b.enabled ? "⏸ Arrêter le bot" : "▶ Démarrer le bot";
+  btn.className = "act " + (b.enabled ? "sell" : "buy");
 }
 
 /* ================= VALEURS ================= */
@@ -552,7 +615,7 @@ function renderHistory() {
   const ul = document.getElementById("history");
   ul.innerHTML = state.history.length
     ? state.history.map(h => {
-        const tags = { buy: ["buy", "ACHAT"], sell: ["sell", "VENTE"], payout: ["payout", "GAIN"], resolve: ["resolve", "RÉSULTAT"] };
+        const tags = { buy: ["buy", "ACHAT"], sell: ["sell", "VENTE"], payout: ["payout", "GAIN"], resolve: ["resolve", "RÉSULTAT"], bot: ["bot", "🤖 BOT"] };
         const [cls, label] = tags[h.type] || ["payout", "INFO"];
         const d = new Date(h.at).toLocaleString("fr-FR");
         return `<li><span class="tag ${cls}">${label}</span>${h.msg}<span class="vol" style="float:right;">${d}</span></li>`;
@@ -576,13 +639,26 @@ document.getElementById("btnReset").onclick = () => {
   state = {
     cash: START_CASH, holdings: {}, bets: [], history: [],
     markets: buildMarkets(), coinPrices: {},
+    bot: { enabled: false, strategy: "momentum", amount: 500, tp: 5, sl: 3 },
   };
   COINS.forEach(c => state.coinPrices[c.id] = { price: c.price, open: c.price, hist: Array(60).fill(c.price) });
-  saveState(); render();
+  saveState(); render(); renderBot();
   toast("Compte réinitialisé : 10 000 € virtuels");
 };
 
+document.getElementById("botToggle").onclick = () => {
+  const b = state.bot;
+  b.enabled = !b.enabled;
+  b.strategy = document.getElementById("botStrategy").value;
+  b.amount = Math.max(10, parseFloat(document.getElementById("botAmount").value) || 500);
+  b.tp = Math.max(1, parseFloat(document.getElementById("botTP").value) || 5);
+  b.sl = Math.max(1, parseFloat(document.getElementById("botSL").value) || 3);
+  saveState(); renderBot();
+  toast(b.enabled ? "🤖 Bot démarré" : "Bot arrêté");
+};
+
 render();
+renderBot();
 setInterval(tickPrices, 2000);
 window.addEventListener("resize", renderChart);
 </script>
