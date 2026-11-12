@@ -529,12 +529,23 @@
       <canvas id="aiChart" style="width:100%; height:220px; display:block;"></canvas>
     </div>
     <div class="card">
-      <h2 data-i18n="marketTitle">Market</h2>
+      <h2><span data-i18n="marketTitle">Market</span><span id="aiFocusLab" style="float:right; color:var(--muted); font-size:12px; font-weight:400;"></span></h2>
       <select id="aiPairSel" style="width:100%; margin-bottom:12px;">
+        <option value="AUTO" data-i18n="aiAuto">🤖 AUTO — AI decides</option>
         <option value="BTCUSDT">BTC/USDT</option>
         <option value="ETHUSDT">ETH/USDT</option>
         <option value="SOLUSDT">SOL/USDT</option>
         <option value="XRPUSDT">XRP/USDT</option>
+        <option value="ADAUSDT">ADA/USDT</option>
+        <option value="AVAXUSDT">AVAX/USDT</option>
+        <option value="LINKUSDT">LINK/USDT</option>
+        <option value="DOTUSDT">DOT/USDT</option>
+        <option value="DOGEUSDT">DOGE/USDT</option>
+        <option value="SHIBUSDT">SHIB/USDT</option>
+        <option value="PEPEUSDT">PEPE/USDT</option>
+        <option value="WIFUSDT">WIF/USDT</option>
+        <option value="BONKUSDT">BONK/USDT</option>
+        <option value="FLOKIUSDT">FLOKI/USDT</option>
       </select>
       <div class="ai-kv"><span class="k" data-i18n="thPrice">Price</span><span class="v price" id="aiPrice">—</span></div>
       <div class="ai-kv"><span class="k">24 h</span><span class="v" id="aiChg">—</span></div>
@@ -731,6 +742,7 @@ const I18N = {
     bestTrade: "Best trade", worstTrade: "Worst trade", noDataYet: "The curve builds as prices arrive…",
     pnlBarsTitle: "⚡ Last trades P&L", pnlBarsEmpty: "No closed trades yet.", botPnlSub: "all bots combined", dashNow: "Now", dashPeak: "Peak",
     aiTitle: "AI Trading Bot", paperTrading: "PAPER TRADING", botActive: "BOT ACTIVE", botPaused: "BOT PAUSED",
+    aiAuto: "🤖 AUTO — AI decides",
     aiAnalysis: "AI MARKET ANALYSIS", trendLab: "Trend", bullish: "BULLISH", bearish: "BEARISH", neutralLab: "NEUTRAL",
     confidence: "Confidence", rsiLab: "RSI (14)", emaLab: "EMA (9/21)", volAnalysis: "Volume", momentumLab: "Momentum",
     volHigh: "high", volNormal: "normal", volLow: "low",
@@ -811,6 +823,7 @@ const I18N = {
     bestTrade: "Bester Trade", worstTrade: "Schlechtester Trade", noDataYet: "Die Kurve entsteht, sobald Preise eintreffen…",
     pnlBarsTitle: "⚡ Letzte Trades P&L", pnlBarsEmpty: "Noch keine abgeschlossenen Trades.", botPnlSub: "alle Bots zusammen", dashNow: "Jetzt", dashPeak: "Höchststand",
     aiTitle: "KI-Trading-Bot", paperTrading: "PAPER TRADING", botActive: "BOT AKTIV", botPaused: "BOT PAUSIERT",
+    aiAuto: "🤖 AUTO — KI entscheidet",
     aiAnalysis: "KI-MARKTANALYSE", trendLab: "Trend", bullish: "BULLISCH", bearish: "BÄRISCH", neutralLab: "NEUTRAL",
     confidence: "Vertrauen", rsiLab: "RSI (14)", emaLab: "EMA (9/21)", volAnalysis: "Volumen", momentumLab: "Momentum",
     volHigh: "hoch", volNormal: "normal", volLow: "niedrig",
@@ -891,6 +904,7 @@ const I18N = {
     bestTrade: "Meilleur trade", worstTrade: "Pire trade", noDataYet: "La courbe se construit à mesure que les prix arrivent…",
     pnlBarsTitle: "⚡ P&L des derniers trades", pnlBarsEmpty: "Aucun trade clôturé pour le moment.", botPnlSub: "tous les bots réunis", dashNow: "Actuel", dashPeak: "Pic",
     aiTitle: "Bot de trading IA", paperTrading: "PAPER TRADING", botActive: "BOT ACTIF", botPaused: "BOT EN PAUSE",
+    aiAuto: "🤖 AUTO — l’IA décide",
     aiAnalysis: "ANALYSE DE MARCHÉ IA", trendLab: "Tendance", bullish: "HAUSSIER", bearish: "BAISSIER", neutralLab: "NEUTRE",
     confidence: "Confiance", rsiLab: "RSI (14)", emaLab: "EMA (9/21)", volAnalysis: "Volume", momentumLab: "Momentum",
     volHigh: "élevé", volNormal: "normal", volLow: "faible",
@@ -971,6 +985,7 @@ const I18N = {
     bestTrade: "Tregtimi më i mirë", worstTrade: "Tregtimi më i keq", noDataYet: "Kurba ndërtohet ndërsa çmimet arrijnë…",
     pnlBarsTitle: "⚡ P&L e tregtimeve të fundit", pnlBarsEmpty: "Asnjë tregtim i mbyllur ende.", botPnlSub: "të gjithë botet bashkë", dashNow: "Tani", dashPeak: "Kulmi",
     aiTitle: "Boti i tregtisë me AI", paperTrading: "PAPER TRADING", botActive: "BOTI AKTIV", botPaused: "BOTI NË PAUZË",
+    aiAuto: "🤖 AUTO — AI vendos",
     aiAnalysis: "ANALIZA E TREGUT ME AI", trendLab: "Trendi", bullish: "RRITËS", bearish: "RËNËS", neutralLab: "I PANDRUAR",
     confidence: "Besueshmëria", rsiLab: "RSI (14)", emaLab: "EMA (9/21)", volAnalysis: "Volumi", momentumLab: "Momentum",
     volHigh: "i lartë", volNormal: "normal", volLow: "i ulët",
@@ -1096,8 +1111,9 @@ if (!state.botCrypto) state.botCrypto = { enabled: false, strategy: "auto", amou
 if (!state.equity) state.equity = [];
 if (!state.equityLong) state.equityLong = [];
 if (!state.stats) state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [] };
-if (!state.ai) state.ai = { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "BTCUSDT" };
+if (!state.ai) state.ai = { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "AUTO", auto: true };
 if (state.ai.balance !== undefined) { state.cash += state.ai.balance - 500; delete state.ai.balance; }
+if (!state.ai.auto) { state.ai.pair = "AUTO"; state.ai.auto = true; }
 
 function loadState() {
   try { const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : null; }
@@ -1662,7 +1678,7 @@ async function fetchRealPrices() {
 }
 
 /* ================= AI TRADING BOT (paper only) ================= */
-const AI_PAIRS = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "XRPUSDT"];
+const AI_PAIRS = ["BTCUSDT", "ETHUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "AVAXUSDT", "LINKUSDT", "DOTUSDT", "DOGEUSDT", "SHIBUSDT", "PEPEUSDT", "WIFUSDT", "BONKUSDT", "FLOKIUSDT"];
 const aiPrices = {};
 const aiPairName = sym => sym.replace("USDT", "/USDT");
 const aiDisp = {};
@@ -1718,6 +1734,23 @@ function aiAnalysis(sym) {
     entry: price, sl: price * 0.995, tp: price * 1.01, rr: 2.0 };
 }
 
+let aiBestCache = { sym: "BTCUSDT", at: 0 };
+function aiBestPair() {
+  const now = Date.now();
+  if (now - aiBestCache.at < 2000) return aiBestCache.sym;
+  let best = null, bestScore = -1;
+  for (const sym of AI_PAIRS) {
+    const p = aiPrices[sym];
+    if (!p || p.hist.length < 30 || p.price <= 0) continue;
+    const a = aiAnalysis(sym);
+    const sc = a.confidence + (a.signal === "BUY" ? 10 : a.signal === "SELL" ? 5 : 0);
+    if (sc > bestScore) { bestScore = sc; best = sym; }
+  }
+  aiBestCache = { sym: best || "BTCUSDT", at: now };
+  return aiBestCache.sym;
+}
+const aiFocusPair = () => (state.ai.pair && state.ai.pair !== "AUTO") ? state.ai.pair : aiBestPair();
+
 function openAiPos(sym, price, a) {
   const ai = state.ai;
   const spend = Math.min(state.cash * 0.2, state.cash);
@@ -1767,14 +1800,27 @@ function aiTick() {
     });
   });
   if (!ai.enabled || Date.now() < (ai.cooldown || 0)) return;
-  AI_PAIRS.forEach(sym => {
+  if (state.cash < 10) return;
+  if (ai.pair === "AUTO") {
+    let best = null, bestScore = -1;
+    for (const sym of AI_PAIRS) {
+      const p = aiPrices[sym];
+      if (!p || p.hist.length < 30 || p.price <= 0) continue;
+      if (ai.positions.some(pos => pos.pair === sym)) continue;
+      const a = aiAnalysis(sym);
+      if (a.signal !== "BUY" || a.confidence < 65) continue;
+      const sc = a.confidence + Math.abs(a.mom);
+      if (sc > bestScore) { bestScore = sc; best = { sym, p, a }; }
+    }
+    if (best) openAiPos(best.sym, best.p.price, best.a);
+  } else {
+    const sym = ai.pair;
     const p = aiPrices[sym];
     if (!p || p.hist.length < 30 || p.price <= 0) return;
     if (ai.positions.some(pos => pos.pair === sym)) return;
-    if (state.cash < 10) return;
     const a = aiAnalysis(sym);
     if (a.signal === "BUY" && a.confidence >= 65) openAiPos(sym, p.price, a);
-  });
+  }
 }
 
 function renderAi() {
@@ -1788,7 +1834,7 @@ function renderAi() {
   btn.textContent = ai.enabled ? t("stopBot") : t("startBot");
   btn.className = "act " + (ai.enabled ? "sell" : "buy");
 
-  const sym = ai.pair || "BTCUSDT";
+  const sym = aiFocusPair();
   const p = aiPrices[sym] || { price: 0, open: 0, vol: 0, hist: [] };
   const chg = p.open ? (p.price - p.open) / p.open * 100 : 0;
   const priceEl = document.getElementById("aiPrice");
@@ -1803,6 +1849,7 @@ function renderAi() {
   chgEl.textContent = p.price > 0 ? fmtPct(chg) : "…";
   chgEl.className = "v " + (chg >= 0 ? "pos" : "neg");
   document.getElementById("aiVol").textContent = p.vol ? fmtBig(p.vol) : "…";
+  document.getElementById("aiFocusLab").textContent = aiPairName(sym) + (ai.pair === "AUTO" ? " · AUTO" : "");
 
   const a = aiAnalysis(sym);
   const trendEl = document.getElementById("aiTrend");
@@ -1907,7 +1954,7 @@ function buildCandles(hist, disp, per = 5, maxC = 40) {
 function drawAiCandles() {
   const canvas = document.getElementById("aiChart");
   if (!canvas) return;
-  const sym = state.ai.pair || "BTCUSDT";
+  const sym = aiFocusPair();
   const p = aiPrices[sym];
   const dpr = window.devicePixelRatio || 1;
   const wCss = canvas.clientWidth || 400, hCss = 220;
@@ -1974,7 +2021,7 @@ function drawAiCandles() {
 }
 
 function aiFrame() {
-  const sym = state.ai.pair || "BTCUSDT";
+  const sym = aiFocusPair();
   const p = aiPrices[sym];
   if (p && p.price > 0) {
     const d = aiDisp[sym] || (aiDisp[sym] = { price: p.price });
@@ -2945,13 +2992,13 @@ document.getElementById("btnReset").onclick = () => {
     botCrypto: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
     equity: [], equityLong: [],
     stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [] },
-    ai: { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "BTCUSDT" },
+    ai: { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "AUTO", auto: true },
   };
   seedPrices();
   state.equity = [];
   state.equityLong = [];
   state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [] };
-  state.ai = { enabled: false, balance: 500, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "BTCUSDT" };
+  state.ai = { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "AUTO", auto: true };
   saveState(); render(); renderBot(); renderAi();
   toast(t("resetToast", { amt: fmtEur(START_CASH) }));
 };
@@ -2992,7 +3039,7 @@ document.getElementById("aiToggle").onclick = () => {
   toast(state.ai.enabled ? t("botStarted") : t("botStopped"));
 };
 const aiPairSel = document.getElementById("aiPairSel");
-aiPairSel.value = state.ai.pair || "BTCUSDT";
+aiPairSel.value = state.ai.pair || "AUTO";
 aiPairSel.onchange = e => { state.ai.pair = e.target.value; saveState(); renderAi(); };
 
 render();
