@@ -25,10 +25,10 @@
     min-height: 100vh;
   }
   header {
-    display: flex; flex-direction: column; align-items: stretch; gap: 16px;
     padding: 22px 24px 18px; border-bottom: 1px solid var(--border);
     background: var(--panel);
   }
+  .hdr-in { display: flex; flex-direction: column; gap: 16px; max-width: 1200px; margin: 0 auto; width: 100%; }
   .brand-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
   .brand-row .logo { grid-column: 2; justify-self: center; }
   .brand-row .lang-dd { grid-column: 3; justify-self: end; }
@@ -424,7 +424,8 @@
     .ai-signal { font-size: 22px; }
   }
   @media (max-width: 720px) {
-    header { padding: 14px 14px 12px; gap: 12px; }
+    header { padding: 14px 14px 12px; }
+    .hdr-in { gap: 12px; }
     .brand-row { gap: 8px; }
     .lang-btn { padding: 6px 8px; font-size: 13px; }
     .logo { font-size: 15px; gap: 8px; letter-spacing: 1.2px; }
@@ -476,6 +477,7 @@
 <body>
 
 <header>
+  <div class="hdr-in">
   <div class="brand-row">
   <div class="logo"><canvas id="logoCv" class="logo-cv"></canvas>DORIAN&nbsp;<span>- TRADING BOT</span></div>
   <div class="lang-dd" id="langDD">
@@ -498,6 +500,7 @@
     <div class="stat"><div class="label" data-i18n="pnl">Overall P&L</div><div class="value" id="stPnl">—</div></div>
   </div>
   <div class="px-ticker"><div class="px-ticker-inner"><div class="px-ticker-track" id="pxTicker"></div><div class="px-ticker-track" id="pxTicker2" aria-hidden="true"></div></div></div>
+  </div>
 </header>
 
 <nav>
