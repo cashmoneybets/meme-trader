@@ -261,6 +261,25 @@
   .cc-ev-t { margin-left: auto; color: #5a6478; font-size: 10px; flex-shrink: 0; }
   @media (max-width: 980px) { .cc-main { grid-template-columns: 1fr; } #ccSphere { height: 300px; } .cc-grid2 { grid-template-columns: 1fr; } }
   @media (max-width: 720px) { .cc-section { padding: 0 10px 40px; } .cc-clock { font-size: 11px; } }
+  .ng-top { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  #ngMap { width: 100%; height: 340px; display: block; }
+  .ng-map-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ng-map-label { font-size: 11px; letter-spacing: 2px; color: var(--muted); margin-top: 8px; font-family: Consolas, monospace; }
+  .ng-map-label span { color: var(--accent2); }
+  .ng-feed { min-height: 120px; max-height: 340px; }
+  .ng-side { font-size: 9px; font-weight: 800; letter-spacing: 1px; padding: 2px 6px; border-radius: 3px; flex-shrink: 0; }
+  .ng-side.buy { color: var(--green); background: rgba(46,204,113,.12); }
+  .ng-side.sell { color: var(--red); background: rgba(231,76,60,.12); }
+  .ng-posrow { padding: 8px 0; border-bottom: 1px solid #1a2130; }
+  .ng-posrow:last-child { border-bottom: none; }
+  .ng-track { position: relative; height: 6px; background: #1a2130; border-radius: 3px; margin: 6px 0 2px; }
+  .ng-zone-l { position: absolute; left: 0; top: 0; bottom: 0; width: 33%; background: rgba(231,76,60,.25); border-radius: 3px 0 0 3px; }
+  .ng-zone-r { position: absolute; right: 0; top: 0; bottom: 0; width: 33%; background: rgba(46,204,113,.25); border-radius: 0 3px 3px 0; }
+  .ng-marker { position: absolute; top: -3px; width: 12px; height: 12px; border-radius: 50%; background: var(--accent2); box-shadow: 0 0 8px rgba(0,206,201,.8); transition: left .8s ease; transform: translateX(-50%); z-index: 1; }
+  .ng-charts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .ng-charts .cc-mline { height: 54px; }
+  @media (max-width: 980px) { .ng-top { grid-template-columns: 1fr; } }
+  @media (max-width: 720px) { .ng-charts { grid-template-columns: repeat(2, 1fr); } #ngMap { height: 280px; } }
   @media (max-width: 900px) { .ai-grid { grid-template-columns: 1fr; } }
   @media (max-width: 720px) {
     .ai-section { padding: 0 10px 40px; }
@@ -623,6 +642,28 @@
   </div>
 </section>
 
+<section id="ng" class="cc-section">
+  <h2>🕸️ <span data-i18n="ngTitle">Neural Grid — Live Bot Activity</span> <span class="cc-badge sim" data-i18n="ccSimBadge">SIMULATION · PAPER TRADING</span></h2>
+  <div class="ng-top">
+    <div class="cc-panel ng-map-wrap">
+      <canvas id="ngMap"></canvas>
+      <div class="ng-map-label"><span data-i18n="ngCore">DEKA CORE</span> · <span id="ngState">SCANNING</span></div>
+    </div>
+    <div class="cc-panel">
+      <h2 data-i18n="ngFeedTitle">Live bot feed</h2>
+      <ul class="cc-loglist ng-feed" id="ngFeed"></ul>
+    </div>
+    <div class="cc-panel">
+      <h2 data-i18n="ngPosTitle">Open positions — where they're going</h2>
+      <div id="ngPos"></div>
+    </div>
+  </div>
+  <div class="cc-panel">
+    <h2 data-i18n="ngChartsTitle">All markets — live</h2>
+    <div class="ng-charts" id="ngCharts"></div>
+  </div>
+</section>
+
 <div id="toast"></div>
 
 <script>
@@ -676,6 +717,9 @@ const I18N = {
     ccSigBuy: "BUY", ccSigSell: "SELL", ccSigWait: "WAIT", ccSigStrongBuy: "STRONG BUY", ccSigStrongSell: "STRONG SELL", ccSigHighVol: "HIGH VOLATILITY", ccSigBreakout: "BREAKOUT", ccSigReversal: "REVERSAL", ccSigMomentum: "MOMENTUM",
     ccEvBreakout: "Breakout detected", ccEvRiskOk: "Risk acceptable", ccEvMomentum: "Momentum increasing", ccEvLong: "LONG signal generated", ccEvShort: "SHORT signal generated", ccEvSized: "Position size calculated: {amt}", ccEvOpened: "Trade opened", ccEvRecorded: "Trade recorded", ccEvEquity: "Portfolio updated", ccEvTP: "Take profit hit", ccEvSL: "Stop loss hit", ccEvVolatility: "Volatility spike monitored", ccEvReversal: "Reversal pattern observed", ccEvClosed: "Trade closed",
     ccSideLong: "LONG", ccSideShort: "SHORT",
+    ngTitle: "Neural Grid — Live Bot Activity", ngCore: "DEKA CORE", ngScanning: "SCANNING", ngBuying: "BUYING", ngSelling: "SELLING",
+    ngFeedTitle: "Live bot feed", ngPosTitle: "Open positions — where they're going", ngChartsTitle: "All markets — live",
+    ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.",
     resetAccount: "↺ Reset account",
     marketTitle: "Market", marketSub: "real-time prices · BTC & gold live",
     thAsset: "Asset", thPrice: "Price", thChart: "Chart", thHeld: "Held", thTrade: "Trade (amount in €)",
@@ -752,6 +796,9 @@ const I18N = {
     ccSigBuy: "KAUFEN", ccSigSell: "VERKAUFEN", ccSigWait: "WARTEN", ccSigStrongBuy: "STARK KAUFEN", ccSigStrongSell: "STARK VERKAUFEN", ccSigHighVol: "HOHE VOLATILITÄT", ccSigBreakout: "AUSBRUCH", ccSigReversal: "UMKEHR", ccSigMomentum: "MOMENTUM",
     ccEvBreakout: "Ausbruch erkannt", ccEvRiskOk: "Risiko akzeptabel", ccEvMomentum: "Momentum steigt", ccEvLong: "LONG-Signal erzeugt", ccEvShort: "SHORT-Signal erzeugt", ccEvSized: "Positionsgröße berechnet: {amt}", ccEvOpened: "Trade eröffnet", ccEvRecorded: "Trade aufgezeichnet", ccEvEquity: "Portfolio aktualisiert", ccEvTP: "Take-Profit erreicht", ccEvSL: "Stop-Loss erreicht", ccEvVolatility: "Volatilitätsspitze überwacht", ccEvReversal: "Umkehrmuster beobachtet", ccEvClosed: "Trade geschlossen",
     ccSideLong: "LONG", ccSideShort: "SHORT",
+    ngTitle: "Neural Grid — Bot-Aktivität live", ngCore: "DEKA-KERN", ngScanning: "SCANNT", ngBuying: "KAUF", ngSelling: "VERKAUF",
+    ngFeedTitle: "Bot-Feed live", ngPosTitle: "Offene Positionen — wohin sie gehen", ngChartsTitle: "Alle Märkte — live",
+    ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.",
     resetAccount: "↺ Konto zurücksetzen",
     marketTitle: "Markt", marketSub: "echte Preise in Echtzeit · BTC & Gold live",
     thAsset: "Asset", thPrice: "Preis", thChart: "Chart", thHeld: "Gehalten", thTrade: "Handel (Betrag in €)",
@@ -828,6 +875,9 @@ const I18N = {
     ccSigBuy: "ACHAT", ccSigSell: "VENTE", ccSigWait: "ATTENDRE", ccSigStrongBuy: "FORT ACHAT", ccSigStrongSell: "FORTE VENTE", ccSigHighVol: "VOLATILITÉ HAUTE", ccSigBreakout: "CASSURE", ccSigReversal: "RETOURNEMENT", ccSigMomentum: "MOMENTUM",
     ccEvBreakout: "Cassure détectée", ccEvRiskOk: "Risque acceptable", ccEvMomentum: "Momentum en hausse", ccEvLong: "Signal LONG généré", ccEvShort: "Signal SHORT généré", ccEvSized: "Taille de position calculée : {amt}", ccEvOpened: "Trade ouvert", ccEvRecorded: "Trade enregistré", ccEvEquity: "Portefeuille mis à jour", ccEvTP: "Take profit atteint", ccEvSL: "Stop loss atteint", ccEvVolatility: "Pic de volatilité surveillé", ccEvReversal: "Figure de retournement observée", ccEvClosed: "Trade clôturé",
     ccSideLong: "LONG", ccSideShort: "SHORT",
+    ngTitle: "Neural Grid — Activité des bots en direct", ngCore: "CŒUR DEKA", ngScanning: "SCAN EN COURS", ngBuying: "ACHAT", ngSelling: "VENTE",
+    ngFeedTitle: "Flux des bots en direct", ngPosTitle: "Positions ouvertes — où elles vont", ngChartsTitle: "Tous les marchés — en direct",
+    ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.",
     resetAccount: "↺ Réinitialiser le compte",
     marketTitle: "Marché", marketSub: "prix en temps réel · BTC & or en direct",
     thAsset: "Actif", thPrice: "Prix", thChart: "Graphique", thHeld: "Détenu", thTrade: "Trade (montant en €)",
@@ -904,6 +954,9 @@ const I18N = {
     ccSigBuy: "BLERJE", ccSigSell: "SHITJE", ccSigWait: "PRIT", ccSigStrongBuy: "BLERJE E FORTË", ccSigStrongSell: "SHITJE E FORTË", ccSigHighVol: "VOLATILITET I LARTË", ccSigBreakout: "ZBRITJE", ccSigReversal: "KTHIM", ccSigMomentum: "MOMENTUM",
     ccEvBreakout: "Thyerje e zbuluar", ccEvRiskOk: "Rreziku i pranueshëm", ccEvMomentum: "Momentum në rritje", ccEvLong: "Sinali LONG i gjeneruar", ccEvShort: "Sinali SHORT i gjeneruar", ccEvSized: "Madhësia e pozicionit e llogaritur: {amt}", ccEvOpened: "Trade e hapur", ccEvRecorded: "Trade e regjistruar", ccEvEquity: "Portofoli i përditësuar", ccEvTP: "Take profit i arritur", ccEvSL: "Stop loss i arritur", ccEvVolatility: "Thyerja e volatilitetit nën vëzhgim", ccEvReversal: "Modeli i kthimit i vërejtur", ccEvClosed: "Trade e mbyllur",
     ccSideLong: "LONG", ccSideShort: "SHORT",
+    ngTitle: "Neural Grid — Aktiviteti i botëve live", ngCore: "BËRTHAMA DEKA", ngScanning: "PO SKANON", ngBuying: "BLERJE", ngSelling: "SHITJE",
+    ngFeedTitle: "Fluxi i botëve live", ngPosTitle: "Pozicionet e hapura — ku po shkojnë", ngChartsTitle: "Të gjitha tregjet — live",
+    ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.",
     resetAccount: "↺ Rivendis llogarinë",
     marketTitle: "Tregu", marketSub: "çmime reale në kohë reale · BTC & ari live",
     thAsset: "Aseti", thPrice: "Çmimi", thChart: "Grafiku", thHeld: "Në posedim", thTrade: "Tregto (shuma në €)",
@@ -1086,6 +1139,7 @@ function buyCoin(id, amount, via, note) {
   h.cost += amount;
   state.holdings[id] = h;
   log(via === "bot" ? "bot" : "buy", t("logBuy", { id, note: note ? " — " + note : "", amt: fmtEur(amount), qty: qty.toLocaleString(LOCALES[lang] || "en-US", { maximumFractionDigits: 4 }), price: fmtPrice(s.price) }));
+  if (via === "bot") ngBotTrade(id, "buy", s.price, 0);
   saveState(); render();
   if (via !== "bot") toast(t("toastBought", { id, amt: fmtEur(amount) }));
 }
@@ -1114,6 +1168,7 @@ function sellCoin(id, amount, via) {
     if (via === "bot") st.botPnl += pnl;
   }
   log(via === "bot" ? "bot" : "sell", t("logSell", { id, amt: fmtEur(amount), proceeds: fmtEur(proceeds), pnl: (pnl >= 0 ? "+" : "") + fmtEur(pnl) }));
+  if (via === "bot") ngBotTrade(id, "sell", s.price, pnl);
   saveState(); render();
   if (via !== "bot") toast(t("toastSold", { id, pnl: (pnl >= 0 ? "+" : "") + fmtEur(pnl) }));
 }
@@ -2478,6 +2533,204 @@ function ccFrame() {
   requestAnimationFrame(ccFrame);
 }
 
+/* ================= NEURAL GRID (live bot map) ================= */
+const NG_ASSETS = [
+  { id: "BTC", color: "#f7931a", get: () => state.coinPrices.BTC },
+  { id: "XAU", color: "#FFD700", get: () => state.coinPrices.XAU },
+  { id: "XAG", color: "#b0b7c3", get: () => state.coinPrices.XAG },
+  { id: "WTI", color: "#8fa3b8", get: () => state.coinPrices.WTI },
+  { id: "NG", color: "#e67e22", get: () => state.coinPrices.NG },
+  { id: "ETH", color: "#627eea", get: () => aiPrices.ETHUSDT },
+  { id: "SOL", color: "#00ffa3", get: () => aiPrices.SOLUSDT },
+  { id: "XRP", color: "#4d9fff", get: () => aiPrices.XRPUSDT },
+];
+const ngPulses = [];
+const ngStars = Array.from({ length: 50 }, () => ({ x: Math.random(), y: Math.random(), r: 0.4 + Math.random() * 1.1, ph: Math.random() * Math.PI * 2, sp: 0.5 + Math.random() * 1.4 }));
+let ngStateUntil = 0;
+
+function ngBuildStatic() {
+  const charts = document.getElementById("ngCharts");
+  if (charts) charts.innerHTML = NG_ASSETS.map(a => `
+    <div class="cc-mpanel" id="ngp-${a.id}">
+      <div class="cc-mhead"><b style="color:${a.color};">${a.id}</b><span id="nge-${a.id}">0.00%</span></div>
+      <div class="cc-mprice" id="ngv-${a.id}">—</div>
+      <canvas class="cc-mline" id="ngc-${a.id}" width="200" height="54"></canvas>
+    </div>`).join("");
+}
+
+function ngBotTrade(id, side, price, pnl) {
+  const a = NG_ASSETS.find(x => x.id === id);
+  if (!a) return;
+  const bot = COMM_IDS.includes(id) ? t("ngBotComm") : t("ngBotCrypto");
+  ngPulses.push({ id, dir: side === "buy" ? 1 : -1, p: 0, col: side === "buy" ? "#2ecc71" : pnl >= 0 ? "#2ecc71" : "#e74c3c" });
+  const list = document.getElementById("ngFeed");
+  if (list) {
+    const li = document.createElement("li");
+    li.className = "cc-ev " + (side === "buy" ? "buy" : pnl >= 0 ? "profit" : "loss");
+    li.innerHTML = `<span class="ng-side ${side === "buy" ? "buy" : "sell"}">${side === "buy" ? t("ccSigBuy") : t("ccSigSell")}</span><span class="cc-ev-msg"><b style="color:${a.color};">${id}</b> · ${bot} · ${fmtPrice(price)}${side === "sell" ? " · " + (pnl >= 0 ? "+" : "") + fmtEur(pnl) : ""}</span><span class="cc-ev-t">${new Date().toLocaleTimeString(LOCALES[lang] || "en-US", { hour12: false })}</span>`;
+    list.prepend(li);
+    while (list.children.length > 25) list.removeChild(list.lastChild);
+  }
+  const st = document.getElementById("ngState");
+  if (st) { st.textContent = (side === "buy" ? t("ngBuying") : t("ngSelling")) + " " + id; ngStateUntil = Date.now() + 3000; }
+}
+
+function ngDrawChart(id, hist) {
+  const c = document.getElementById("ngc-" + id);
+  if (!c || !c.getContext || !hist || hist.length < 2) return;
+  const ctx = c.getContext("2d");
+  const h = hist.slice(-40);
+  const w = c.width, hh = c.height;
+  const min = Math.min(...h), max = Math.max(...h);
+  const rng = max - min || 1;
+  ctx.clearRect(0, 0, w, hh);
+  ctx.beginPath();
+  h.forEach((v, i) => {
+    const x = i / (h.length - 1) * w;
+    const y = hh - 3 - (v - min) / rng * (hh - 6);
+    if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+  });
+  const up = h[h.length - 1] >= h[0];
+  ctx.strokeStyle = up ? "#2ecc71" : "#e74c3c";
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.lineTo(w, hh); ctx.lineTo(0, hh); ctx.closePath();
+  ctx.fillStyle = up ? "rgba(46,204,113,.08)" : "rgba(231,76,60,.08)";
+  ctx.fill();
+}
+
+function ngRenderPositions() {
+  const root = document.getElementById("ngPos");
+  if (!root) return;
+  const ids = Object.keys(state.holdings);
+  if (!ids.length) { root.innerHTML = `<div class="cc-empty">${t("ngNoPos")}</div>`; return; }
+  root.innerHTML = ids.map(id => {
+    const h = state.holdings[id];
+    const s = state.coinPrices[id];
+    if (!s || !(s.price > 0)) return "";
+    const val = h.qty * s.price;
+    const pnl = val - h.cost;
+    const pnlPct = h.cost ? pnl / h.cost * 100 : 0;
+    const b = COMM_IDS.includes(id) ? state.botComm : state.botCrypto;
+    const sl = -(b ? b.sl : 1.5), tp = b ? b.tp : 2;
+    const frac = clamp((pnlPct - sl) / (tp - sl), 0, 1);
+    const a = NG_ASSETS.find(x => x.id === id);
+    const col = a ? a.color : "var(--accent2)";
+    return `<div class="ng-posrow">
+      <div class="cc-mhead"><b style="color:${col};">${id}</b><span>${fmtEur(val)}</span></div>
+      <div class="ng-track"><div class="ng-zone-l"></div><div class="ng-zone-r"></div><div class="ng-marker" style="left:${(frac * 100).toFixed(1)}%;"></div></div>
+      <div class="cc-mhead"><span style="color:var(--red);">SL ${sl.toFixed(1)}%</span><span style="color:${pnl >= 0 ? "var(--green)" : "var(--red)"};font-weight:700;">${(pnl >= 0 ? "+" : "") + fmtEur(pnl)} (${fmtPct(pnlPct)})</span><span style="color:var(--green);">TP +${tp.toFixed(1)}%</span></div>
+    </div>`;
+  }).join("");
+}
+
+function ngTick() {
+  NG_ASSETS.forEach(a => {
+    const d = a.get();
+    if (!d || !(d.price > 0)) return;
+    const pct = d.open ? (d.price - d.open) / d.open * 100 : 0;
+    const pv = document.getElementById("ngv-" + a.id);
+    if (pv) pv.textContent = fmtPrice(d.price);
+    const pe = document.getElementById("nge-" + a.id);
+    if (pe) { pe.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%"; pe.style.color = pct >= 0 ? "var(--green)" : "var(--red)"; }
+    ngDrawChart(a.id, d.hist);
+  });
+  ngRenderPositions();
+}
+
+function ngDrawMap() {
+  const c = document.getElementById("ngMap");
+  if (!c || !c.getContext) return;
+  const ctx = c.getContext("2d");
+  const W = c.clientWidth || 320, H = c.clientHeight || 320;
+  if (c.width !== W || c.height !== H) { c.width = W; c.height = H; }
+  const t = Date.now();
+  const cx0 = W / 2, cy0 = H / 2;
+  const R = Math.min(W, H) * 0.36;
+  ctx.clearRect(0, 0, W, H);
+  ctx.globalCompositeOperation = "lighter";
+  for (const st of ngStars) {
+    const a = 0.08 + 0.1 * Math.sin(t * 0.001 * st.sp + st.ph);
+    ctx.beginPath(); ctx.arc(st.x * W, st.y * H, st.r, 0, 6.283);
+    ctx.fillStyle = "rgba(160,190,255," + a.toFixed(3) + ")"; ctx.fill();
+  }
+  const nb = ctx.createRadialGradient(cx0, cy0, 0, cx0, cy0, R * 1.6);
+  nb.addColorStop(0, "rgba(108,92,231,.14)");
+  nb.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = nb; ctx.fillRect(0, 0, W, H);
+  const rot = t * 0.00004;
+  const nodes = NG_ASSETS.map((a, i) => {
+    const ang = rot + i / NG_ASSETS.length * 6.283;
+    const d = a.get();
+    return { id: a.id, a, ang, x: cx0 + Math.cos(ang) * R, y: cy0 + Math.sin(ang) * R * 0.62, price: d && d.price > 0 ? d.price : 0, held: !!state.holdings[a.id] };
+  });
+  ctx.lineWidth = 1;
+  for (const n of nodes) {
+    ctx.strokeStyle = n.held ? "rgba(46,204,113,.35)" : "rgba(0,206,201,.12)";
+    ctx.beginPath(); ctx.moveTo(cx0, cy0); ctx.lineTo(n.x, n.y); ctx.stroke();
+  }
+  ctx.save(); ctx.translate(cx0, cy0); ctx.scale(1, 0.62);
+  ctx.setLineDash([3, 7]); ctx.strokeStyle = "rgba(108,92,231,.3)";
+  ctx.beginPath(); ctx.arc(0, 0, R, 0, 6.283); ctx.stroke();
+  ctx.restore(); ctx.setLineDash([]);
+  const pulse = 1 + Math.sin(t * 0.003) * 0.08;
+  for (let k = 3; k >= 1; k--) {
+    ctx.beginPath();
+    ctx.arc(cx0, cy0, (7 + k * 5) * pulse * (W / 320), 0, 6.283);
+    ctx.fillStyle = "rgba(0,206,201," + (0.06 * k) + ")";
+    ctx.fill();
+  }
+  ctx.beginPath(); ctx.arc(cx0, cy0, 8 * pulse * (W / 320), 0, 6.283);
+  ctx.fillStyle = "rgba(180,255,250,.9)"; ctx.fill();
+  ctx.textAlign = "center";
+  for (const n of nodes) {
+    const sc = 0.8 + 0.4 * (Math.sin(n.ang) + 1) / 2;
+    const r = 5.5 * sc * (W / 320) * (n.held ? 1.4 : 1);
+    if (n.held) {
+      ctx.beginPath(); ctx.arc(n.x, n.y, r * 2.4, 0, 6.283);
+      ctx.fillStyle = "rgba(46,204,113,.18)"; ctx.fill();
+    }
+    ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, 6.283);
+    ctx.fillStyle = n.a.color;
+    ctx.globalAlpha = 0.55 + 0.45 * sc;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.beginPath(); ctx.arc(n.x, n.y, r * 0.45, 0, 6.283);
+    ctx.fillStyle = "rgba(255,255,255,.8)"; ctx.fill();
+    ctx.font = "10px Consolas, monospace";
+    ctx.fillStyle = "rgba(230,235,244,.85)";
+    ctx.fillText(n.id, n.x, n.y - r - 6);
+    if (n.price > 0) { ctx.fillStyle = "rgba(139,149,168,.9)"; ctx.fillText(fmtPrice(n.price), n.x, n.y + r + 12); }
+  }
+  if (ngPulses.length < 3 && Math.random() < 0.02) {
+    const a = NG_ASSETS[Math.floor(Math.random() * NG_ASSETS.length)];
+    ngPulses.push({ id: a.id, dir: Math.random() < 0.6 ? 1 : -1, p: 0, col: "#00f0ff" });
+  }
+  for (const pl of ngPulses) {
+    const n = nodes.find(x => x.id === pl.id);
+    if (!n) continue;
+    const tt = pl.dir === 1 ? pl.p : 1 - pl.p;
+    const x = cx0 + (n.x - cx0) * tt, y = cy0 + (n.y - cy0) * tt;
+    const t2 = clamp(tt - 0.08 * pl.dir, 0, 1);
+    ctx.beginPath(); ctx.moveTo(cx0 + (n.x - cx0) * t2, cy0 + (n.y - cy0) * t2); ctx.lineTo(x, y);
+    ctx.strokeStyle = pl.col; ctx.globalAlpha = 0.5; ctx.lineWidth = 1.6; ctx.stroke(); ctx.globalAlpha = 1;
+    ctx.beginPath(); ctx.arc(x, y, 3, 0, 6.283);
+    ctx.fillStyle = pl.col; ctx.fill();
+    pl.p += 0.025;
+  }
+  for (let i = ngPulses.length - 1; i >= 0; i--) if (ngPulses[i].p > 1) ngPulses.splice(i, 1);
+  ctx.globalCompositeOperation = "source-over";
+}
+
+function ngFrame() {
+  ngDrawMap();
+  if (Date.now() > ngStateUntil) {
+    const el = document.getElementById("ngState");
+    if (el && el.textContent !== t("ngScanning")) el.textContent = t("ngScanning");
+  }
+  requestAnimationFrame(ngFrame);
+}
+
 /* ================= NAVIGATION & INIT ================= */
 document.querySelectorAll("nav button").forEach(b => {
   b.onclick = () => {
@@ -2555,6 +2808,9 @@ requestAnimationFrame(aiFrame);
 ccBuildStatic();
 setInterval(ccEngineTick, 1000);
 requestAnimationFrame(ccFrame);
+ngBuildStatic();
+setInterval(ngTick, 1000);
+requestAnimationFrame(ngFrame);
 fetchRealPrices();
 setInterval(fetchRealPrices, 30000);
 setInterval(tickMarkets, 30000);
