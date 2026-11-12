@@ -297,7 +297,7 @@ const I18N = {
     cash: "Cash", cryptoPos: "Assets position", betsPos: "Bets position", total: "Total", pnl: "Overall P&L",
     navMarket: "📈 Market", navHistory: "📜 History",
     resetAccount: "↺ Reset account",
-    marketTitle: "Market", marketSub: "real prices · updates every 30 s",
+    marketTitle: "Market", marketSub: "real-time prices · BTC & gold live",
     thAsset: "Asset", thPrice: "Price", thChart: "Chart", thHeld: "Held", thTrade: "Trade (amount in €)",
     chartTitle: "📈 Chart", positionsTitle: "💼 My positions", importantTitle: "⚠️ Important",
     disclaimer_html: "You are trading <b>real market prices</b> (bitcoin, gold, silver, oil, gas) with <b>virtual money</b> — no risk. These assets are volatile: with real money you can lose your entire stake. No strategy guarantees profits. Never trade money you need.",
@@ -305,7 +305,7 @@ const I18N = {
     stratAuto: "🤖 Auto — bot picks the trend", stratMomentum: "Momentum — buys rallies", stratBounce: "Bounce — buys dips",
     stakeLabel: "Stake per trade (€)", tpLabel: "Take-profit (%)", slLabel: "Stop-loss (%)",
     startBot: "▶ Start bot", stopBot: "⏸ Stop bot",
-    botDesc_html: "In <b>Auto</b> mode the bot scans every asset every 30 s: on a strong trend it rides the rally; on a dip inside an uptrend it buys the bounce. It sells automatically at take-profit (+) or stop-loss (−). Virtual money only.",
+    botDesc_html: "In <b>Auto</b> mode the bot scans every asset every second: on a strong trend it rides the rally; on a dip inside an uptrend it buys the bounce. It sells automatically at take-profit (+) or stop-loss (−). Virtual money only.",
     statusStopped: "stopped", statusActive: "active · {strat} · stake {amt} · TP +{tp} % / SL −{sl} %",
     stratNameAuto: "auto", stratNameMomentum: "momentum", stratNameBounce: "bounce",
     pmTitle: "🎲 Prediction markets", pmSub: "buy YES or NO — earn €1 per share if you're right",
@@ -343,7 +343,7 @@ const I18N = {
     cash: "Barmittel", cryptoPos: "Assets-Position", betsPos: "Wetten-Position", total: "Gesamt", pnl: "Gesamt-P&L",
     navMarket: "📈 Markt", navHistory: "📜 Verlauf",
     resetAccount: "↺ Konto zurücksetzen",
-    marketTitle: "Markt", marketSub: "echte Preise · Update alle 30 s",
+    marketTitle: "Markt", marketSub: "echte Preise in Echtzeit · BTC & Gold live",
     thAsset: "Asset", thPrice: "Preis", thChart: "Chart", thHeld: "Gehalten", thTrade: "Handel (Betrag in €)",
     chartTitle: "📈 Chart", positionsTitle: "💼 Meine Positionen", importantTitle: "⚠️ Wichtig",
     disclaimer_html: "Du handelst mit <b>echten Marktpreisen</b> (Bitcoin, Gold, Silber, Öl, Gas) und <b>virtuellem Geld</b> — ohne Risiko. Diese Assets sind volatil: mit echtem Geld kannst du deinen gesamten Einsatz verlieren. Keine Strategie garantiert Gewinne. Handle nie mit Geld, das du brauchst.",
@@ -351,7 +351,7 @@ const I18N = {
     stratAuto: "🤖 Auto — Bot wählt den Trend", stratMomentum: "Momentum — kauft Rallyes", stratBounce: "Bounce — kauft Einbrüche",
     stakeLabel: "Einsatz pro Trade (€)", tpLabel: "Take-profit (%)", slLabel: "Stop-loss (%)",
     startBot: "▶ Bot starten", stopBot: "⏸ Bot stoppen",
-    botDesc_html: "Im <b>Auto</b>-Modus scannt der Bot alle 30 s jedes Asset: bei einem starken Trend reitet er die Rallye; bei einem Einbruch im Aufwärtstrend kauft er den Rückprall. Er verkauft automatisch beim Take-profit (+) oder Stop-loss (−). Nur virtuelles Geld.",
+    botDesc_html: "Im <b>Auto</b>-Modus scannt der Bot jede Sekunde jedes Asset: bei einem starken Trend reitet er die Rallye; bei einem Einbruch im Aufwärtstrend kauft er den Rückprall. Er verkauft automatisch beim Take-profit (+) oder Stop-loss (−). Nur virtuelles Geld.",
     statusStopped: "gestoppt", statusActive: "aktiv · {strat} · Einsatz {amt} · TP +{tp} % / SL −{sl} %",
     stratNameAuto: "auto", stratNameMomentum: "momentum", stratNameBounce: "Bounce",
     pmTitle: "🎲 Prognosemärkte", pmSub: "kaufe JA oder NEIN — verdiene 1 € pro Anteil, wenn du recht hast",
@@ -389,7 +389,7 @@ const I18N = {
     cash: "Liquidités", cryptoPos: "Position actifs", betsPos: "Position paris", total: "Total", pnl: "P&L global",
     navMarket: "📈 Marché", navHistory: "📜 Historique",
     resetAccount: "↺ Réinitialiser le compte",
-    marketTitle: "Marché", marketSub: "prix réels · mise à jour toutes les 30 s",
+    marketTitle: "Marché", marketSub: "prix en temps réel · BTC & or en direct",
     thAsset: "Actif", thPrice: "Prix", thChart: "Graphique", thHeld: "Détenu", thTrade: "Trade (montant en €)",
     chartTitle: "📈 Graphique", positionsTitle: "💼 Mes positions", importantTitle: "⚠️ Important",
     disclaimer_html: "Tu trades des <b>prix réels du marché</b> (bitcoin, or, argent, pétrole, gaz) avec de <b>l'argent virtuel</b> — aucun risque. Ces actifs sont volatils : avec de l'argent réel tu peux perdre toute ta mise. Aucune stratégie ne garantit de profits. Ne trade jamais l'argent dont tu as besoin.",
@@ -397,7 +397,7 @@ const I18N = {
     stratAuto: "🤖 Auto — le bot choisit la tendance", stratMomentum: "Momentum — achète les hausses", stratBounce: "Rebond — achète les baisses",
     stakeLabel: "Mise par trade (€)", tpLabel: "Take-profit (%)", slLabel: "Stop-loss (%)",
     startBot: "▶ Démarrer le bot", stopBot: "⏸ Arrêter le bot",
-    botDesc_html: "En mode <b>Auto</b>, le bot scanne chaque actif toutes les 30 s : sur une forte tendance il surfe la hausse ; sur une baisse dans une tendance haussière il achète le rebond. Il vend automatiquement au take-profit (+) ou stop-loss (−). Argent virtuel uniquement.",
+    botDesc_html: "En mode <b>Auto</b>, le bot scanne chaque actif chaque seconde : sur une forte tendance il surfe la hausse ; sur une baisse dans une tendance haussière il achète le rebond. Il vend automatiquement au take-profit (+) ou stop-loss (−). Argent virtuel uniquement.",
     statusStopped: "arrêté", statusActive: "actif · {strat} · mise {amt} · TP +{tp} % / SL −{sl} %",
     stratNameAuto: "auto", stratNameMomentum: "momentum", stratNameBounce: "rebond",
     pmTitle: "🎲 Marchés de prédiction", pmSub: "achète OUI ou NON — gagne 1 € par action si tu as raison",
@@ -435,7 +435,7 @@ const I18N = {
     cash: "Kesh", cryptoPos: "Pozicioni i aseteve", betsPos: "Pozicioni i basteve", total: "Totali", pnl: "P&L total",
     navMarket: "📈 Tregu", navHistory: "📜 Historiku",
     resetAccount: "↺ Rivendis llogarinë",
-    marketTitle: "Tregu", marketSub: "çmime reale · përditësohet çdo 30 s",
+    marketTitle: "Tregu", marketSub: "çmime reale në kohë reale · BTC & ari live",
     thAsset: "Aseti", thPrice: "Çmimi", thChart: "Grafiku", thHeld: "Në posedim", thTrade: "Tregto (shuma në €)",
     chartTitle: "📈 Grafiku", positionsTitle: "💼 Pozicionet e mia", importantTitle: "⚠️ E rëndësishme",
     disclaimer_html: "Ti tregton <b>çmime reale të tregut</b> (bitcoin, ari, argjend, naftë, gaz) me <b>para virtuale</b> — pa rrezik. Këto asete janë të paqëndrueshme: me para reale mund të humbasësh gjithë shumën. Asnjë strategji nuk garanton fitime. Mos tregto kurrë paratë që të duhen.",
@@ -443,7 +443,7 @@ const I18N = {
     stratAuto: "🤖 Auto — boti zgjedh trendin", stratMomentum: "Momentum — blej rritjet", stratBounce: "Rikthim — blej rëniet",
     stakeLabel: "Shuma për tregti (€)", tpLabel: "Fitim-prerje (%)", slLabel: "Humbje-prerje (%)",
     startBot: "▶ Nis botin", stopBot: "⏸ Ndalo botin",
-    botDesc_html: "Në modalitetin <b>Auto</b> boti skanon çdo aset çdo 30 s: në trend të fortë ndjek rritjen; në rënie brenda trendit rritës blej rikthimin. Shet automatikisht në fitim-prerje (+) ose humbje-prerje (−). Vetëm para virtuale.",
+    botDesc_html: "Në modalitetin <b>Auto</b> boti skanon çdo aset çdo sekondë: në trend të fortë ndjek rritjen; në rënie brenda trendit rritës blej rikthimin. Shet automatikisht në fitim-prerje (+) ose humbje-prerje (−). Vetëm para virtuale.",
     statusStopped: "ndaluar", statusActive: "aktiv · {strat} · shuma {amt} · TP +{tp} % / SL −{sl} %",
     stratNameAuto: "auto", stratNameMomentum: "momentum", stratNameBounce: "rikthim",
     pmTitle: "🎲 Tregje predikimesh", pmSub: "blej PO ose JO — fito 1 € për aksion nëse ke të drejtë",
@@ -959,6 +959,46 @@ async function fetchAssetPrice(a) {
   return await fetchYahoo(a.symbol);
 }
 
+/* ================= WEBSOCKET (live BTC & gold) ================= */
+const WS_HOSTS = ["wss://data-stream.binance.vision", "wss://stream.binance.com:9443"];
+let ws = null, wsHostIdx = 0, wsTimer = null;
+
+function applyLiveTick(symbol, price, open) {
+  if (!(price > 0)) return;
+  if (symbol === "EURUSDT") { state.fxRate = price; return; }
+  const a = ALL_ASSETS.find(x => x.symbol === symbol);
+  if (!a) return;
+  const s = state.coinPrices[a.id];
+  if (!s.open && open) s.open = open;
+  s.price = price;
+  s.hist.push(price);
+  if (s.hist.length > 240) s.hist.shift();
+  s.live = true;
+}
+
+function connectWS() {
+  const streams = ALL_ASSETS.filter(a => a.source === "binance").map(a => a.symbol.toLowerCase() + "@miniTicker");
+  streams.push("eurusdt@miniTicker");
+  clearTimeout(wsTimer);
+  try { if (ws) { ws.onclose = null; ws.close(); } } catch (e) {}
+  ws = new WebSocket(WS_HOSTS[wsHostIdx % WS_HOSTS.length] + "/stream?streams=" + streams.join("/"));
+  ws.onmessage = ev => {
+    try {
+      const d = JSON.parse(ev.data).data;
+      if (!d || !d.s) return;
+      applyLiveTick(d.s, parseFloat(d.c), parseFloat(d.o));
+      botTick();
+      saveState();
+      render();
+    } catch (e) {}
+  };
+  ws.onclose = () => {
+    wsHostIdx++;
+    wsTimer = setTimeout(connectWS, 5000);
+  };
+  ws.onerror = () => { try { ws.close(); } catch (e) {} };
+}
+
 async function fetchRealPrices() {
   let eurusd = state.fxRate || 1.08;
   try {
@@ -1038,6 +1078,7 @@ renderBot();
 fetchRealPrices();
 setInterval(fetchRealPrices, 30000);
 setInterval(tickMarkets, 30000);
+connectWS();
 window.addEventListener("resize", renderChart);
 </script>
 </body>
