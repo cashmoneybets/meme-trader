@@ -120,7 +120,9 @@
   .tv-link a { color: var(--accent2); text-decoration: none; }
   .tv-link a:hover { text-decoration: underline; }
   .ai-auto-info { font-size: 12px; color: var(--muted); padding: 4px 0 2px; line-height: 1.4; }
-  .fee-card { margin-bottom: 20px; }
+  .tv-col { display: flex; flex-direction: column; gap: 20px; }
+  .tv-col .tv-card { flex: 1; }
+  .tv-col .fee-row { gap: 22px; }
   .fee-row { display: flex; gap: 30px; flex-wrap: wrap; }
   .fee-item { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
   .fee-item b { font-size: 17px; font-variant-numeric: tabular-nums; }
@@ -543,11 +545,11 @@
         </div>
       </div>
     </div>
+    <div class="tv-col">
     <div class="card tv-card">
       <h2><span data-i18n="tvTitle">📺 LIVE TV — BLOOMBERG</span></h2>
       <div class="tv-frame"><iframe id="tvFrame" src="https://www.youtube-nocookie.com/embed/live_stream?channel=UCIALMKvObZNtJ6AmdCLP7Lg" title="Live TV" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
       <div class="tv-link"><a id="tvLink" href="https://www.youtube.com/channel/UCIALMKvObZNtJ6AmdCLP7Lg" target="_blank" rel="noopener" data-i18n="tvWatch">Watch on YouTube</a></div>
-    </div>
     </div>
     <div class="card fee-card">
       <div class="lq-ctitle" data-i18n="feeBoxTitle">REAL TRADING FEES</div>
@@ -557,6 +559,8 @@
         <div class="fee-item"><span data-i18n="feeRoundTrip">Round trip (stake)</span><b id="feesRT">€0.10</b></div>
         <div class="fee-item"><span data-i18n="feeTradesLab">Trades</span><b id="feesTrades">0</b></div>
       </div>
+    </div>
+    </div>
     </div>
     <div class="card" style="margin-bottom:20px;">
       <div class="vol" data-i18n="botDesc2_html">
