@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dorian - DEKA — Gold, Oil, Bitcoin & Polymarket (real prices)</title>
+<title>DORIAN - TRADING BOT — Gold, Oil, Bitcoin & Polymarket (real prices)</title>
 <style>
   :root {
     --bg: #0b0e14;
@@ -547,10 +547,8 @@
       <h2><span data-i18n="tvTitle">📺 LIVE TV — BLOOMBERG</span></h2>
       <select id="tvSel" style="width:100%; margin-bottom:10px;">
         <option value="UCIALMKvObZNtJ6AmdCLP7Lg">Bloomberg TV</option>
-        <option value="UCEAZeUIeJs0IjQiqTCdVSIg">Yahoo Finance</option>
-        <option value="UCqoSrYgusd8ZddtMoWhjHYA">Schwab Network</option>
-        <option value="UCQfwfsi5VrQ8yKZ-UWmAEFg">France 24 EN</option>
-        <option value="UCSrZ3UV4jOidv8ppoVuvW9Q">Euronews</option>
+        <option value="UCSeil5V81-mEGB1-VNR7YEA">n-tv Nachrichten</option>
+        <option value="UC5NOEUbkLheQcaaRldYW5GA">tagesschau</option>
       </select>
       <div class="tv-frame"><iframe id="tvFrame" src="https://www.youtube-nocookie.com/embed/live_stream?channel=UCIALMKvObZNtJ6AmdCLP7Lg" title="Live TV" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
       <div class="tv-link"><a id="tvLink" href="https://www.youtube.com/channel/UCIALMKvObZNtJ6AmdCLP7Lg" target="_blank" rel="noopener" data-i18n="tvWatch">Watch on YouTube</a></div>
@@ -1100,7 +1098,7 @@ const I18N = {
     ccSigBuy: "BUY", ccSigSell: "SELL", ccSigWait: "WAIT", ccSigStrongBuy: "STRONG BUY", ccSigStrongSell: "STRONG SELL", ccSigHighVol: "HIGH VOLATILITY", ccSigBreakout: "BREAKOUT", ccSigReversal: "REVERSAL", ccSigMomentum: "MOMENTUM",
     ccEvBreakout: "Breakout detected", ccEvRiskOk: "Risk acceptable", ccEvMomentum: "Momentum increasing", ccEvLong: "LONG signal generated", ccEvShort: "SHORT signal generated", ccEvSized: "Position size calculated: {amt}", ccEvOpened: "Trade opened", ccEvRecorded: "Trade recorded", ccEvEquity: "Portfolio updated", ccEvTP: "Take profit hit", ccEvSL: "Stop loss hit", ccEvVolatility: "Volatility spike monitored", ccEvReversal: "Reversal pattern observed", ccEvClosed: "Trade closed",
     ccSideLong: "LONG", ccSideShort: "SHORT",
-    ngTitle: "Neural Grid — Live Bot Activity", ngCore: "DEKA CORE", ngScanning: "SCANNING", ngBuying: "BUYING", ngSelling: "SELLING",
+    ngTitle: "Neural Grid — Live Bot Activity", ngCore: "NEURAL CORE", ngScanning: "SCANNING", ngBuying: "BUYING", ngSelling: "SELLING",
     ngFeedTitle: "Live bot feed", ngFeedEmpty: "No bot activity yet \u2014 the bots scan the market live here.", ngFScan: "SCAN", ngFSig: "SIGNAL", ngFRisk: "RISK", ngPosTitle: "Open positions — where they're going", ngChartsTitle: "All markets — live",
     ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.", ngStatTrades: "bot trades", ngStatHot: "top mover", ngStatHeld: "held", lqTitle: "Live Quant Control Center", botTitleAI: "🤖 Bot \u2014 AI \u00b7 14 pairs", aiPairLabel: "Pair", aiStakeLabel: "Stake per trade (% of cash)", aiAutoInfo: "🧠 The AI picks the pair and trend itself \u2014 TP/SL are calculated automatically.", tvTitle: "📺 LIVE TV", tvWatch: "Watch on YouTube", feeBoxTitle: "REAL TRADING FEES", feePaid: "Fees paid (total)", feeRateLab: "Fee rate", feeRoundTrip: "Round trip (stake)", feeTradesLab: "Trades",
     resetAccount: "↺ Reset account",
@@ -1182,7 +1180,7 @@ const I18N = {
     ccSigBuy: "KAUFEN", ccSigSell: "VERKAUFEN", ccSigWait: "WARTEN", ccSigStrongBuy: "STARK KAUFEN", ccSigStrongSell: "STARK VERKAUFEN", ccSigHighVol: "HOHE VOLATILITÄT", ccSigBreakout: "AUSBRUCH", ccSigReversal: "UMKEHR", ccSigMomentum: "MOMENTUM",
     ccEvBreakout: "Ausbruch erkannt", ccEvRiskOk: "Risiko akzeptabel", ccEvMomentum: "Momentum steigt", ccEvLong: "LONG-Signal erzeugt", ccEvShort: "SHORT-Signal erzeugt", ccEvSized: "Positionsgröße berechnet: {amt}", ccEvOpened: "Trade eröffnet", ccEvRecorded: "Trade aufgezeichnet", ccEvEquity: "Portfolio aktualisiert", ccEvTP: "Take-Profit erreicht", ccEvSL: "Stop-Loss erreicht", ccEvVolatility: "Volatilitätsspitze überwacht", ccEvReversal: "Umkehrmuster beobachtet", ccEvClosed: "Trade geschlossen",
     ccSideLong: "LONG", ccSideShort: "SHORT",
-    ngTitle: "Neural Grid — Bot-Aktivität live", ngCore: "DEKA-KERN", ngScanning: "SCANNT", ngBuying: "KAUF", ngSelling: "VERKAUF",
+    ngTitle: "Neural Grid — Bot-Aktivität live", ngCore: "NEURAL-KERN", ngScanning: "SCANNT", ngBuying: "KAUF", ngSelling: "VERKAUF",
     ngFeedTitle: "Bot-Feed live", ngFeedEmpty: "Noch keine Bot-Aktivität \u2014 die Bots scannen hier live den Markt.", ngFScan: "SCAN", ngFSig: "SIGNAL", ngFRisk: "RISIKO", ngPosTitle: "Offene Positionen — wohin sie gehen", ngChartsTitle: "Alle Märkte — live",
     ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.", ngStatTrades: "Bot-Trades", ngStatHot: "Top-Beweger", ngStatHeld: "gehalten", lqTitle: "Live-Quant-Kontrollzentrum", botTitleAI: "🤖 Bot \u2014 KI \u00b7 14 Paare", aiPairLabel: "Paar", aiStakeLabel: "Einsatz pro Trade (% vom Guthaben)", aiAutoInfo: "🧠 Die KI wählt Paar und Trend selbst \u2014 TP/SL werden automatisch berechnet.", tvTitle: "📺 LIVE-TV", tvWatch: "Auf YouTube ansehen", feeBoxTitle: "ECHTE HANDELSGEB\u00dcHREN", feePaid: "Bezahlte Geb\u00fchren", feeRateLab: "Geb\u00fchrensatz", feeRoundTrip: "Roundtrip (Einsatz)", feeTradesLab: "Trades",
     resetAccount: "↺ Konto zurücksetzen",
@@ -1264,7 +1262,7 @@ const I18N = {
     ccSigBuy: "ACHAT", ccSigSell: "VENTE", ccSigWait: "ATTENDRE", ccSigStrongBuy: "FORT ACHAT", ccSigStrongSell: "FORTE VENTE", ccSigHighVol: "VOLATILITÉ HAUTE", ccSigBreakout: "CASSURE", ccSigReversal: "RETOURNEMENT", ccSigMomentum: "MOMENTUM",
     ccEvBreakout: "Cassure détectée", ccEvRiskOk: "Risque acceptable", ccEvMomentum: "Momentum en hausse", ccEvLong: "Signal LONG généré", ccEvShort: "Signal SHORT généré", ccEvSized: "Taille de position calculée : {amt}", ccEvOpened: "Trade ouvert", ccEvRecorded: "Trade enregistré", ccEvEquity: "Portefeuille mis à jour", ccEvTP: "Take profit atteint", ccEvSL: "Stop loss atteint", ccEvVolatility: "Pic de volatilité surveillé", ccEvReversal: "Figure de retournement observée", ccEvClosed: "Trade clôturé",
     ccSideLong: "LONG", ccSideShort: "SHORT",
-    ngTitle: "Neural Grid — Activité des bots en direct", ngCore: "CŒUR DEKA", ngScanning: "SCAN EN COURS", ngBuying: "ACHAT", ngSelling: "VENTE",
+    ngTitle: "Neural Grid — Activité des bots en direct", ngCore: "CŒUR NEURAL", ngScanning: "SCAN EN COURS", ngBuying: "ACHAT", ngSelling: "VENTE",
     ngFeedTitle: "Flux des bots en direct", ngFeedEmpty: "Aucune activité pour le moment \u2014 les bots scannent le marché en direct ici.", ngFScan: "SCAN", ngFSig: "SIGNAL", ngFRisk: "RISQUE", ngPosTitle: "Positions ouvertes — où elles vont", ngChartsTitle: "Tous les marchés — en direct",
     ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.", ngStatTrades: "trades bots", ngStatHot: "plus actif", ngStatHeld: "détenus", lqTitle: "Centre de contrôle Quant en direct", botTitleAI: "🤖 Bot \u2014 IA \u00b7 14 paires", aiPairLabel: "Paire", aiStakeLabel: "Mise par trade (% du cash)", aiAutoInfo: "🧠 L\u2019IA choisit elle-même la paire et la tendance \u2014 TP/SL calculés automatiquement.", tvTitle: "📺 TV EN DIRECT", tvWatch: "Voir sur YouTube", feeBoxTitle: "FRAIS DE TRADING R\u00c9ELS", feePaid: "Frais pay\u00e9s (total)", feeRateLab: "Taux de frais", feeRoundTrip: "Aller-retour (mise)", feeTradesLab: "Trades",
     resetAccount: "↺ Réinitialiser le compte",
@@ -1346,7 +1344,7 @@ const I18N = {
     ccSigBuy: "BLERJE", ccSigSell: "SHITJE", ccSigWait: "PRIT", ccSigStrongBuy: "BLERJE E FORTË", ccSigStrongSell: "SHITJE E FORTË", ccSigHighVol: "VOLATILITET I LARTË", ccSigBreakout: "ZBRITJE", ccSigReversal: "KTHIM", ccSigMomentum: "MOMENTUM",
     ccEvBreakout: "Thyerje e zbuluar", ccEvRiskOk: "Rreziku i pranueshëm", ccEvMomentum: "Momentum në rritje", ccEvLong: "Sinali LONG i gjeneruar", ccEvShort: "Sinali SHORT i gjeneruar", ccEvSized: "Madhësia e pozicionit e llogaritur: {amt}", ccEvOpened: "Trade e hapur", ccEvRecorded: "Trade e regjistruar", ccEvEquity: "Portofoli i përditësuar", ccEvTP: "Take profit i arritur", ccEvSL: "Stop loss i arritur", ccEvVolatility: "Thyerja e volatilitetit nën vëzhgim", ccEvReversal: "Modeli i kthimit i vërejtur", ccEvClosed: "Trade e mbyllur",
     ccSideLong: "LONG", ccSideShort: "SHORT",
-    ngTitle: "Neural Grid — Aktiviteti i botëve live", ngCore: "BËRTHAMA DEKA", ngScanning: "PO SKANON", ngBuying: "BLERJE", ngSelling: "SHITJE",
+    ngTitle: "Neural Grid — Aktiviteti i botëve live", ngCore: "BËRTHAMA NEURALE", ngScanning: "PO SKANON", ngBuying: "BLERJE", ngSelling: "SHITJE",
     ngFeedTitle: "Fluxi i botëve live", ngFeedEmpty: "Asgjë për momentin \u2014 botët po skanojnë tregun live këtu.", ngFScan: "SKANIM", ngFSig: "SINAL", ngFRisk: "RREZIK", ngPosTitle: "Pozicionet e hapura — ku po shkojnë", ngChartsTitle: "Të gjitha tregjet — live",
     ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.", ngStatTrades: "tregtime botesh", ngStatHot: "më aktiv", ngStatHeld: "të mbajtura", lqTitle: "Qendra e kontrollit Quant Live", botTitleAI: "🤖 Boti \u2014 AI \u00b7 14 çifte", aiPairLabel: "Çift", aiStakeLabel: "Mishë për tregti (% nga keshi)", aiAutoInfo: "🧠 AI zgjedh vetë çiftin dhe trendin \u2014 TP/SL llogariten automatikisht.", tvTitle: "📺 TV LIVE", tvWatch: "Shiko n\u00eb YouTube", feeBoxTitle: "TARIFAT REALE T\u00cb TRADINGUT", feePaid: "Tarifat e paguara", feeRateLab: "Shkalla e tarif\u00ebs", feeRoundTrip: "Round trip (mish\u00eb)", feeTradesLab: "Tregtime",
     resetAccount: "↺ Rivendis llogarinë",
