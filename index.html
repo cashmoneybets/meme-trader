@@ -29,11 +29,14 @@
     padding: 18px 24px 12px; border-bottom: 1px solid var(--border);
     background: var(--panel);
   }
-  .brand-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  .logo { font-size: 27px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; display: flex; align-items: center; gap: 13px; }
-  .logo span { color: #ff3b30; text-shadow: 0 0 12px rgba(255,59,48,.4); animation: logoPulse 2.6s ease-in-out infinite; }
+  .brand-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
+  .brand-row .logo { grid-column: 2; justify-self: center; }
+  .brand-row .lang-dd { grid-column: 3; justify-self: end; }
+  .logo { font-size: 27px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; display: flex; align-items: center; gap: 13px; background: linear-gradient(100deg, #fff 30%, #8ff7ff 46%, #fff 62%); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; animation: logoSheen 5s linear infinite; }
+  .logo span { color: #ff3b30; -webkit-text-fill-color: #ff3b30; text-shadow: 0 0 12px rgba(255,59,48,.4); animation: logoPulse 2.6s ease-in-out infinite; }
   @keyframes logoPulse { 0%, 100% { text-shadow: 0 0 10px rgba(255,59,48,.3); } 50% { text-shadow: 0 0 24px rgba(255,59,48,.75); } }
-  .logo-cv { width: 46px; height: 46px; border-radius: 10px; border: 1px solid var(--border); background: rgba(0,0,0,.35); flex-shrink: 0; box-shadow: 0 0 16px rgba(0,206,201,.15); }
+  @keyframes logoSheen { from { background-position: 130% 0; } to { background-position: -130% 0; } }
+  .logo-cv { width: 60px; height: 60px; border-radius: 12px; border: 1px solid var(--border); background: rgba(0,0,0,.35); flex-shrink: 0; box-shadow: 0 0 18px rgba(0,206,201,.2); }
   .lang-dd { position: relative; }
   .lang-btn { display: flex; align-items: center; gap: 7px; background: var(--panel2); border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 600; }
   .lang-btn:hover { border-color: var(--accent2); }
@@ -424,10 +427,19 @@
     header { padding: 12px 14px 8px; gap: 10px; }
     .brand-row { gap: 8px; }
     .lang-btn { padding: 6px 8px; font-size: 13px; }
-    .logo { font-size: 16px; gap: 8px; letter-spacing: 1.5px; }
-    .logo-cv { width: 30px; height: 30px; border-radius: 8px; }
+    .logo { font-size: 15px; gap: 8px; letter-spacing: 1.2px; }
+    .logo-cv { width: 36px; height: 36px; border-radius: 9px; }
     .stats { gap: 12px; justify-content: flex-start; }
     .px-ticker-track { font-size: 11.5px; gap: 20px; padding: 7px 10px; }
+    .bot-stack { gap: 10px; }
+    .bot-stack .card { padding: 10px 12px; }
+    .bot-stack h2 { font-size: 14px; margin: 0 0 8px; }
+    .bot-stack h2 small { font-size: 10.5px; margin-left: 6px; }
+    .bot-controls { gap: 6px; }
+    .bot-controls label { font-size: 11px; gap: 3px; }
+    .bot-stack input[type=number], .bot-stack select { padding: 6px 8px; font-size: 12.5px; width: 96px; }
+    .bot-stack button.act { padding: 8px 12px; font-size: 12.5px; }
+    .ai-auto-info { font-size: 10.5px; padding: 2px 0; }
     .stat { text-align: left; }
     .stat .value { font-size: 14px; }
     nav { padding: 10px 12px 0; overflow-x: auto; }
@@ -4094,9 +4106,16 @@ function lqFrame() {
 }
 
 /* ================= LOGO ANIME ================= */
-const LOGO_SIZE = 46;
+const LOGO_SIZE = 60;
 const logoCandles = [];
 let logoLast = 0;
+const logoOrbits = Array.from({ length: 14 }, () => ({
+  a: Math.random() * Math.PI * 2,
+  r: 0.3 + Math.random() * 0.16,
+  sp: (0.006 + Math.random() * 0.012) * (Math.random() < 0.5 ? 1 : -1),
+  sz: 1.1 + Math.random() * 1.7,
+  col: ["#00cec9", "#ff3b30", "#74b9ff", "#2ecc71"][Math.floor(Math.random() * 4)]
+}));
 function logoFrame() {
   const c = document.getElementById("logoCv");
   if (c) {
@@ -4105,22 +4124,45 @@ function logoFrame() {
     const ctx = c.getContext("2d");
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, LOGO_SIZE, LOGO_SIZE);
-    const now = Date.now();
+    const S = LOGO_SIZE, mid = S / 2, now = Date.now();
+    const pulse = 0.5 + 0.5 * Math.sin(now / 900);
+    const g = ctx.createRadialGradient(mid, mid, 2, mid, mid, S * 0.48);
+    g.addColorStop(0, "rgba(0,206,201," + (0.1 + 0.09 * pulse).toFixed(3) + ")");
+    g.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+    ctx.strokeStyle = "rgba(0,206,201," + (0.22 + 0.25 * pulse).toFixed(3) + ")";
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 5]); ctx.lineDashOffset = -now / 60;
+    ctx.beginPath(); ctx.arc(mid, mid, S * 0.43, 0, Math.PI * 2); ctx.stroke();
+    ctx.setLineDash([]);
     if (now - logoLast > 420) {
       logoLast = now;
-      const prev = logoCandles.length ? logoCandles[logoCandles.length - 1].c : LOGO_SIZE / 2;
-      const cl = Math.max(LOGO_SIZE * 0.14, Math.min(LOGO_SIZE * 0.86, prev + (Math.random() - 0.47) * LOGO_SIZE * 0.26));
+      const prev = logoCandles.length ? logoCandles[logoCandles.length - 1].c : S / 2;
+      const cl = Math.max(S * 0.27, Math.min(S * 0.73, prev + (Math.random() - 0.47) * S * 0.22));
       logoCandles.push({ o: prev, c: cl });
       if (logoCandles.length > 6) logoCandles.shift();
     }
-    const step = LOGO_SIZE / 6.6, w = step * 0.76;
+    const step = S / 8.6, w = step * 0.68;
     logoCandles.forEach((cd, i) => {
-      const x = LOGO_SIZE * 0.1 + i * step;
+      const x = S * 0.17 + i * step;
       const col = cd.c >= cd.o ? "#2ecc71" : "#e74c3c";
+      ctx.shadowColor = col; ctx.shadowBlur = 5;
       ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(x + w / 2, LOGO_SIZE * 0.1); ctx.lineTo(x + w / 2, LOGO_SIZE * 0.9); ctx.stroke();
-      ctx.fillRect(x, Math.min(cd.o, cd.c), w, Math.max(2.2, Math.abs(cd.c - cd.o)));
+      ctx.beginPath(); ctx.moveTo(x + w / 2, S * 0.18); ctx.lineTo(x + w / 2, S * 0.82); ctx.stroke();
+      ctx.fillRect(x, Math.min(cd.o, cd.c), w, Math.max(2, Math.abs(cd.c - cd.o)));
+      ctx.shadowBlur = 0;
     });
+    logoOrbits.forEach(o => {
+      o.a += o.sp;
+      const x = mid + Math.cos(o.a) * S * o.r;
+      const y = mid + Math.sin(o.a) * S * o.r * 0.58;
+      ctx.fillStyle = o.col; ctx.shadowColor = o.col; ctx.shadowBlur = 6;
+      ctx.beginPath(); ctx.arc(x, y, o.sz, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+    const sy = ((now / 2400) % 1) * S;
+    ctx.fillStyle = "rgba(0,206,201,0.09)";
+    ctx.fillRect(0, sy, S, 2);
   }
   requestAnimationFrame(logoFrame);
 }
