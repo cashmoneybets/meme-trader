@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MemeTrader — Simulateur Meme Coins & Polymarket</title>
+<title>Dorian - DEKA — Or, Pétrole, Bitcoin & Polymarket (cours réels)</title>
 <style>
   :root {
     --bg: #0b0e14;
@@ -115,6 +115,12 @@
   .empty { color: var(--muted); font-size: 13px; padding: 14px 6px; text-align: center; }
   .bigchart { width: 100%; height: 260px; display: block; }
   .vol { font-size: 12px; color: var(--muted); }
+  .live-badge {
+    display: inline-block; margin-left: 8px; padding: 1px 7px; border-radius: 4px;
+    font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+    background: rgba(46,204,113,.15); color: var(--green); vertical-align: middle;
+  }
+  .live-badge.off { background: rgba(231,76,60,.15); color: var(--red); }
   @media (max-width: 720px) {
     header { padding: 10px 14px; }
     .logo { font-size: 17px; }
@@ -155,7 +161,7 @@
 <body>
 
 <header>
-  <div class="logo">🚀 Meme<span>Trader</span></div>
+  <div class="logo">📊 Dorian <span>- DEKA</span></div>
   <div class="stats">
     <div class="stat"><div class="label">Cash</div><div class="value" id="stCash">—</div></div>
     <div class="stat"><div class="label">Position crypto</div><div class="value" id="stCrypto">—</div></div>
@@ -166,18 +172,18 @@
 </header>
 
 <nav>
-  <button data-page="coins" class="active">🪙 Meme Coins</button>
+  <button data-page="coins" class="active">📈 Marché</button>
   <button data-page="markets">🎲 Polymarket</button>
   <button data-page="history">📜 Historique</button>
 </nav>
 
 <main>
-  <!-- PAGE MEME COINS -->
+  <!-- PAGE MARCHÉ -->
   <section class="page active" id="page-coins">
     <div class="reset-row"><button id="btnReset">↺ Réinitialiser le compte</button></div>
     <div class="grid2">
       <div>
-        <h2>Marché <small id="tickInfo">prix simulés · mise à jour toutes les 2 s</small></h2>
+        <h2>Marché <small id="tickInfo">cours réels · mise à jour toutes les 30 s</small></h2>
         <table>
           <thead>
             <tr>
@@ -203,9 +209,9 @@
       <div class="card">
         <h2>⚠️ Important</h2>
         <div class="disclaimer">
-          Ceci est un <b>simulateur</b> : les prix sont générés aléatoirement et aucun argent réel n'est engagé.
-          Le trading de meme coins et les paris prédictifs sont <b>extrêmement risqués</b> — on peut y perdre la totalité
-          de sa mise. Aucune stratégie ne garantit des gains. Ne tradez jamais de l'argent dont vous avez besoin.
+          Vous tradez les <b>cours réels</b> (bitcoin, or, argent, pétrole, gaz) avec de <b>l'argent virtuel</b> — aucun
+          risque. Ces actifs sont volatils : en réel, on peut perdre la totalité de sa mise. Aucune stratégie ne
+          garantit des gains. Ne tradez jamais de l'argent dont vous avez besoin.
         </div>
       </div>
     </div>
@@ -261,16 +267,26 @@
 
 /* ================= ÉTAT ================= */
 const START_CASH = 500;
-const LS_KEY = "memetrader_v1";
+const LS_KEY = "realtrader_v1";
 
-const COINS = [
-  { id: "DOGE", name: "Dogecoin", icon: "🐕", color: "#c2a633", price: 0.32, vol: 0.045 },
-  { id: "SHIB", name: "Shiba Inu", icon: "🐶", color: "#f00500", price: 0.0000245, vol: 0.06 },
-  { id: "PEPE", name: "Pepe", icon: "🐸", color: "#4caf50", price: 0.0000181, vol: 0.075 },
-  { id: "WIF", name: "dogwifhat", icon: "🧢", color: "#e67e22", price: 2.84, vol: 0.065 },
-  { id: "BONK", name: "Bonk", icon: "🔨", color: "#f39c12", price: 0.0000412, vol: 0.07 },
-  { id: "FLOKI", name: "Floki", icon: "⚔️", color: "#e8b923", price: 0.00021, vol: 0.055 },
+const REAL_ASSETS = [
+  { id: "BTC", name: "Bitcoin", icon: "₿", color: "#f7931a", source: "binance", symbol: "BTCUSDT" },
+  { id: "XAU", name: "Or (once)", icon: "🥇", color: "#FFD700", source: "binance", symbol: "PAXGUSDT", yahoo: "GC=F" },
+  { id: "XAG", name: "Argent (once)", icon: "⚪", color: "#b0b7c3", source: "yahoo", symbol: "SI=F" },
+  { id: "WTI", name: "Pétrole WTI", icon: "🛢️", color: "#5d6d7e", source: "yahoo", symbol: "CL=F" },
+  { id: "NG", name: "Gaz naturel", icon: "🔥", color: "#e67e22", source: "yahoo", symbol: "NG=F" },
 ];
+const ALL_ASSETS = REAL_ASSETS;
+
+function seedPrices() {
+  const ids = new Set(ALL_ASSETS.map(a => a.id));
+  Object.keys(state.coinPrices).forEach(k => { if (!ids.has(k)) delete state.coinPrices[k]; });
+  Object.keys(state.holdings).forEach(k => { if (!ids.has(k)) delete state.holdings[k]; });
+  ALL_ASSETS.forEach(a => {
+    if (state.coinPrices[a.id]) return;
+    state.coinPrices[a.id] = { price: 0, open: 0, hist: [] };
+  });
+}
 
 const fmtEur = n => n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
 const fmtPrice = p => p >= 1 ? p.toFixed(2) + " €" : p.toFixed(8).replace(/0+$/, "") + " €";
@@ -286,11 +302,7 @@ let state = loadState() || {
   coinPrices: {},          // id -> { price, open, hist: [] }
 };
 
-COINS.forEach(c => {
-  if (!state.coinPrices[c.id]) {
-    state.coinPrices[c.id] = { price: c.price, open: c.price, hist: Array(60).fill(c.price) };
-  }
-});
+seedPrices();
 if (!state.bot) state.bot = { enabled: false, strategy: "momentum", amount: 50, tp: 5, sl: 3 };
 
 function loadState() {
@@ -304,7 +316,7 @@ function buildMarkets() {
   const now = Date.now();
   return [
     { id: "m1", q: "Bitcoin au-dessus de 150 000 € avant le 1er mars ?", cat: "Crypto", end: now + 864e5, prob: 0.34, resolved: null },
-    { id: "m2", q: "Un meme coin du top 10 fait +200 % cette semaine ?", cat: "Crypto", end: now + 3 * 864e5, prob: 0.18, resolved: null },
+    { id: "m2", q: "L'or dépasse 5 000 € l'once avant la fin de l'année ?", cat: "Matières premières", end: now + 3 * 864e5, prob: 0.18, resolved: null },
     { id: "m3", q: "L'ETF Dogecoin est approuvé cette année ?", cat: "Régulation", end: now + 30 * 864e5, prob: 0.27, resolved: null },
     { id: "m4", q: "Elon Musk tweete à propos de DOGE dans les 24 h ?", cat: "Réseaux", end: now + 864e5, prob: 0.55, resolved: null },
     { id: "m5", q: "La couche AI crypto surpasse le DeFi en volume ce mois ?", cat: "Narratif", end: now + 12 * 864e5, prob: 0.41, resolved: null },
@@ -312,25 +324,14 @@ function buildMarkets() {
   ].map(m => ({ ...m, endTs: m.end }));
 }
 
-/* ================= MOTEUR DE PRIX ================= */
-function tickPrices() {
-  COINS.forEach(c => {
-    const s = state.coinPrices[c.id];
-    // marche aléatoire log-normale + léger retour à la moyenne
-    const shock = (Math.random() - 0.5) * 2 * c.vol;
-    const meanRev = (c.price - s.price) / c.price * 0.01;
-    s.price = Math.max(s.price * (1 + shock * 0.35 + meanRev), c.price * 0.2);
-    s.hist.push(s.price);
-    if (s.hist.length > 120) s.hist.shift();
-  });
-  // évolution des probabilités Polymarket
+/* ================= MOTEUR DE PRIX (cours réels) ================= */
+function tickMarkets() {
   state.markets.forEach(m => {
     if (m.resolved !== null) return;
     const shock = (Math.random() - 0.5) * 0.03;
     m.prob = clamp(m.prob + shock, 0.02, 0.98);
     if (Date.now() > m.endTs) resolveMarket(m);
   });
-  botTick();
   saveState();
   render();
 }
@@ -369,6 +370,7 @@ function buyCoin(id, amount, via) {
   amount = parseFloat(amount);
   const s = state.coinPrices[id];
   if (!amount || amount <= 0) return toast("Montant invalide");
+  if (s.price <= 0) return toast("Cours réel pas encore chargé — réessayez dans un instant");
   if (amount > state.cash) return toast("Fonds insuffisants");
   const qty = amount / s.price;
   state.cash -= amount;
@@ -420,8 +422,9 @@ function buyBet(marketId, side, amount) {
 function botTick() {
   const b = state.bot;
   if (!b || !b.enabled) return;
-  COINS.forEach(c => {
+  ALL_ASSETS.forEach(c => {
     const s = state.coinPrices[c.id];
+    if (s.price <= 0) return;
     const h = state.holdings[c.id];
     const past = s.hist[s.hist.length - 11] || s.price;
     const trend = (s.price - past) / past * 100;
@@ -490,17 +493,20 @@ function render() {
 function renderCoins() {
   const tbody = document.getElementById("coinRows");
   tbody.innerHTML = "";
-  COINS.forEach(c => {
+  ALL_ASSETS.forEach(c => {
     const s = state.coinPrices[c.id];
-    const chg = (s.price - s.open) / s.open * 100;
+    const chg = s.open ? (s.price - s.open) / s.open * 100 : 0;
     const h = state.holdings[c.id];
+    const badge = c.real
+      ? `<span class="live-badge ${s.live === false || !s.price ? "off" : ""}">${s.live === false ? "hors ligne" : "cours réel"}</span>`
+      : "";
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td><div class="coin-name">
         <div class="coin-icon" style="background:${c.color}22;">${c.icon}</div>
-        <div>${c.name}<div class="vol">${c.id}</div></div>
+        <div>${c.name}${badge}<div class="vol">${c.id}</div></div>
       </div></td>
-      <td class="price" data-label="Prix">${fmtPrice(s.price)}</td>
+      <td class="price" data-label="Prix">${s.price > 0 ? fmtPrice(s.price) : "…"}</td>
       <td class="${chg >= 0 ? "pos" : "neg"}" data-label="24 h">${fmtPct(chg)}</td>
       <td data-label="Courbe"><canvas class="spark" data-id="${c.id}"></canvas></td>
       <td data-label="Détenu">${h ? `${h.qty.toLocaleString("fr-FR", { maximumFractionDigits: 2 })}<div class="vol">${fmtEur(h.qty * s.price)}</div>` : '<span class="vol">—</span>'}</td>
@@ -522,8 +528,9 @@ function drawSpark(canvas, hist, up) {
   const ctx = canvas.getContext("2d");
   const w = canvas.width = 110 * 2, h = canvas.height = 34 * 2;
   ctx.scale(1, 1);
-  const min = Math.min(...hist), max = Math.max(...hist), span = max - min || 1;
   ctx.clearRect(0, 0, w, h);
+  if (hist.length < 2) return;
+  const min = Math.min(...hist), max = Math.max(...hist), span = max - min || 1;
   ctx.beginPath();
   hist.forEach((p, i) => {
     const x = i / (hist.length - 1) * w, y = h - (p - min) / span * (h - 6) - 3;
@@ -537,13 +544,13 @@ function drawSpark(canvas, hist, up) {
 function renderChart() {
   const sel = document.getElementById("chartCoin");
   const cur = sel.value;
-  sel.innerHTML = COINS.map(c => `<option value="${c.id}">${c.icon} ${c.name} (${c.id})</option>`).join("");
+  sel.innerHTML = ALL_ASSETS.map(c => `<option value="${c.id}">${c.icon} ${c.name} (${c.id})</option>`).join("");
   if (cur) sel.value = cur;
   if (!sel._bound) {
     sel._bound = true;
     sel.onchange = renderChart;
   }
-  const c = COINS.find(x => x.id === sel.value) || COINS[0];
+  const c = ALL_ASSETS.find(x => x.id === sel.value) || ALL_ASSETS[0];
   const s = state.coinPrices[c.id];
   const canvas = document.getElementById("bigchart");
   const dpr = window.devicePixelRatio || 1;
@@ -552,6 +559,11 @@ function renderChart() {
   const ctx = canvas.getContext("2d");
   ctx.scale(dpr, dpr);
   const hist = s.hist;
+  if (hist.length < 2) {
+    ctx.clearRect(0, 0, wCss, hCss);
+    document.getElementById("chartInfo").textContent = c.id + " · en attente des cours réels…";
+    return;
+  }
   const min = Math.min(...hist), max = Math.max(...hist), span = max - min || 1;
   ctx.clearRect(0, 0, wCss, hCss);
   const px = i => i / (hist.length - 1) * (wCss - 10) + 5;
@@ -580,7 +592,7 @@ function renderPositions() {
   const ul = document.getElementById("positions");
   ul.innerHTML = "";
   const entries = Object.entries(state.holdings);
-  if (!entries.length) { ul.innerHTML = '<li class="empty">Aucune position crypto. Achetez votre premier meme coin !</li>'; return; }
+  if (!entries.length) { ul.innerHTML = '<li class="empty">Aucune position. Achetez votre premier actif !</li>'; return; }
   entries.forEach(([id, h]) => {
     const s = state.coinPrices[id];
     const val = h.qty * s.price;
@@ -658,6 +670,83 @@ function renderHistory() {
     : '<li class="empty">Aucune opération pour le moment.</li>';
 }
 
+/* ================= COURS RÉELS (Binance + Yahoo Finance) ================= */
+const PROXIES = [
+  u => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u),
+  u => "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(u),
+];
+
+async function fetchJSONViaProxy(url) {
+  let lastErr;
+  for (const p of PROXIES) {
+    try {
+      const r = await fetch(p(url));
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return await r.json();
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr;
+}
+
+async function fetchYahoo(symbol) {
+  const target = "https://query1.finance.yahoo.com/v8/finance/chart/" + encodeURIComponent(symbol);
+  const j = await fetchJSONViaProxy(target);
+  const meta = j.chart.result[0].meta;
+  return { price: meta.regularMarketPrice, currency: meta.currency, chgPct: meta.regularMarketChangePercent || 0 };
+}
+
+async function fetchBinance(symbol) {
+  const hosts = ["https://data-api.binance.vision", "https://api.binance.com"];
+  let lastErr;
+  for (const h of hosts) {
+    try {
+      const r = await fetch(h + "/api/v3/ticker/24hr?symbol=" + symbol);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const j = await r.json();
+      return { price: parseFloat(j.lastPrice), currency: "USD", chgPct: parseFloat(j.priceChangePercent) || 0 };
+    } catch (e) { lastErr = e; }
+  }
+  throw lastErr;
+}
+
+async function fetchAssetPrice(a) {
+  if (a.source === "binance") {
+    try { return await fetchBinance(a.symbol); }
+    catch (e) { return await fetchYahoo(a.yahoo || a.symbol); }
+  }
+  return await fetchYahoo(a.symbol);
+}
+
+async function fetchRealPrices() {
+  let eurusd = state.fxRate || 1.08;
+  try {
+    const fx = await fetchBinance("EURUSDT");
+    if (fx.price > 0) { eurusd = fx.price; state.fxRate = fx.price; }
+  } catch (e) {
+    try {
+      const fxy = await fetchYahoo("EURUSD=X");
+      if (fxy.price > 0) { eurusd = fxy.price; state.fxRate = fxy.price; }
+    } catch (e2) {}
+  }
+  for (const a of ALL_ASSETS) {
+    try {
+      const d = await fetchAssetPrice(a);
+      const s = state.coinPrices[a.id];
+      const priceEur = d.currency === "USD" ? d.price / eurusd : d.price;
+      if (!s.open && priceEur > 0) s.open = priceEur / (1 + d.chgPct / 100);
+      s.price = priceEur;
+      s.hist.push(priceEur);
+      if (s.hist.length > 240) s.hist.shift();
+      s.live = true;
+    } catch (e) {
+      state.coinPrices[a.id].live = false;
+    }
+  }
+  botTick();
+  saveState();
+  render();
+}
+
 /* ================= NAVIGATION & INIT ================= */
 document.querySelectorAll("nav button").forEach(b => {
   b.onclick = () => {
@@ -676,7 +765,7 @@ document.getElementById("btnReset").onclick = () => {
     markets: buildMarkets(), coinPrices: {},
     bot: { enabled: false, strategy: "momentum", amount: 50, tp: 5, sl: 3 },
   };
-  COINS.forEach(c => state.coinPrices[c.id] = { price: c.price, open: c.price, hist: Array(60).fill(c.price) });
+  seedPrices();
   saveState(); render(); renderBot();
   toast(`Compte réinitialisé : ${fmtEur(START_CASH)} virtuels`);
 };
@@ -694,7 +783,9 @@ document.getElementById("botToggle").onclick = () => {
 
 render();
 renderBot();
-setInterval(tickPrices, 2000);
+fetchRealPrices();
+setInterval(fetchRealPrices, 30000);
+setInterval(tickMarkets, 30000);
 window.addEventListener("resize", renderChart);
 </script>
 </body>
