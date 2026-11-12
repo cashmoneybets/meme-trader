@@ -126,6 +126,11 @@
     padding: 8px 10px; border-radius: 6px; font-size: 14px; cursor: pointer;
   }
   .lang-sel:focus { outline: 1px solid var(--accent2); }
+  .stat-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .scard { background: var(--panel2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .scard-l { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .scard-v { font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  @media (max-width: 720px) { .stat-cards { grid-template-columns: repeat(2, 1fr); } .scard-v { font-size: 15px; } }
   @media (max-width: 720px) {
     header { padding: 10px 14px; }
     .logo { font-size: 17px; }
@@ -185,6 +190,7 @@
 <nav>
   <button data-page="coins" class="active" data-i18n="navMarket">📈 Market</button>
   <button data-page="markets">🎲 Polymarket</button>
+  <button data-page="dashboard" data-i18n="navDashboard">📊 Dashboard</button>
   <button data-page="history" data-i18n="navHistory">📜 History</button>
 </nav>
 
@@ -264,6 +270,23 @@
     </div>
   </section>
 
+  <!-- PAGE DASHBOARD -->
+  <section class="page" id="page-dashboard">
+    <h2 data-i18n="dashTitle">📊 Performance</h2>
+    <div class="stat-cards">
+      <div class="scard"><div class="scard-l" data-i18n="totalPnl">Total P&L</div><div class="scard-v" id="dPnl">—</div></div>
+      <div class="scard"><div class="scard-l" data-i18n="winRate">Win rate</div><div class="scard-v" id="dWin">—</div></div>
+      <div class="scard"><div class="scard-l" data-i18n="tradesCount">Trades</div><div class="scard-v" id="dTrades">—</div></div>
+      <div class="scard"><div class="scard-l" data-i18n="botPnlKey">Bot P&L</div><div class="scard-v" id="dBot">—</div></div>
+      <div class="scard"><div class="scard-l" data-i18n="bestTrade">Best trade</div><div class="scard-v" id="dBest">—</div></div>
+      <div class="scard"><div class="scard-l" data-i18n="worstTrade">Worst trade</div><div class="scard-v" id="dWorst">—</div></div>
+    </div>
+    <div class="card">
+      <h2 data-i18n="equityTitle">💹 Portfolio value — live</h2>
+      <canvas id="eqchart" class="bigchart"></canvas>
+    </div>
+  </section>
+
   <!-- PAGE HISTORIQUE -->
   <section class="page" id="page-history">
     <h2 data-i18n="historyTitle">📜 Trade history</h2>
@@ -295,7 +318,10 @@ let lang = localStorage.getItem("dt_lang") || "en";
 const I18N = {
   en: {
     cash: "Cash", cryptoPos: "Assets position", betsPos: "Bets position", total: "Total", pnl: "Overall P&L",
-    navMarket: "📈 Market", navHistory: "📜 History",
+    navMarket: "📈 Market", navHistory: "📜 History", navDashboard: "📊 Dashboard",
+    dashTitle: "📊 Performance", equityTitle: "💹 Portfolio value — live",
+    totalPnl: "Total P&L", winRate: "Win rate", tradesCount: "Trades", botPnlKey: "Bot P&L",
+    bestTrade: "Best trade", worstTrade: "Worst trade", noDataYet: "The curve builds as prices arrive…",
     resetAccount: "↺ Reset account",
     marketTitle: "Market", marketSub: "real-time prices · BTC & gold live",
     thAsset: "Asset", thPrice: "Price", thChart: "Chart", thHeld: "Held", thTrade: "Trade (amount in €)",
@@ -341,7 +367,10 @@ const I18N = {
   },
   de: {
     cash: "Barmittel", cryptoPos: "Assets-Position", betsPos: "Wetten-Position", total: "Gesamt", pnl: "Gesamt-P&L",
-    navMarket: "📈 Markt", navHistory: "📜 Verlauf",
+    navMarket: "📈 Markt", navHistory: "📜 Verlauf", navDashboard: "📊 Dashboard",
+    dashTitle: "📊 Performance", equityTitle: "💹 Portfoliowert — live",
+    totalPnl: "Gesamt-P&L", winRate: "Trefferquote", tradesCount: "Trades", botPnlKey: "Bot-P&L",
+    bestTrade: "Bester Trade", worstTrade: "Schlechtester Trade", noDataYet: "Die Kurve entsteht, sobald Preise eintreffen…",
     resetAccount: "↺ Konto zurücksetzen",
     marketTitle: "Markt", marketSub: "echte Preise in Echtzeit · BTC & Gold live",
     thAsset: "Asset", thPrice: "Preis", thChart: "Chart", thHeld: "Gehalten", thTrade: "Handel (Betrag in €)",
@@ -387,7 +416,10 @@ const I18N = {
   },
   fr: {
     cash: "Liquidités", cryptoPos: "Position actifs", betsPos: "Position paris", total: "Total", pnl: "P&L global",
-    navMarket: "📈 Marché", navHistory: "📜 Historique",
+    navMarket: "📈 Marché", navHistory: "📜 Historique", navDashboard: "📊 Tableau de bord",
+    dashTitle: "📊 Performance", equityTitle: "💹 Valeur du portefeuille — en direct",
+    totalPnl: "P&L total", winRate: "Taux de réussite", tradesCount: "Trades", botPnlKey: "P&L du bot",
+    bestTrade: "Meilleur trade", worstTrade: "Pire trade", noDataYet: "La courbe se construit à mesure que les prix arrivent…",
     resetAccount: "↺ Réinitialiser le compte",
     marketTitle: "Marché", marketSub: "prix en temps réel · BTC & or en direct",
     thAsset: "Actif", thPrice: "Prix", thChart: "Graphique", thHeld: "Détenu", thTrade: "Trade (montant en €)",
@@ -433,7 +465,10 @@ const I18N = {
   },
   sq: {
     cash: "Kesh", cryptoPos: "Pozicioni i aseteve", betsPos: "Pozicioni i basteve", total: "Totali", pnl: "P&L total",
-    navMarket: "📈 Tregu", navHistory: "📜 Historiku",
+    navMarket: "📈 Tregu", navHistory: "📜 Historiku", navDashboard: "📊 Paneli",
+    dashTitle: "📊 Performanca", equityTitle: "💹 Vlera e portofolit — live",
+    totalPnl: "P&L total", winRate: "Shkalla e suksesit", tradesCount: "Tregtime", botPnlKey: "P&L i botit",
+    bestTrade: "Tregtimi më i mirë", worstTrade: "Tregtimi më i keq", noDataYet: "Kurba ndërtohet ndërsa çmimet arrijnë…",
     resetAccount: "↺ Rivendis llogarinë",
     marketTitle: "Tregu", marketSub: "çmime reale në kohë reale · BTC & ari live",
     thAsset: "Aseti", thPrice: "Çmimi", thChart: "Grafiku", thHeld: "Në posedim", thTrade: "Tregto (shuma në €)",
@@ -513,10 +548,16 @@ let state = loadState() || {
   history: [],
   markets: buildMarkets(),
   coinPrices: {},          // id -> { price, open, hist: [] }
+  equity: [],
+  equityLong: [],
+  stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0 },
 };
 
 seedPrices();
 if (!state.bot) state.bot = { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 };
+if (!state.equity) state.equity = [];
+if (!state.equityLong) state.equityLong = [];
+if (!state.stats) state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0 };
 
 function loadState() {
   try { const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : null; }
@@ -556,6 +597,14 @@ function resolveMarket(m) {
     b.settled = true;
     const won = b.side === m.resolved;
     if (won) payout += b.shares;
+    const bpnl = won ? b.shares - b.amount : -b.amount;
+    const st = state.stats;
+    if (st) {
+      st.trades++;
+      if (won) st.wins++; else st.losses++;
+      if (st.best === null || bpnl > st.best) st.best = bpnl;
+      if (st.worst === null || bpnl < st.worst) st.worst = bpnl;
+    }
     log("resolve", t("logResolve", { q: mq(m), side: m.resolved, qty: b.shares.toFixed(1), outcome: won ? t("won") : t("lost") }));
   });
   if (payout > 0) {
@@ -611,6 +660,14 @@ function sellCoin(id, amount, via) {
   h.cost -= amount;
   if (h.qty < 1e-12) delete state.holdings[id];
   const pnl = proceeds - amount;
+  const st = state.stats;
+  if (st) {
+    st.trades++;
+    if (pnl >= 0) st.wins++; else st.losses++;
+    if (st.best === null || pnl > st.best) st.best = pnl;
+    if (st.worst === null || pnl < st.worst) st.worst = pnl;
+    if (via === "bot") st.botPnl += pnl;
+  }
   log(via === "bot" ? "bot" : "sell", t("logSell", { id, amt: fmtEur(amount), proceeds: fmtEur(proceeds), pnl: (pnl >= 0 ? "+" : "") + fmtEur(pnl) }));
   saveState(); render();
   if (via !== "bot") toast(t("toastSold", { id, pnl: (pnl >= 0 ? "+" : "") + fmtEur(pnl) }));
@@ -730,6 +787,7 @@ function render() {
   renderPositions();
   renderMarkets();
   renderHistory();
+  drawDashboard();
 }
 
 function renderCoins() {
@@ -1029,6 +1087,93 @@ async function fetchRealPrices() {
   render();
 }
 
+/* ================= DASHBOARD ================= */
+function sampleEquity() {
+  const v = state.cash + cryptoValue() + betsValue();
+  const now = Date.now();
+  state.equity.push({ t: now, v });
+  if (state.equity.length > 1800) state.equity.shift();
+  state._eqN = (state._eqN || 0) + 1;
+  if (state._eqN % 60 === 0) {
+    state.equityLong.push({ t: now, v });
+    if (state.equityLong.length > 1440) state.equityLong.shift();
+  }
+}
+
+function drawEquity() {
+  const canvas = document.getElementById("eqchart");
+  const pts = state.equityLong.length > 1 ? state.equityLong : state.equity;
+  const dpr = window.devicePixelRatio || 1;
+  const wCss = canvas.clientWidth || 600, hCss = 260;
+  canvas.width = wCss * dpr; canvas.height = hCss * dpr;
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, wCss, hCss);
+  if (pts.length < 2) {
+    ctx.fillStyle = "#8b95a8";
+    ctx.font = "13px Segoe UI, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText(t("noDataYet"), wCss / 2, hCss / 2);
+    return;
+  }
+  const vals = pts.map(p => p.v).concat([START_CASH]);
+  const min = Math.min(...vals), max = Math.max(...vals), span = max - min || 1;
+  const px = i => i / (pts.length - 1) * (wCss - 10) + 5;
+  const py = v => hCss - (v - min) / span * (hCss - 30) - 15;
+  const last = pts[pts.length - 1].v;
+  const up = last >= START_CASH;
+  const col = up ? "#2ecc71" : "#e74c3c";
+  ctx.beginPath();
+  ctx.moveTo(px(0), hCss);
+  pts.forEach((p, i) => ctx.lineTo(px(i), py(p.v)));
+  ctx.lineTo(px(pts.length - 1), hCss);
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(0, 0, 0, hCss);
+  grad.addColorStop(0, up ? "rgba(46,204,113,.30)" : "rgba(231,76,60,.30)");
+  grad.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = grad; ctx.fill();
+  ctx.beginPath();
+  pts.forEach((p, i) => i === 0 ? ctx.moveTo(px(i), py(p.v)) : ctx.lineTo(px(i), py(p.v)));
+  ctx.strokeStyle = col;
+  ctx.lineWidth = 2;
+  ctx.shadowColor = col;
+  ctx.shadowBlur = 10;
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  const by = py(START_CASH);
+  ctx.setLineDash([4, 4]);
+  ctx.strokeStyle = "rgba(139,149,168,.5)";
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, by); ctx.lineTo(wCss, by); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = col;
+  ctx.beginPath();
+  ctx.arc(px(pts.length - 1), py(last), 3.5, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawDashboard() {
+  const page = document.getElementById("page-dashboard");
+  if (!page || !page.classList.contains("active")) return;
+  const st = state.stats;
+  const pnl = state.cash + cryptoValue() + betsValue() - START_CASH;
+  const dPnl = document.getElementById("dPnl");
+  dPnl.textContent = (pnl >= 0 ? "+" : "") + fmtEur(pnl);
+  dPnl.className = "scard-v " + (pnl >= 0 ? "pos" : "neg");
+  document.getElementById("dWin").textContent = st.trades ? (st.wins / st.trades * 100).toFixed(1) + " %" : "—";
+  document.getElementById("dTrades").textContent = st.trades;
+  const dBot = document.getElementById("dBot");
+  dBot.textContent = (st.botPnl >= 0 ? "+" : "") + fmtEur(st.botPnl);
+  dBot.className = "scard-v " + (st.botPnl >= 0 ? "pos" : "neg");
+  const dBest = document.getElementById("dBest");
+  dBest.textContent = st.best === null ? "—" : "+" + fmtEur(st.best);
+  dBest.className = "scard-v pos";
+  const dWorst = document.getElementById("dWorst");
+  dWorst.textContent = st.worst === null ? "—" : "−" + fmtEur(Math.abs(st.worst));
+  dWorst.className = "scard-v neg";
+  drawEquity();
+}
+
 /* ================= NAVIGATION & INIT ================= */
 document.querySelectorAll("nav button").forEach(b => {
   b.onclick = () => {
@@ -1046,8 +1191,13 @@ document.getElementById("btnReset").onclick = () => {
     cash: START_CASH, holdings: {}, bets: [], history: [],
     markets: buildMarkets(), coinPrices: {},
     bot: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
+    equity: [], equityLong: [],
+    stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0 },
   };
   seedPrices();
+  state.equity = [];
+  state.equityLong = [];
+  state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0 };
   saveState(); render(); renderBot();
   toast(t("resetToast", { amt: fmtEur(START_CASH) }));
 };
@@ -1078,8 +1228,9 @@ renderBot();
 fetchRealPrices();
 setInterval(fetchRealPrices, 30000);
 setInterval(tickMarkets, 30000);
+setInterval(() => { sampleEquity(); saveState(); drawDashboard(); }, 1000);
 connectWS();
-window.addEventListener("resize", renderChart);
+window.addEventListener("resize", () => { renderChart(); drawDashboard(); });
 </script>
 </body>
 </html>
