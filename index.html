@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dorian - DEKA — Or, Pétrole, Bitcoin & Polymarket (cours réels)</title>
+<title>Dorian - DEKA — Gold, Oil, Bitcoin & Polymarket (real prices)</title>
 <style>
   :root {
     --bg: #0b0e14;
@@ -164,38 +164,38 @@
   <div class="logo">📊 Dorian <span>- DEKA</span></div>
   <div class="stats">
     <div class="stat"><div class="label">Cash</div><div class="value" id="stCash">—</div></div>
-    <div class="stat"><div class="label">Position crypto</div><div class="value" id="stCrypto">—</div></div>
-    <div class="stat"><div class="label">Position paris</div><div class="value" id="stBets">—</div></div>
+    <div class="stat"><div class="label">Crypto position</div><div class="value" id="stCrypto">—</div></div>
+    <div class="stat"><div class="label">Bets position</div><div class="value" id="stBets">—</div></div>
     <div class="stat"><div class="label">Total</div><div class="value" id="stTotal">—</div></div>
-    <div class="stat"><div class="label">P&L global</div><div class="value" id="stPnl">—</div></div>
+    <div class="stat"><div class="label">Overall P&L</div><div class="value" id="stPnl">—</div></div>
   </div>
 </header>
 
 <nav>
-  <button data-page="coins" class="active">📈 Marché</button>
+  <button data-page="coins" class="active">📈 Market</button>
   <button data-page="markets">🎲 Polymarket</button>
-  <button data-page="history">📜 Historique</button>
+  <button data-page="history">📜 History</button>
 </nav>
 
 <main>
   <!-- PAGE MARCHÉ -->
   <section class="page active" id="page-coins">
-    <div class="reset-row"><button id="btnReset">↺ Réinitialiser le compte</button></div>
+    <div class="reset-row"><button id="btnReset">↺ Reset account</button></div>
     <div class="grid2">
       <div>
-        <h2>Marché <small id="tickInfo">cours réels · mise à jour toutes les 30 s</small></h2>
+        <h2>Market <small id="tickInfo">real prices · updates every 30 s</small></h2>
         <table>
           <thead>
             <tr>
-              <th>Coin</th><th>Prix</th><th>24 h</th><th>Courbe</th>
-              <th>Détenu</th><th>Trader (montant en €)</th>
+              <th>Asset</th><th>Price</th><th>24 h</th><th>Chart</th>
+              <th>Held</th><th>Trade (amount in €)</th>
             </tr>
           </thead>
           <tbody id="coinRows"></tbody>
         </table>
       </div>
       <div class="card">
-        <h2>📈 Graphique</h2>
+        <h2>📈 Chart</h2>
         <select id="chartCoin" style="width:100%; margin-bottom:12px;"></select>
         <canvas id="bigchart" class="bigchart"></canvas>
         <div id="chartInfo" class="vol" style="margin-top:10px;"></div>
@@ -203,29 +203,29 @@
     </div>
     <div class="grid2" style="margin-top:20px;">
       <div class="card">
-        <h2>💼 Mes positions</h2>
+        <h2>💼 My positions</h2>
         <ul id="positions"></ul>
       </div>
       <div class="card">
         <h2>⚠️ Important</h2>
         <div class="disclaimer">
-          Vous tradez les <b>cours réels</b> (bitcoin, or, argent, pétrole, gaz) avec de <b>l'argent virtuel</b> — aucun
-          risque. Ces actifs sont volatils : en réel, on peut perdre la totalité de sa mise. Aucune stratégie ne
-          garantit des gains. Ne tradez jamais de l'argent dont vous avez besoin.
+          You are trading <b>real market prices</b> (bitcoin, gold, silver, oil, gas) with <b>virtual money</b> — no risk.
+          These assets are volatile: with real money you can lose your entire stake. No strategy guarantees profits.
+          Never trade money you need.
         </div>
       </div>
     </div>
     <div class="card" style="margin-top:20px;">
-      <h2>🤖 Bot de trading automatique <small id="botStatus">arrêté</small></h2>
+      <h2>🤖 Auto-trading bot <small id="botStatus">stopped</small></h2>
       <div class="bot-controls">
-        <label>Stratégie
+        <label>Strategy
           <select id="botStrategy">
-            <option value="auto">🤖 Auto — le bot choisit la tendance</option>
-            <option value="momentum">Tendance — achète la hausse</option>
-            <option value="meanrev">Rebond — achète les chutes</option>
+            <option value="auto">🤖 Auto — bot picks the trend</option>
+            <option value="momentum">Momentum — buys rallies</option>
+            <option value="meanrev">Bounce — buys dips</option>
           </select>
         </label>
-        <label>Mise par trade (€)
+        <label>Stake per trade (€)
           <input type="number" id="botAmount" min="10" step="10" value="50">
         </label>
         <label>Take-profit (%)
@@ -234,30 +234,28 @@
         <label>Stop-loss (%)
           <input type="number" id="botSL" min="0.5" step="0.5" value="1.5">
         </label>
-        <button class="act buy" id="botToggle">▶ Démarrer le bot</button>
+        <button class="act buy" id="botToggle">▶ Start bot</button>
       </div>
       <div class="vol" style="margin-top:12px;">
-        En mode <b>Auto</b>, le bot analyse chaque actif toutes les 30 s : s'il détecte une tendance nette, il suit la hausse ;
-        s'il détecte un creux dans une tendance haussière, il achète le rebond. Vend automatiquement au take-profit (+) ou au
-        stop-loss (−). Argent virtuel uniquement.
+        In <b>Auto</b> mode the bot scans every asset every 30 s: on a strong trend it rides the rally; on a dip inside an
+        uptrend it buys the bounce. It sells automatically at take-profit (+) or stop-loss (−). Virtual money only.
       </div>
     </div>
   </section>
 
   <!-- PAGE POLYMARKET -->
   <section class="page" id="page-markets">
-    <h2>🎲 Marchés de prédiction <small>achetez OUI ou NON, gagnez 1 € par part si vous avez raison</small></h2>
+    <h2>🎲 Prediction markets <small>buy YES or NO — earn €1 per share if you're right</small></h2>
     <div id="marketList"></div>
     <div class="disclaimer" style="margin-top:6px;">
-      Marchés simulés. Les probabilités évoluent avec des flux d'actualité fictifs et se résolvent
-      aléatoirement à l'échéance. Sur Polymarket en réel, les mécanismes sont similaires mais le risque de
-      perte totale est réel.
+      Simulated markets. Probabilities drift with fictional news flow and resolve randomly at expiry. Real Polymarket
+      works similarly, but the risk of losing your entire stake is real.
     </div>
   </section>
 
   <!-- PAGE HISTORIQUE -->
   <section class="page" id="page-history">
-    <h2>📜 Historique des opérations</h2>
+    <h2>📜 Trade history</h2>
     <ul id="history"></ul>
   </section>
 </main>
@@ -290,7 +288,7 @@ function seedPrices() {
   });
 }
 
-const fmtEur = n => n.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
+const fmtEur = n => n.toLocaleString("en-US", { style: "currency", currency: "EUR" });
 const fmtPrice = p => p >= 1 ? p.toFixed(2) + " €" : p.toFixed(8).replace(/0+$/, "") + " €";
 const fmtPct = p => (p >= 0 ? "+" : "") + p.toFixed(2) + " %";
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -317,16 +315,16 @@ function saveState() { try { localStorage.setItem(LS_KEY, JSON.stringify(state))
 function buildMarkets() {
   const now = Date.now();
   return [
-    { id: "m1", q: "Bitcoin au-dessus de 150 000 € avant le 1er mars ?", cat: "Crypto", end: now + 864e5, prob: 0.34, resolved: null },
-    { id: "m2", q: "L'or dépasse 5 000 € l'once avant la fin de l'année ?", cat: "Matières premières", end: now + 3 * 864e5, prob: 0.18, resolved: null },
-    { id: "m3", q: "L'ETF Dogecoin est approuvé cette année ?", cat: "Régulation", end: now + 30 * 864e5, prob: 0.27, resolved: null },
-    { id: "m4", q: "Elon Musk tweete à propos de DOGE dans les 24 h ?", cat: "Réseaux", end: now + 864e5, prob: 0.55, resolved: null },
-    { id: "m5", q: "La couche AI crypto surpasse le DeFi en volume ce mois ?", cat: "Narratif", end: now + 12 * 864e5, prob: 0.41, resolved: null },
-    { id: "m6", q: "Un échange centralisé est hacké pour +100 M€ ce trimestre ?", cat: "Sécurité", end: now + 20 * 864e5, prob: 0.22, resolved: null },
+    { id: "m1", q: "Bitcoin above €150,000 before March 1st?", cat: "Crypto", end: now + 864e5, prob: 0.34, resolved: null },
+    { id: "m2", q: "Gold above €5,000/oz before year-end?", cat: "Commodities", end: now + 3 * 864e5, prob: 0.18, resolved: null },
+    { id: "m3", q: "A spot gold ETF approved this year?", cat: "Regulation", end: now + 30 * 864e5, prob: 0.27, resolved: null },
+    { id: "m4", q: "Elon Musk tweets about Bitcoin within 24 h?", cat: "Social", end: now + 864e5, prob: 0.55, resolved: null },
+    { id: "m5", q: "Crypto AI layer outpaces DeFi in volume this month?", cat: "Narrative", end: now + 12 * 864e5, prob: 0.41, resolved: null },
+    { id: "m6", q: "A centralized exchange hacked for €100M+ this quarter?", cat: "Security", end: now + 20 * 864e5, prob: 0.22, resolved: null },
   ].map(m => ({ ...m, endTs: m.end }));
 }
 
-/* ================= MOTEUR DE PRIX (cours réels) ================= */
+/* ================= PRICE ENGINE (real prices) ================= */
 function tickMarkets() {
   state.markets.forEach(m => {
     if (m.resolved !== null) return;
@@ -345,11 +343,11 @@ function resolveMarket(m) {
     b.settled = true;
     const won = b.side === m.resolved;
     if (won) payout += b.shares;
-    log("resolve", `${m.q} → ${m.resolved === "YES" ? "OUI" : "NON"} — vous aviez ${b.shares.toFixed(1)} part(s) ${b.side === "YES" ? "OUI" : "NON"} : ${won ? "gagné" : "perdu"}`);
+    log("resolve", `${m.q} → ${m.resolved} — you held ${b.shares.toFixed(1)} ${b.side} share(s): ${won ? "won" : "lost"}`);
   });
   if (payout > 0) {
     state.cash += payout;
-    log("payout", `Gain de marché : +${fmtEur(payout)}`);
+    log("payout", `Market payout: +${fmtEur(payout)}`);
   }
   saveState();
 }
@@ -371,27 +369,27 @@ function log(type, msg) {
 function buyCoin(id, amount, via, note) {
   amount = parseFloat(amount);
   const s = state.coinPrices[id];
-  if (!amount || amount <= 0) return toast("Montant invalide");
-  if (s.price <= 0) return toast("Cours réel pas encore chargé — réessayez dans un instant");
-  if (amount > state.cash) return toast("Fonds insuffisants");
+  if (!amount || amount <= 0) return toast("Invalid amount");
+  if (s.price <= 0) return toast("Real price not loaded yet — try again shortly");
+  if (amount > state.cash) return toast("Insufficient funds");
   const qty = amount / s.price;
   state.cash -= amount;
   const h = state.holdings[id] || { qty: 0, cost: 0 };
   h.qty += qty;
   h.cost += amount;
   state.holdings[id] = h;
-  log(via === "bot" ? "bot" : "buy", `${via === "bot" ? "[BOT] " : ""}Achat ${id}${note ? " — " + note : ""} : ${fmtEur(amount)} → ${qty.toLocaleString("fr-FR", { maximumFractionDigits: 4 })} unités à ${fmtPrice(s.price)}`);
+  log(via === "bot" ? "bot" : "buy", `${via === "bot" ? "[BOT] " : ""}Buy ${id}${note ? " — " + note : ""}: ${fmtEur(amount)} → ${qty.toLocaleString("en-US", { maximumFractionDigits: 4 })} units at ${fmtPrice(s.price)}`);
   saveState(); render();
-  if (via !== "bot") toast(`Acheté ${id} pour ${fmtEur(amount)}`);
+  if (via !== "bot") toast(`Bought ${id} for ${fmtEur(amount)}`);
 }
 
 function sellCoin(id, amount, via) {
   amount = parseFloat(amount);
   const h = state.holdings[id];
   const s = state.coinPrices[id];
-  if (!h) return toast("Aucune position sur " + id);
-  if (!amount || amount <= 0) return toast("Montant invalide");
-  if (amount > h.cost) return toast("Montant supérieur à votre position");
+  if (!h) return toast("No position on " + id);
+  if (!amount || amount <= 0) return toast("Invalid amount");
+  if (amount > h.cost) return toast("Amount exceeds your position");
   const ratio = amount / h.cost;
   const qty = h.qty * ratio;
   const proceeds = qty * s.price;
@@ -400,24 +398,24 @@ function sellCoin(id, amount, via) {
   h.cost -= amount;
   if (h.qty < 1e-12) delete state.holdings[id];
   const pnl = proceeds - amount;
-  log(via === "bot" ? "bot" : "sell", `${via === "bot" ? "[BOT] " : ""}Vente ${id} : ${fmtEur(amount)} → +${fmtEur(proceeds)} (P&L ${pnl >= 0 ? "+" : ""}${fmtEur(pnl)})`);
+  log(via === "bot" ? "bot" : "sell", `${via === "bot" ? "[BOT] " : ""}Sell ${id}: ${fmtEur(amount)} → +${fmtEur(proceeds)} (P&L ${pnl >= 0 ? "+" : ""}${fmtEur(pnl)})`);
   saveState(); render();
-  if (via !== "bot") toast(`Vendu ${id} : ${pnl >= 0 ? "+" : ""}${fmtEur(pnl)}`);
+  if (via !== "bot") toast(`Sold ${id}: ${pnl >= 0 ? "+" : ""}${fmtEur(pnl)}`);
 }
 
 function buyBet(marketId, side, amount) {
   amount = parseFloat(amount);
   const m = state.markets.find(x => x.id === marketId);
-  if (!m || m.resolved !== null) return toast("Marché déjà résolu");
-  if (!amount || amount <= 0) return toast("Montant invalide");
-  if (amount > state.cash) return toast("Fonds insuffisants");
+  if (!m || m.resolved !== null) return toast("Market already resolved");
+  if (!amount || amount <= 0) return toast("Invalid amount");
+  if (amount > state.cash) return toast("Insufficient funds");
   const price = side === "YES" ? m.prob : 1 - m.prob;
   const shares = amount / price;
   state.cash -= amount;
   state.bets.push({ marketId, side, shares, price, amount, settled: false });
-  log("buy", `Pari ${side === "YES" ? "OUI" : "NON"} à ${(price * 100).toFixed(0)} % : ${fmtEur(amount)} → ${shares.toFixed(1)} parts — « ${m.q} »`);
+  log("buy", `Bet ${side} at ${(price * 100).toFixed(0)}%: ${fmtEur(amount)} → ${shares.toFixed(1)} shares — “${m.q}”`);
   saveState(); render();
-  toast(`Pari placé : ${shares.toFixed(1)} parts ${side === "YES" ? "OUI" : "NON"}`);
+  toast(`Bet placed: ${shares.toFixed(1)} ${side} shares`);
 }
 
 /* ================= BOT AUTOMATIQUE ================= */
@@ -443,10 +441,10 @@ function botSignal(s) {
   const vol = histVolatility(s.hist, 20);
   const thresh = Math.max(0.25, 2.5 * vol);
   if (Math.abs(short) < thresh) return null;
-  if (b.strategy === "momentum") return short >= thresh ? "hausse détectée" : null;
-  if (b.strategy === "meanrev") return short <= -thresh ? "creux détecté" : null;
-  if (short >= thresh && long >= 0) return "hausse détectée (auto)";
-  if (short <= -thresh && long > 0) return "rebond dans la tendance (auto)";
+  if (b.strategy === "momentum") return short >= thresh ? "uptrend detected" : null;
+  if (b.strategy === "meanrev") return short <= -thresh ? "dip detected" : null;
+  if (short >= thresh && long >= 0) return "uptrend detected (auto)";
+  if (short <= -thresh && long > 0) return "bounce in uptrend (auto)";
   return null;
 }
 
@@ -473,13 +471,13 @@ function botTick() {
 function renderBot() {
   const b = state.bot;
   const status = document.getElementById("botStatus");
-  const stratLabel = { auto: "auto", momentum: "tendance", meanrev: "rebond" }[b.strategy] || b.strategy;
+  const stratLabel = { auto: "auto", momentum: "momentum", meanrev: "bounce" }[b.strategy] || b.strategy;
   status.textContent = b.enabled
-    ? `actif · ${stratLabel} · mise ${fmtEur(b.amount)} · TP +${b.tp} % / SL −${b.sl} %`
-    : "arrêté";
+    ? `active · ${stratLabel} · stake ${fmtEur(b.amount)} · TP +${b.tp} % / SL −${b.sl} %`
+    : "stopped";
   status.style.color = b.enabled ? "var(--green)" : "var(--muted)";
   const btn = document.getElementById("botToggle");
-  btn.textContent = b.enabled ? "⏸ Arrêter le bot" : "▶ Démarrer le bot";
+  btn.textContent = b.enabled ? "⏸ Stop bot" : "▶ Start bot";
   btn.className = "act " + (b.enabled ? "sell" : "buy");
 }
 
@@ -529,7 +527,7 @@ function renderCoins() {
     const chg = s.open ? (s.price - s.open) / s.open * 100 : 0;
     const h = state.holdings[c.id];
     const badge = c.real
-      ? `<span class="live-badge ${s.live === false || !s.price ? "off" : ""}">${s.live === false ? "hors ligne" : "cours réel"}</span>`
+      ? `<span class="live-badge ${s.live === false || !s.price ? "off" : ""}">${s.live === false ? "offline" : "real price"}</span>`
       : "";
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -537,11 +535,11 @@ function renderCoins() {
         <div class="coin-icon" style="background:${c.color}22;">${c.icon}</div>
         <div>${c.name}${badge}<div class="vol">${c.id}</div></div>
       </div></td>
-      <td class="price" data-label="Prix">${s.price > 0 ? fmtPrice(s.price) : "…"}</td>
+      <td class="price" data-label="Price">${s.price > 0 ? fmtPrice(s.price) : "…"}</td>
       <td class="${chg >= 0 ? "pos" : "neg"}" data-label="24 h">${fmtPct(chg)}</td>
-      <td data-label="Courbe"><canvas class="spark" data-id="${c.id}"></canvas></td>
-      <td data-label="Détenu">${h ? `${h.qty.toLocaleString("fr-FR", { maximumFractionDigits: 2 })}<div class="vol">${fmtEur(h.qty * s.price)}</div>` : '<span class="vol">—</span>'}</td>
-      <td data-label="Trader"><div class="trade-cell">
+      <td data-label="Chart"><canvas class="spark" data-id="${c.id}"></canvas></td>
+      <td data-label="Held">${h ? `${h.qty.toLocaleString("en-US", { maximumFractionDigits: 2 })}<div class="vol">${fmtEur(h.qty * s.price)}</div>` : '<span class="vol">—</span>'}</td>
+      <td data-label="Trade"><div class="trade-cell">
         <input type="number" min="0" step="10" placeholder="€" data-amt="${c.id}">
         <button class="act buy" data-buy="${c.id}">Acheter</button>
         <button class="act sell" data-sell="${c.id}" ${h ? "" : "disabled"}>Vendre</button>
@@ -592,7 +590,7 @@ function renderChart() {
   const hist = s.hist;
   if (hist.length < 2) {
     ctx.clearRect(0, 0, wCss, hCss);
-    document.getElementById("chartInfo").textContent = c.id + " · en attente des cours réels…";
+    document.getElementById("chartInfo").textContent = c.id + " · waiting for real prices…";
     return;
   }
   const min = Math.min(...hist), max = Math.max(...hist), span = max - min || 1;
@@ -623,7 +621,7 @@ function renderPositions() {
   const ul = document.getElementById("positions");
   ul.innerHTML = "";
   const entries = Object.entries(state.holdings);
-  if (!entries.length) { ul.innerHTML = '<li class="empty">Aucune position. Achetez votre premier actif !</li>'; return; }
+  if (!entries.length) { ul.innerHTML = '<li class="empty">No positions yet. Buy your first asset!</li>'; return; }
   entries.forEach(([id, h]) => {
     const s = state.coinPrices[id];
     const val = h.qty * s.price;
@@ -653,26 +651,26 @@ function renderMarkets() {
     const div = document.createElement("div");
     div.className = "market";
     const timeLeft = m.resolved === null
-      ? `résolution dans ${Math.max(0, Math.ceil((m.endTs - Date.now()) / 864e5))} j (simulation accélérée)`
+      ? `resolves in ${Math.max(0, Math.ceil((m.endTs - Date.now()) / 864e5))} d (fast-forward simulation)`
       : "";
     div.innerHTML = `
       <div class="q">${m.q}</div>
       <div class="meta">${m.cat} · ${timeLeft}</div>
       ${m.resolved !== null
-        ? `<div class="resolved ${ownedSideWin(m) ? "win" : "lose"}">Résolu : ${m.resolved === "YES" ? "OUI" : "NON"}</div>`
+        ? `<div class="resolved ${ownedSideWin(m) ? "win" : "lose"}">Resolved: ${m.resolved}</div>`
         : `<div class="odds">
             <div class="side yes">
-              <div class="lab">Oui · ${(m.prob * 100).toFixed(0)} %</div>
+              <div class="lab">Yes · ${(m.prob * 100).toFixed(0)} %</div>
               <div class="pct">${(m.prob * 100).toFixed(0)}¢</div>
               <input type="number" min="0" step="10" placeholder="€" data-bamt="${m.id}">
             </div>
             <div class="side no">
-              <div class="lab">Non · ${((1 - m.prob) * 100).toFixed(0)} %</div>
+              <div class="lab">No · ${((1 - m.prob) * 100).toFixed(0)} %</div>
               <div class="pct">${((1 - m.prob) * 100).toFixed(0)}¢</div>
               <input type="number" min="0" step="10" placeholder="€" data-namt="${m.id}">
             </div>
-            <button class="act buy" data-byes="${m.id}">Acheter OUI</button>
-            <button class="act sell" data-bno="${m.id}">Acheter NON</button>
+            <button class="act buy" data-byes="${m.id}">Buy YES</button>
+            <button class="act sell" data-bno="${m.id}">Buy NO</button>
           </div>`}`;
     box.appendChild(div);
   });
@@ -693,12 +691,12 @@ function renderHistory() {
   const ul = document.getElementById("history");
   ul.innerHTML = state.history.length
     ? state.history.map(h => {
-        const tags = { buy: ["buy", "ACHAT"], sell: ["sell", "VENTE"], payout: ["payout", "GAIN"], resolve: ["resolve", "RÉSULTAT"], bot: ["bot", "🤖 BOT"] };
+        const tags = { buy: ["buy", "BUY"], sell: ["sell", "SELL"], payout: ["payout", "PROFIT"], resolve: ["resolve", "RESULT"], bot: ["bot", "🤖 BOT"] };
         const [cls, label] = tags[h.type] || ["payout", "INFO"];
-        const d = new Date(h.at).toLocaleString("fr-FR");
+        const d = new Date(h.at).toLocaleString("en-GB");
         return `<li><span class="tag ${cls}">${label}</span>${h.msg}<span class="vol" style="float:right;">${d}</span></li>`;
       }).join("")
-    : '<li class="empty">Aucune opération pour le moment.</li>';
+    : '<li class="empty">No trades yet.</li>';
 }
 
 /* ================= COURS RÉELS (Binance + Yahoo Finance) ================= */
@@ -790,7 +788,7 @@ document.querySelectorAll("nav button").forEach(b => {
 });
 
 document.getElementById("btnReset").onclick = () => {
-  if (!confirm(`Réinitialiser le compte avec ${fmtEur(START_CASH)} virtuels ? L'historique sera effacé.`)) return;
+  if (!confirm(`Reset account with ${fmtEur(START_CASH)} virtual? History will be cleared.`)) return;
   state = {
     cash: START_CASH, holdings: {}, bets: [], history: [],
     markets: buildMarkets(), coinPrices: {},
@@ -798,7 +796,7 @@ document.getElementById("btnReset").onclick = () => {
   };
   seedPrices();
   saveState(); render(); renderBot();
-  toast(`Compte réinitialisé : ${fmtEur(START_CASH)} virtuels`);
+  toast(`Account reset: ${fmtEur(START_CASH)} virtual`);
 };
 
 document.getElementById("botToggle").onclick = () => {
@@ -809,7 +807,7 @@ document.getElementById("botToggle").onclick = () => {
   b.tp = Math.max(1, parseFloat(document.getElementById("botTP").value) || 5);
   b.sl = Math.max(1, parseFloat(document.getElementById("botSL").value) || 3);
   saveState(); renderBot();
-  toast(b.enabled ? "🤖 Bot démarré" : "Bot arrêté");
+  toast(b.enabled ? "🤖 Bot started" : "Bot stopped");
 };
 
 render();
