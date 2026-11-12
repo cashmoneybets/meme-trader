@@ -161,6 +161,75 @@
   .goal-cur b { font-variant-numeric: tabular-nums; margin-left: 4px; }
   .goal-month { float: right; color: var(--muted); font-size: 12px; font-weight: 400; font-family: Consolas, monospace; }
   .goal-status { margin-top: 6px; font-size: 12px; letter-spacing: 1px; font-weight: 700; font-family: Consolas, monospace; }
+  /* ================= LIVE QUANT CONTROL CENTER ================= */
+  .lq-section { max-width: 1560px; margin: 0 auto; padding: 30px 24px 60px; }
+  .lq-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .lq-head h2 { margin: 0; }
+  .lq-status { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-family: Consolas, monospace; font-size: 11px; letter-spacing: .6px; color: var(--muted); margin-bottom: 16px; padding: 10px 14px; }
+  .lq-status b { color: var(--text); font-variant-numeric: tabular-nums; }
+  .lq-dot { width: 8px; height: 8px; border-radius: 50%; background: #2ecc71; box-shadow: 0 0 8px #2ecc71; display: inline-block; animation: pulse 1.4s infinite; }
+  .lq-dot.warn { background: #f39c12; box-shadow: 0 0 8px #f39c12; }
+  .lq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 980px) { .lq-grid { grid-template-columns: 1fr; } }
+  .lq-bot { position: relative; background: var(--panel2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; overflow: hidden; }
+  .lq-bhead { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .lq-live { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #2ecc71; font-family: Consolas, monospace; }
+  .lq-bname { font-size: 12px; font-weight: 700; letter-spacing: 1px; }
+  .lq-chip { font-size: 10px; font-family: Consolas, monospace; padding: 2px 7px; border-radius: 4px; border: 1px solid var(--border); background: rgba(255,255,255,.03); color: var(--muted); cursor: pointer; }
+  .lq-chip.on { border-color: var(--accent2); color: var(--accent2); }
+  .lq-bstats { margin-left: auto; display: flex; gap: 12px; font-size: 10px; font-family: Consolas, monospace; color: var(--muted); flex-wrap: wrap; }
+  .lq-bstats b { color: var(--text); font-variant-numeric: tabular-nums; }
+  .lq-fs { background: none; border: 1px solid var(--border); color: var(--muted); border-radius: 4px; cursor: pointer; font-size: 11px; padding: 2px 7px; }
+  .lq-fs:hover { color: var(--text); border-color: var(--accent2); }
+  .lq-big { width: 100%; height: 320px; display: block; border: 1px solid var(--border); border-radius: 8px; background: rgba(0,0,0,.35); }
+  .lq-insp { margin-top: 8px; font-size: 11px; font-family: Consolas, monospace; color: var(--accent2); min-height: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lq-sub { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  @media (max-width: 720px) { .lq-big { height: 240px; } .lq-sub { grid-template-columns: 1fr; } }
+  .lq-cell { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; background: rgba(0,0,0,.25); min-width: 0; }
+  .lq-ctitle { font-size: 9px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; font-family: Consolas, monospace; margin-bottom: 6px; }
+  .lq-log { list-style: none; margin: 0; padding: 0; font-family: Consolas, monospace; font-size: 10.5px; max-height: 132px; overflow: hidden; }
+  .lq-log li { padding: 1px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: lqIn .35s ease; color: var(--muted); }
+  .lq-log li b { color: var(--text); margin-right: 4px; }
+  .lq-log li.buy, .lq-log li.profit { color: #2ecc71; }
+  .lq-log li.sell, .lq-log li.loss { color: #e74c3c; }
+  .lq-log li.info { color: #00cec9; }
+  @keyframes lqIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .lq-tape { font-family: Consolas, monospace; font-size: 10.5px; max-height: 132px; overflow: hidden; }
+  .lq-tape div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: lqIn .35s ease; padding: 1px 0; }
+  .lq-tape .b { color: #2ecc71; } .lq-tape .s { color: #e74c3c; }
+  .lq-pnl { font-size: 26px; font-weight: 700; font-variant-numeric: tabular-nums; font-family: Consolas, monospace; }
+  .lq-pnl.pos { color: #2ecc71; } .lq-pnl.neg { color: #e74c3c; }
+  .lq-spark { width: 100%; height: 44px; display: block; }
+  .lq-mini { width: 100%; height: 60px; display: block; }
+  .lq-kvrow { display: flex; justify-content: space-between; gap: 8px; font-size: 10.5px; font-family: Consolas, monospace; padding: 1px 0; color: var(--muted); }
+  .lq-kvrow b { color: var(--text); font-variant-numeric: tabular-nums; }
+  .lq-agrow { display: flex; flex-direction: column; gap: 4px; }
+  .lq-ag { display: flex; align-items: center; gap: 6px; font-family: Consolas, monospace; font-size: 10px; color: var(--muted); }
+  .lq-agdot { width: 6px; height: 6px; border-radius: 50%; background: #2ecc71; box-shadow: 0 0 5px #2ecc71; flex-shrink: 0; }
+  .lq-ag.wait .lq-agdot { background: #556077; box-shadow: none; }
+  .lq-ag.warn .lq-agdot { background: #f39c12; box-shadow: 0 0 5px #f39c12; }
+  .lq-ag.active { color: #00cec9; }
+  .lq-wfrow { display: flex; align-items: center; gap: 6px; font-family: Consolas, monospace; font-size: 9.5px; color: var(--muted); padding: 2px 0; }
+  .lq-wfrow > span:first-child { width: 108px; flex-shrink: 0; }
+  .lq-wfbar { height: 8px; border-radius: 2px; background: linear-gradient(90deg, #00cec9, #2ecc71); transition: width .6s ease; min-width: 2px; }
+  .lq-wfbar.warn { background: linear-gradient(90deg, #f39c12, #e74c3c); }
+  .lq-minigrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  @media (max-width: 720px) { .lq-minigrid { grid-template-columns: repeat(2, 1fr); } }
+  .lq-mrow { font-family: Consolas, monospace; font-size: 9px; letter-spacing: .5px; color: var(--muted); }
+  .lq-obrow { display: flex; align-items: center; font-family: Consolas, monospace; font-size: 10px; position: relative; padding: 1px 0; color: var(--muted); }
+  .lq-obrow i { position: absolute; left: 0; top: 0; bottom: 0; opacity: .18; border-radius: 2px; }
+  .lq-obrow.ask i { background: #e74c3c; } .lq-obrow.bid i { background: #2ecc71; }
+  .lq-obrow span { position: relative; flex: 1; } .lq-obrow span:last-child { text-align: right; }
+  .lq-obmid { text-align: center; font-family: Consolas, monospace; font-size: 12px; font-weight: 700; padding: 3px 0; color: var(--accent2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin: 3px 0; }
+  .lq-tr { display: grid; grid-template-columns: 1.1fr 1.3fr .7fr 1fr .7fr .8fr .7fr 1fr .9fr; gap: 2px; font-family: Consolas, monospace; font-size: 9.5px; color: var(--muted); }
+  .lq-tr > div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lq-tr .h { color: #7f8ba3; letter-spacing: .5px; }
+  .lq-tr .up { color: #2ecc71; } .lq-tr .dn { color: #e74c3c; }
+  .lq-table { width: 100%; font-family: Consolas, monospace; font-size: 10px; color: var(--muted); border-collapse: collapse; }
+  .lq-table th { text-align: left; font-weight: 400; letter-spacing: 1px; color: #7f8ba3; padding: 1px 4px; }
+  .lq-table td { padding: 1px 4px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .lq-full { position: fixed; inset: 12px; z-index: 60; overflow-y: auto; }
+  .lq-full .lq-big { height: 46vh; }
   .ai-section { max-width: 1200px; margin: 0 auto; padding: 0 24px 60px; }
   .ai-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
   .ai-mode { font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 4px; background: rgba(0,206,201,.15); color: var(--accent2); text-transform: uppercase; }
@@ -531,6 +600,185 @@
   </section>
 </main>
 
+<!-- ================= LIVE QUANT CONTROL CENTER ================= -->
+<section id="lq" class="lq-section">
+  <div class="lq-head">
+    <h2 style="margin:0;">&#128757; <span data-i18n="lqTitle">Live Quant Control Center</span></h2>
+    <span class="cc-badge sim" data-i18n="ccSimBadge">SIMULATION &middot; PAPER TRADING</span>
+  </div>
+  <div class="lq-status" id="lqStatus"></div>
+  <div class="lq-grid">
+
+    <div class="lq-bot" id="lqb1">
+      <div class="lq-bhead">
+        <span class="lq-live"><span class="lq-dot"></span>LIVE</span>
+        <span class="lq-bname">BOT 01 &middot; LATENCY / REPRICING</span>
+        <span class="lq-chip on" data-i="BTC">BTC</span>
+        <span class="lq-chip" data-i="ETH">ETH</span>
+        <span class="lq-chip" data-i="XRP">XRP</span>
+        <span class="lq-chip" data-i="SOL">SOL</span>
+        <span class="lq-chip" data-i="HYPE">HYPE</span>
+        <div class="lq-bstats">
+          <span>PNL <b id="lq1hpnl">+$0</b></span>
+          <span>TRADES <b id="lq1htr">0</b></span>
+          <span>WIN <b id="lq1hwin">0%</b></span>
+          <span>LAT <b id="lq1hlat">0ms</b></span>
+        </div>
+        <button class="lq-fs" title="Fullscreen">&#9974;</button>
+      </div>
+      <canvas id="lqc1" class="lq-big"></canvas>
+      <div class="lq-insp" id="lq1insp">Click an instrument chip to inspect</div>
+      <div class="lq-sub">
+        <div class="lq-cell">
+          <div class="lq-ctitle">WALLET / PNL</div>
+          <div class="lq-pnl pos" id="lq1pnl">+$0.00</div>
+          <canvas id="lq1spark" class="lq-spark"></canvas>
+          <div id="lq1assets"></div>
+          <div class="lq-kvrow"><span>TRADES</span><b id="lq1tr">0</b></div>
+          <div class="lq-kvrow"><span>WIN RATE</span><b id="lq1wr">0%</b></div>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">DECISION TRACE</div>
+          <ul class="lq-log" id="lq1log"></ul>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">BOT AGENTS &mdash; 6 ONLINE</div>
+          <div class="lq-agrow" id="lq1agents"></div>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">LATENCY EDGE WATERFALL</div>
+          <div id="lq1wf"></div>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">FILL ARRIVAL</div>
+          <div class="lq-tape" id="lq1fills"></div>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">DIRECTION PHASE PORTRAIT</div>
+          <canvas id="lq1phase" class="lq-mini" style="height:96px;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="lq-bot" id="lqb2">
+      <div class="lq-bhead">
+        <span class="lq-live"><span class="lq-dot"></span>LIVE</span>
+        <span class="lq-bname">BOT 02 &middot; DIRECTIONAL HEDGING</span>
+        <span class="lq-chip on" data-i="BTC">BTC</span>
+        <span class="lq-chip" data-i="ETH">ETH</span>
+        <span class="lq-chip" data-i="DOGE">DOGE</span>
+        <span class="lq-chip" data-i="SOL">SOL</span>
+        <span class="lq-chip" data-i="HYPE">HYPE</span>
+        <span class="lq-chip" data-i="XRP">XRP</span>
+        <div class="lq-bstats">
+          <span>PNL <b id="lq2hpnl">+$0</b></span>
+          <span>TRADES <b id="lq2htr">0</b></span>
+          <span>HEDGE <b id="lq2hhedge">0.00</b></span>
+          <span>RISK <b id="lq2hrisk">0.00</b></span>
+        </div>
+        <button class="lq-fs" title="Fullscreen">&#9974;</button>
+      </div>
+      <canvas id="lqc2" class="lq-big"></canvas>
+      <div class="lq-insp" id="lq2insp">Click an instrument chip to inspect</div>
+      <div class="lq-sub">
+        <div class="lq-cell">
+          <div class="lq-ctitle">UNDERLYING / MODEL</div>
+          <div id="lq2table"></div>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">SIGMA BANDS &mdash; CHEAP SIDE DETECTOR</div>
+          <canvas id="lq2sigma" class="lq-mini" style="height:96px;"></canvas>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">FILL TAPE</div>
+          <div class="lq-tape" id="lq2tape"></div>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">INVENTORY PHASE PORTRAIT</div>
+          <canvas id="lq2phase" class="lq-mini" style="height:96px;"></canvas>
+        </div>
+        <div class="lq-cell" style="grid-column: 1 / -1;">
+          <div class="lq-ctitle">MONTE CARLO &mdash; EXPECTANCY FAN</div>
+          <canvas id="lq2mc" class="lq-mini" style="height:104px;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="lq-bot" id="lqb3">
+      <div class="lq-bhead">
+        <span class="lq-live"><span class="lq-dot"></span>LIVE</span>
+        <span class="lq-bname">BOT 03 &middot; QUANT TSI SIGNAL</span>
+        <div class="lq-bstats">
+          <span>PNL <b id="lq3hpnl">+$0</b></span>
+          <span>TRADES <b id="lq3htr">0</b></span>
+          <span>WIN <b id="lq3hwin">0%</b></span>
+          <span>SIG <b id="lq3hsig">&mdash;</b></span>
+        </div>
+        <button class="lq-fs" title="Fullscreen">&#9974;</button>
+      </div>
+      <canvas id="lqc3" class="lq-big"></canvas>
+      <div class="lq-insp" id="lq3insp">TSI signal engine &mdash; particles converge when signals align</div>
+      <div class="lq-sub">
+        <div class="lq-cell" style="grid-column: 1 / -1;">
+          <div class="lq-ctitle">SIGNAL METRICS &mdash; LIVE</div>
+          <div class="lq-minigrid" id="lq3minis"></div>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">ATTENTION NETWORK</div>
+          <canvas id="lq3net" class="lq-mini" style="height:112px;"></canvas>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">TRADE LOG</div>
+          <ul class="lq-log" id="lq3log"></ul>
+        </div>
+        <div class="lq-cell" style="grid-column: 1 / -1;">
+          <div class="lq-ctitle">INSTRUMENTS</div>
+          <div id="lq3inst"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lq-bot" id="lqb4">
+      <div class="lq-bhead">
+        <span class="lq-live"><span class="lq-dot"></span>LIVE</span>
+        <span class="lq-bname">BOT 04 &middot; POLYMARKET EXECUTION</span>
+        <div class="lq-bstats">
+          <span>PNL <b id="lq4hpnl">+$0</b></span>
+          <span>TRADES <b id="lq4htr">0</b></span>
+          <span>FILLS <b id="lq4hfill">0</b></span>
+          <span>EDGE <b id="lq4hedge">+0.000</b></span>
+        </div>
+        <button class="lq-fs" title="Fullscreen">&#9974;</button>
+      </div>
+      <canvas id="lqc4" class="lq-big"></canvas>
+      <div class="lq-insp" id="lq4insp">Order-flow sphere &mdash; flashes = fills hitting the book</div>
+      <div class="lq-sub">
+        <div class="lq-cell">
+          <div class="lq-ctitle">ORDER BOOK &mdash; BTC 5M</div>
+          <div id="lq4ob"></div>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">PRICE / FAIR VALUE</div>
+          <canvas id="lq4chart" class="lq-mini" style="height:96px;"></canvas>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">FILL TAPE</div>
+          <div class="lq-tape" id="lq4tape"></div>
+        </div>
+        <div class="lq-cell">
+          <div class="lq-ctitle">EXPECTANCY FAN &mdash; MONTE CARLO</div>
+          <canvas id="lq4fan" class="lq-mini" style="height:96px;"></canvas>
+        </div>
+        <div class="lq-cell" style="grid-column: 1 / -1;">
+          <div class="lq-ctitle">TRADE LOG</div>
+          <div id="lq4tbl"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- SECTION AI TRADING BOT (paper trading uniquement) -->
 <section id="aiBot" class="ai-section">
   <div class="ai-head">
@@ -795,7 +1043,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Live Bot Activity", ngCore: "DEKA CORE", ngScanning: "SCANNING", ngBuying: "BUYING", ngSelling: "SELLING",
     ngFeedTitle: "Live bot feed", ngPosTitle: "Open positions — where they're going", ngChartsTitle: "All markets — live",
-    ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.", ngStatTrades: "bot trades", ngStatHot: "top mover", ngStatHeld: "held",
+    ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.", ngStatTrades: "bot trades", ngStatHot: "top mover", ngStatHeld: "held", lqTitle: "Live Quant Control Center",
     resetAccount: "↺ Reset account",
     marketTitle: "Market", marketSub: "real-time prices · BTC & gold live",
     thAsset: "Asset", thPrice: "Price", thChart: "Chart", thHeld: "Held", thTrade: "Trade (amount in €)",
@@ -877,7 +1125,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Bot-Aktivität live", ngCore: "DEKA-KERN", ngScanning: "SCANNT", ngBuying: "KAUF", ngSelling: "VERKAUF",
     ngFeedTitle: "Bot-Feed live", ngPosTitle: "Offene Positionen — wohin sie gehen", ngChartsTitle: "Alle Märkte — live",
-    ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.", ngStatTrades: "Bot-Trades", ngStatHot: "Top-Beweger", ngStatHeld: "gehalten",
+    ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.", ngStatTrades: "Bot-Trades", ngStatHot: "Top-Beweger", ngStatHeld: "gehalten", lqTitle: "Live-Quant-Kontrollzentrum",
     resetAccount: "↺ Konto zurücksetzen",
     marketTitle: "Markt", marketSub: "echte Preise in Echtzeit · BTC & Gold live",
     thAsset: "Asset", thPrice: "Preis", thChart: "Chart", thHeld: "Gehalten", thTrade: "Handel (Betrag in €)",
@@ -959,7 +1207,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Activité des bots en direct", ngCore: "CŒUR DEKA", ngScanning: "SCAN EN COURS", ngBuying: "ACHAT", ngSelling: "VENTE",
     ngFeedTitle: "Flux des bots en direct", ngPosTitle: "Positions ouvertes — où elles vont", ngChartsTitle: "Tous les marchés — en direct",
-    ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.", ngStatTrades: "trades bots", ngStatHot: "plus actif", ngStatHeld: "détenus",
+    ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.", ngStatTrades: "trades bots", ngStatHot: "plus actif", ngStatHeld: "détenus", lqTitle: "Centre de contrôle Quant en direct",
     resetAccount: "↺ Réinitialiser le compte",
     marketTitle: "Marché", marketSub: "prix en temps réel · BTC & or en direct",
     thAsset: "Actif", thPrice: "Prix", thChart: "Graphique", thHeld: "Détenu", thTrade: "Trade (montant en €)",
@@ -1041,7 +1289,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Aktiviteti i botëve live", ngCore: "BËRTHAMA DEKA", ngScanning: "PO SKANON", ngBuying: "BLERJE", ngSelling: "SHITJE",
     ngFeedTitle: "Fluxi i botëve live", ngPosTitle: "Pozicionet e hapura — ku po shkojnë", ngChartsTitle: "Të gjitha tregjet — live",
-    ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.", ngStatTrades: "tregtime botesh", ngStatHot: "më aktiv", ngStatHeld: "të mbajtura",
+    ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.", ngStatTrades: "tregtime botesh", ngStatHot: "më aktiv", ngStatHeld: "të mbajtura", lqTitle: "Qendra e kontrollit Quant Live",
     resetAccount: "↺ Rivendis llogarinë",
     marketTitle: "Tregu", marketSub: "çmime reale në kohë reale · BTC & ari live",
     thAsset: "Aseti", thPrice: "Çmimi", thChart: "Grafiku", thHeld: "Në posedim", thTrade: "Tregto (shuma në €)",
@@ -3153,6 +3401,619 @@ function ngFrame() {
   requestAnimationFrame(ngFrame);
 }
 
+/* ================= LIVE QUANT CONTROL CENTER ================= */
+const LQ_BUS = { m: {}, on(e, f) { (this.m[e] = this.m[e] || []).push(f); }, emit(e, d) { const l = this.m[e]; if (l) for (const f of l) { try { f(d); } catch (err) {} } } };
+const LQ_COL = ["#00cec9", "#ff6ec7", "#a29bfe", "#2ecc71", "#f1c40f", "#f7931a"];
+const LQ_IDS1 = ["BTC", "ETH", "XRP", "SOL", "HYPE"];
+const LQ_IDS2 = ["BTC", "ETH", "DOGE", "SOL", "HYPE", "XRP"];
+const LQ_BASE = { BTC: 97000, ETH: 3300, XRP: 2.4, SOL: 210, DOGE: 0.32, HYPE: 42 };
+const LQ_MINIS = ["SIGNAL STRENGTH", "MOMENTUM", "VOLATILITY", "LIQUIDITY", "TSI", "PRICE", "SPREAD", "CONFIDENCE"];
+const LQ_LINKS1 = [[0, 1], [0, 3], [1, 3], [2, 0], [3, 4], [1, 4]];
+const LQ_LINKS2 = [[0, 1], [0, 3], [1, 5], [2, 0], [3, 4], [1, 4], [5, 3], [2, 5]];
+const LQ_NET = ["PRICE", "TSI", "MOM", "VOL", "VOLUME", "SPREAD", "FLOW", "MODEL", "SIGNAL"];
+const lq$ = id => document.getElementById(id);
+const lqRnd = (a, b) => a + Math.random() * (b - a);
+const lqPick = arr => arr[Math.floor(Math.random() * arr.length)];
+const lqMoney = v => (v >= 0 ? "+$" : "-$") + Math.abs(v).toFixed(2);
+const lqPx = v => v < 10 ? v.toFixed(4) : v.toFixed(2);
+function lqPush(arr, item, cap) { arr.push(item); while (arr.length > cap) arr.shift(); }
+function lqLog(b, cls, msg) { lqPush(b.log, { tm: new Date().toTimeString().slice(0, 8), cls, msg }, 26); b.d.log = true; }
+function lqTape(b, side, size, px, edge) { lqPush(b.tape, { tm: new Date().toTimeString().slice(0, 8), side, size, px, edge }, 16); b.d.tape = true; }
+function lqCtx(id, hHint) {
+  const c = lq$(id); if (!c) return null;
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  const w = c.clientWidth || 320, h = c.clientHeight || hHint || 120;
+  if (c.width !== Math.round(w * dpr) || c.height !== Math.round(h * dpr)) { c.width = Math.round(w * dpr); c.height = Math.round(h * dpr); }
+  const ctx = c.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w, h };
+}
+function lqCloud(n) {
+  const pts = [];
+  for (let i = 0; i < n; i++) pts.push({ a: Math.random() * 6.283, r: Math.pow(Math.random(), 0.6), sp: lqRnd(0.08, 0.45), sz: lqRnd(0.6, 2.2), ph: Math.random() * 6.283 });
+  return pts;
+}
+const lqInstr = {};
+LQ_IDS2.forEach((id, i) => {
+  lqInstr[id] = { id, fair: LQ_BASE[id], price: LQ_BASE[id], dev: 0, mom: 0, edge: 0, lat: lqRnd(12, 28), fills: 180 + Math.floor(lqRnd(0, 300)), cloud: lqCloud(id === "HYPE" ? 60 : 72), col: LQ_COL[i % LQ_COL.length] };
+});
+const lqB = {
+  b1: { pnl: 0, trades: 0, wins: 0, hist: [], log: [], fills: [], assets: {}, wf: [], agents: [], d: {} },
+  b2: { pnl: 0, trades: 0, wins: 0, hist: [], tape: [], rows: [], sigma: [], mc: [], ph: [], d: {} },
+  b3: { pnl: 0, trades: 0, wins: 0, hist: [], log: [], minis: Array.from({ length: 8 }, () => []), net: LQ_NET.map((n, i) => ({ n, a: i / 9 * 6.283 - 1.57, w: Math.random() })), links: [], tsi: 0, conf: 50, inst: [], d: {} },
+  b4: { pnl: 0, n: 0, wins: 0, fills: 0, hist: [], tape: [], book: { asks: [], bids: [], mid: 0.5 }, trades: [], fan: [], d: {} }
+};
+for (let i = 0; i < 9; i++) for (let j = i + 1; j < 9; j++) if (Math.random() < 0.35) lqB.b3.links.push([i, j, Math.random()]);
+["SCOUT", "SIGNAL", "RISK", "EXECUTION", "ARBITRAGE", "MONITOR"].forEach(n => lqB.b1.agents.push({ n, st: "ONLINE" }));
+let lqVisible = true, lqPaused = false, lq4Flash = 0;
+const lqImps1 = [], lqImps2 = [];
+const lqPhase1 = [
+  { col: "#2ecc71", a: 3, b: 2, ph: 0 },
+  { col: "#e74c3c", a: 2, b: 3, ph: 1.2 },
+  { col: "#f1c40f", a: 5, b: 4, ph: 2.1 }
+];
+const lqTorus = [];
+for (let i = 0; i < 300; i++) lqTorus.push({ u: Math.random() * 6.283, v: Math.random() * 6.283, su: lqRnd(0.04, 0.18), sv: lqRnd(0.04, 0.18), sz: lqRnd(0.5, 1.8), mag: Math.random() < 0.15 });
+const lqSph = [];
+for (let i = 0; i < 300; i++) {
+  const y0 = 1 - (i / 299) * 2, r0 = Math.sqrt(Math.max(0, 1 - y0 * y0)), th = i * 2.39996;
+  lqSph.push({ x: Math.cos(th) * r0, y: y0, z: Math.sin(th) * r0, sz: lqRnd(0.7, 1.9), on: Math.random() < 0.12 });
+}
+
+function lqTick() {
+  if (lqPaused) return;
+  for (const id of LQ_IDS2) {
+    const I = lqInstr[id];
+    const ap = id !== "HYPE" ? aiPrices[id + "USDT"] : null;
+    if (ap && ap.price > 0) I.fair = ap.price;
+    I.dev = I.dev * 0.88 + lqRnd(-0.09, 0.09);
+    I.price = I.fair * (1 + I.dev / 100);
+    I.mom = I.mom * 0.8 + I.dev * 0.2;
+    I.edge = I.dev * 0.45 + lqRnd(-0.04, 0.04);
+    I.lat = Math.max(6, I.lat * 0.92 + lqRnd(8, 26) * 0.08);
+    if (Math.random() < 0.5) I.fills += Math.floor(lqRnd(0, 4));
+  }
+  LQ_BUS.emit("MARKET_UPDATE", null);
+  const tm = new Date().toTimeString().slice(0, 8);
+
+  const b1 = lqB.b1;
+  const ag = lqRnd(8, 24);
+  b1.wf = [
+    { n: "MARKET LATENCY", v: Math.round(lqInstr.BTC.lat) + "ms", p: lqInstr.BTC.lat / 40 },
+    { n: "DETECTION", v: Math.round(ag * 0.4) + "ms", p: ag * 0.4 / 40 },
+    { n: "EXECUTION", v: Math.round(ag * 0.6) + "ms", p: ag * 0.6 / 40 },
+    { n: "EXPECTED EDGE", v: "+" + Math.abs(lqInstr.BTC.edge).toFixed(3), p: Math.min(1, Math.abs(lqInstr.BTC.edge) / 0.5) },
+    { n: "REALIZED EDGE", v: (b1.pnl / Math.max(1, b1.trades) / 100).toFixed(3), p: Math.min(1, Math.abs(b1.pnl / Math.max(1, b1.trades)) / 80), warn: b1.pnl < 0 }
+  ];
+  b1.d.wf = true;
+  if (Math.random() < 0.5) {
+    const id = lqPick(LQ_IDS1), I = lqInstr[id];
+    const side = I.edge >= 0 ? "BUY" : "SELL";
+    const pnl = lqRnd(-35, 80);
+    b1.pnl += pnl; b1.trades++; if (pnl >= 0) b1.wins++;
+    lqPush(b1.hist, b1.pnl, 90);
+    b1.assets[id] = (b1.assets[id] || 0) + pnl;
+    lqPush(b1.fills, { tm, size: Math.floor(lqRnd(5, 90)), side, px: I.price, lat: Math.round(I.lat), slip: lqRnd(-0.02, 0.05) }, 10);
+    b1.d.fills = true; b1.d.assets = true;
+    lqLog(b1, side === "BUY" ? "buy" : "sell", id + " " + side + " fill \u00b7 " + lqMoney(pnl));
+    LQ_BUS.emit("ORDER_FILLED", { bot: 1, id, side, pnl });
+    b1.agents[3].st = "ACTIVE";
+  } else {
+    lqLog(b1, "info", lqPick([
+      "fair value recalculated \u00b7 " + lqInstr.BTC.id,
+      "spread opportunity scanned ETH/XRP",
+      "latency edge +" + lqRnd(0.05, 0.42).toFixed(2),
+      "risk check passed",
+      "repricing cycle complete"
+    ]));
+  }
+  b1.agents.forEach(a => {
+    if (a.st === "ACTIVE" && Math.random() < 0.5) a.st = "ONLINE";
+    else if (Math.random() < 0.12) a.st = lqPick(["WAITING", "WARNING", "ONLINE", "ACTIVE"]);
+  });
+  b1.d.agents = true;
+
+  const b2 = lqB.b2;
+  b2.rows = LQ_IDS2.map(id => {
+    const I = lqInstr[id];
+    const model = I.fair * (1 + I.dev / 100 * 0.5);
+    return { id, px: I.price, model, dev: (model / I.price - 1) * 100, sig: I.dev > 0.06 ? "LONG" : I.dev < -0.06 ? "SHORT" : "FLAT", conf: Math.min(95, Math.round(50 + Math.abs(I.dev) * 200)), expo: (I.dev * 1.2).toFixed(1) + "%" };
+  });
+  b2.d.table = true;
+  lqPush(b2.sigma, lqInstr.BTC.dev, 90);
+  if (Math.random() < 0.55) {
+    const id = lqPick(LQ_IDS2), I = lqInstr[id];
+    lqTape(b2, I.dev >= 0 ? "BUY" : "SELL", Math.floor(lqRnd(5, 80)), I.price, lqRnd(-0.01, 0.08));
+    const pnl = lqRnd(-25, 60);
+    b2.pnl += pnl; b2.trades++; if (pnl >= 0) b2.wins++;
+    lqPush(b2.hist, b2.pnl, 90);
+    LQ_BUS.emit("HEDGE_EXECUTED", { bot: 2, id, side: I.dev >= 0 ? "BUY" : "SELL" });
+  }
+  const drift2 = b2.pnl / Math.max(1, b2.trades) / 50;
+  b2.mc = Array.from({ length: 26 }, () => {
+    let v = 0; const path = [0];
+    for (let i = 0; i < 23; i++) { v += drift2 + lqRnd(-1, 1); path.push(v); }
+    return path;
+  });
+  lqPush(b2.ph, { x: Math.sin(Date.now() / 700), y: Math.cos(Date.now() / 1100) }, 70);
+
+  const b3 = lqB.b3;
+  b3.tsi = b3.tsi * 0.85 + (lqInstr.BTC.mom * 12 + lqRnd(-4, 4)) * 0.15;
+  b3.conf = Math.min(97, Math.max(5, 50 + Math.abs(b3.tsi)));
+  const mvals = [Math.abs(b3.tsi) / 30, lqInstr.BTC.mom * 8, lqRnd(0.2, 1), lqRnd(0.3, 1), b3.tsi / 30, lqInstr.BTC.dev * 3, lqRnd(0.1, 0.8), b3.conf / 100];
+  mvals.forEach((v, i) => lqPush(b3.minis[i], v, 60));
+  mvals.forEach((v, i) => { const el = lq$("lq3v" + i); if (el) el.textContent = (v * 100).toFixed(1) + "%"; });
+  b3.net.forEach(n => { n.w = Math.min(1, Math.max(0.05, n.w + lqRnd(-0.15, 0.15))); });
+  b3.links.forEach(l => { l[2] = Math.min(1, Math.max(0.05, l[2] + lqRnd(-0.2, 0.2))); });
+  if (Math.random() < 0.3) {
+    const id = lqPick(["BTC", "ETH", "SOL", "DOGE"]);
+    const side = b3.tsi >= 0 ? "LONG" : "SHORT";
+    const pnl = lqRnd(-20, 55);
+    b3.pnl += pnl; b3.trades++; if (pnl >= 0) b3.wins++;
+    lqPush(b3.hist, b3.pnl, 90);
+    lqLog(b3, pnl >= 0 ? "profit" : "loss", id + " " + side + " conf " + Math.round(b3.conf) + "% \u00b7 " + lqMoney(pnl));
+    LQ_BUS.emit("SIGNAL_DETECTED", { bot: 3, id, side });
+  }
+  b3.inst = ["BTC", "ETH", "SOL", "DOGE"].map(id => [id, lqInstr[id]]);
+  b3.d.inst = true;
+
+  const b4 = lqB.b4;
+  const mid = Math.min(0.95, Math.max(0.05, 0.5 + lqInstr.BTC.dev * 2));
+  b4.book.mid = mid;
+  b4.book.asks = Array.from({ length: 5 }, (_, i) => ({ p: Math.min(0.99, mid + 0.012 * (i + 1)), s: lqRnd(5, 90) }));
+  b4.book.bids = Array.from({ length: 5 }, (_, i) => ({ p: Math.max(0.01, mid - 0.012 * (i + 1)), s: lqRnd(5, 90) }));
+  b4.d.book = true;
+  lqPush(b4.hist, mid, 90);
+  if (Math.random() < 0.6) {
+    lqTape(b4, Math.random() < 0.5 + lqInstr.BTC.mom ? "BUY" : "SELL", Math.floor(lqRnd(10, 90)), lqRnd(0.3, 0.9), lqRnd(-0.01, 0.05));
+    lq4Flash = 1;
+    b4.fills++;
+  }
+  if (Math.random() < 0.35) {
+    const pnl = lqRnd(-15, 45);
+    b4.pnl += pnl; b4.n++; if (pnl >= 0) b4.wins++;
+    lqPush(b4.trades, { tm, mkt: lqPick(["BTC-UP-5M", "BTC-DOWN-5M", "ETH-UP-1H", "SOL-UP-1H"]), side: Math.random() < 0.5 ? "BUY" : "SELL", px: lqRnd(0.3, 0.85), size: Math.floor(lqRnd(10, 90)), edge: lqRnd(0.001, 0.05), fee: lqRnd(0.1, 1.2), pnl, st: "FILLED" }, 12);
+    b4.d.tbl = true;
+  }
+  b4.fan = Array.from({ length: 30 }, () => {
+    let v = 0; const path = [0];
+    for (let i = 0; i < 23; i++) { v += 0.08 + lqRnd(-0.9, 0.9); path.push(v); }
+    return path;
+  });
+
+  lqDomTick();
+  lqRenderStatus();
+}
+
+function lqRenderStatus() {
+  const el = lq$("lqStatus"); if (!el) return;
+  const wsOk = typeof ws !== "undefined" && ws && ws.readyState === 1;
+  el.innerHTML =
+    '<span><span class="lq-dot"></span> 4 BOTS ONLINE</span>' +
+    '<span><span class="lq-dot"></span> LIVE DATA</span>' +
+    '<span><span class="lq-dot"></span> MARKET CONNECTION</span>' +
+    '<span><span class="lq-dot ' + (wsOk ? "" : "warn") + '"></span> ' + (wsOk ? "WEBSOCKET CONNECTED" : "WEBSOCKET RECONNECTING") + '</span>' +
+    '<span>LAST UPDATE <b>' + new Date().toTimeString().slice(0, 8) + '</b></span>' +
+    '<button class="lq-fs" id="lqPauseBtn">' + (lqPaused ? "\u25b6 RESUME" : "\u23f8 PAUSE") + '</button>';
+  const btn = lq$("lqPauseBtn"); if (btn) btn.onclick = () => { lqPaused = !lqPaused; lqRenderStatus(); };
+}
+
+function lqDomTick() {
+  const b1 = lqB.b1, b2 = lqB.b2, b3 = lqB.b3, b4 = lqB.b4;
+  const set = (id, v) => { const el = lq$(id); if (el) el.textContent = v; };
+  set("lq1hpnl", lqMoney(b1.pnl)); set("lq2hpnl", lqMoney(b2.pnl)); set("lq3hpnl", lqMoney(b3.pnl)); set("lq4hpnl", lqMoney(b4.pnl));
+  set("lq1htr", b1.trades); set("lq2htr", b2.trades); set("lq3htr", b3.trades); set("lq4htr", b4.n);
+  set("lq1hwin", Math.round(b1.wins / Math.max(1, b1.trades) * 100) + "%");
+  set("lq3hwin", Math.round(b3.wins / Math.max(1, b3.trades) * 100) + "%");
+  set("lq1hlat", Math.round(lqInstr.BTC.lat) + "ms");
+  set("lq2hhedge", (0.5 + lqInstr.ETH.dev / 10).toFixed(2));
+  set("lq2hrisk", (0.15 + Math.abs(lqInstr.BTC.dev) / 5).toFixed(2));
+  set("lq3hsig", (b3.tsi >= 0 ? "+" : "") + b3.tsi.toFixed(1) + "%");
+  set("lq4hfill", b4.fills);
+  set("lq4hedge", (b4.pnl / Math.max(1, b4.n) / 100).toFixed(3));
+  set("lq1pnl", lqMoney(b1.pnl)); set("lq1tr", b1.trades);
+  set("lq1wr", Math.round(b1.wins / Math.max(1, b1.trades) * 100) + "%");
+  const p1 = lq$("lq1pnl"); if (p1) p1.className = "lq-pnl " + (b1.pnl >= 0 ? "pos" : "neg");
+  if (b1.d.log) { const el = lq$("lq1log"); if (el) el.innerHTML = b1.log.slice(-12).reverse().map(x => '<li class="' + x.cls + '"><b>' + x.tm + '</b> ' + x.msg + '</li>').join(""); b1.d.log = false; }
+  if (b1.d.fills) { const el = lq$("lq1fills"); if (el) el.innerHTML = b1.fills.slice(-7).reverse().map(f => '<div class="' + (f.side === "BUY" ? "b" : "s") + '">' + f.tm + ' ' + f.side + ' ' + f.size + ' @ ' + lqPx(f.px) + ' \u00b7 lat ' + f.lat + 'ms \u00b7 slip ' + (f.slip >= 0 ? "+" : "") + f.slip.toFixed(2) + '%</div>').join(""); b1.d.fills = false; }
+  if (b1.d.assets) { const el = lq$("lq1assets"); if (el) el.innerHTML = LQ_IDS1.filter(id => b1.assets[id]).map(id => '<div class="lq-kvrow"><span>' + id + '</span><b class="' + (b1.assets[id] >= 0 ? "pos" : "neg") + '">' + lqMoney(b1.assets[id]) + '</b></div>').join(""); b1.d.assets = false; }
+  if (b1.d.agents) { const el = lq$("lq1agents"); if (el) el.innerHTML = b1.agents.map(a => '<div class="lq-ag ' + (a.st === "WAITING" ? "wait" : a.st === "WARNING" ? "warn" : a.st === "ACTIVE" ? "active" : "") + '"><span class="lq-agdot"></span>' + a.n + ' \u00b7 ' + a.st + '</div>').join(""); b1.d.agents = false; }
+  if (b1.d.wf) { const el = lq$("lq1wf"); if (el) el.innerHTML = b1.wf.map(x => '<div class="lq-wfrow"><span>' + x.n + '</span><div style="flex:1"><div class="lq-wfbar ' + (x.warn ? "warn" : "") + '" style="width:' + Math.min(100, x.p * 100).toFixed(0) + '%"></div></div><b style="width:56px;text-align:right">' + x.v + '</b></div>').join(""); b1.d.wf = false; }
+  if (b2.d.table) { const el = lq$("lq2table"); if (el) el.innerHTML = '<table class="lq-table"><tr><th>UND</th><th>MODEL</th><th>DEV</th><th>SIG</th><th>CONF</th><th>EXPO</th></tr>' + b2.rows.map(r => '<tr><td>' + r.id + '</td><td>' + lqPx(r.model) + '</td><td class="' + (r.dev >= 0 ? "up" : "dn") + '">' + (r.dev >= 0 ? "+" : "") + r.dev.toFixed(2) + '%</td><td class="' + (r.sig === "LONG" ? "up" : r.sig === "SHORT" ? "dn" : "") + '">' + r.sig + '</td><td>' + r.conf + '%</td><td>' + r.expo + '</td></tr>').join("") + '</table>'; b2.d.table = false; }
+  if (b2.d.tape) { const el = lq$("lq2tape"); if (el) el.innerHTML = b2.tape.slice(-7).reverse().map(f => '<div class="' + (f.side === "BUY" ? "b" : "s") + '">' + f.tm + ' ' + f.side + ' ' + f.size + ' @ ' + lqPx(f.px) + ' \u00b7 edge ' + (f.edge >= 0 ? "+" : "") + f.edge.toFixed(3) + '</div>').join(""); b2.d.tape = false; }
+  if (b3.d.log) { const el = lq$("lq3log"); if (el) el.innerHTML = b3.log.slice(-12).reverse().map(x => '<li class="' + x.cls + '"><b>' + x.tm + '</b> ' + x.msg + '</li>').join(""); b3.d.log = false; }
+  if (b3.d.inst) { const el = lq$("lq3inst"); if (el) el.innerHTML = b3.inst.map(pr => { const id = pr[0], I = pr[1]; return '<div class="lq-kvrow"><span>' + id + ' <b>' + lqPx(I.price) + '</b></span><span>sig <b class="' + (I.dev >= 0 ? "pos" : "neg") + '">' + (I.dev >= 0 ? "LONG" : "SHORT") + '</b> \u00b7 dev ' + (I.dev >= 0 ? "+" : "") + I.dev.toFixed(2) + '%</span></div>'; }).join(""); b3.d.inst = false; }
+  if (b4.d.book) { const el = lq$("lq4ob"); if (el) { const mx = Math.max(1, ...b4.book.asks.map(a => a.s), ...b4.book.bids.map(a => a.s)); el.innerHTML = b4.book.asks.slice().reverse().map(a => '<div class="lq-obrow ask"><i style="width:' + (a.s / mx * 100).toFixed(0) + '%"></i><span>' + a.p.toFixed(3) + '</span><span>' + a.s.toFixed(1) + '</span></div>').join("") + '<div class="lq-obmid">' + b4.book.mid.toFixed(3) + '</div>' + b4.book.bids.map(a => '<div class="lq-obrow bid"><i style="width:' + (a.s / mx * 100).toFixed(0) + '%"></i><span>' + a.p.toFixed(3) + '</span><span>' + a.s.toFixed(1) + '</span></div>').join(""); b4.d.book = false; } }
+  if (b4.d.tape) { const el = lq$("lq4tape"); if (el) el.innerHTML = b4.tape.slice(-7).reverse().map(f => '<div class="' + (f.side === "BUY" ? "b" : "s") + '">' + f.tm + ' ' + f.side + ' ' + f.size + ' @ ' + f.px.toFixed(2) + ' \u00b7 edge ' + (f.edge >= 0 ? "+" : "") + f.edge.toFixed(3) + '</div>').join(""); b4.d.tape = false; }
+  if (b4.d.tbl) { const el = lq$("lq4tbl"); if (el) el.innerHTML = '<div class="lq-tr"><div class="h">TIME</div><div class="h">MARKET</div><div class="h">SIDE</div><div class="h">PRICE</div><div class="h">SIZE</div><div class="h">EDGE</div><div class="h">FEE</div><div class="h">PNL</div><div class="h">STATUS</div></div>' + b4.trades.slice(-8).reverse().map(r => '<div class="lq-tr"><div>' + r.tm + '</div><div>' + r.mkt + '</div><div class="' + (r.side === "BUY" ? "up" : "dn") + '">' + r.side + '</div><div>' + r.px.toFixed(2) + '</div><div>' + r.size + '</div><div class="' + (r.edge >= 0 ? "up" : "dn") + '">' + r.edge.toFixed(3) + '</div><div>' + r.fee.toFixed(2) + '</div><div class="' + (r.pnl >= 0 ? "up" : "dn") + '">' + lqMoney(r.pnl) + '</div><div>' + r.st + '</div></div>').join(""); b4.d.tbl = false; }
+}
+
+function lqGridBg(ctx, w, h) {
+  ctx.strokeStyle = "rgba(127,139,163,.08)"; ctx.lineWidth = 1;
+  for (let x = 0; x < w; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+  for (let y = 0; y < h; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+}
+
+function lqDraw1() {
+  const C = lqCtx("lqc1", 320); if (!C) return;
+  const { ctx, w, h } = C;
+  ctx.clearRect(0, 0, w, h);
+  lqGridBg(ctx, w, h);
+  const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.34;
+  const centers = LQ_IDS1.map((id, i) => {
+    const a = i / LQ_IDS1.length * 6.283 - 1.57;
+    return { id, x: cx + Math.cos(a) * R, y: cy + Math.sin(a) * R };
+  });
+  ctx.lineWidth = 1;
+  for (const pr of LQ_LINKS1) {
+    const A = centers[pr[0]], B = centers[pr[1]];
+    const g = ctx.createLinearGradient(A.x, A.y, B.x, B.y);
+    g.addColorStop(0, "rgba(0,206,201,.22)"); g.addColorStop(1, "rgba(255,110,199,.22)");
+    ctx.strokeStyle = g;
+    ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+  }
+  if (Math.random() < 0.12) { const pr = lqPick(LQ_LINKS1); lqImps1.push({ a: pr[0], b: pr[1], p: 0 }); }
+  ctx.globalCompositeOperation = "lighter";
+  for (let i = lqImps1.length - 1; i >= 0; i--) {
+    const im = lqImps1[i]; im.p += 0.02;
+    if (im.p >= 1) { lqImps1.splice(i, 1); continue; }
+    const A = centers[im.a], B = centers[im.b];
+    ctx.fillStyle = "rgba(0,206,201,.9)";
+    ctx.beginPath(); ctx.arc(A.x + (B.x - A.x) * im.p, A.y + (B.y - A.y) * im.p, 2.4, 0, 6.283); ctx.fill();
+  }
+  const ts = Date.now() / 1000;
+  centers.forEach(c => {
+    const I = lqInstr[c.id];
+    for (const p of I.cloud) {
+      const a2 = p.a + ts * p.sp * 0.3;
+      const r2 = p.r * (26 + Math.sin(ts * 0.8 + p.ph) * 5) * (1 + Math.abs(I.dev) * 2);
+      ctx.fillStyle = I.col; ctx.globalAlpha = 0.22 + 0.5 * (0.5 + 0.5 * Math.sin(ts * 2 + p.ph));
+      ctx.beginPath(); ctx.arc(c.x + Math.cos(a2) * r2, c.y + Math.sin(a2) * r2 * 0.8, p.sz, 0, 6.283); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  });
+  ctx.globalCompositeOperation = "source-over";
+  ctx.font = "9px Consolas, monospace"; ctx.textAlign = "center";
+  centers.forEach(c => {
+    const I = lqInstr[c.id];
+    ctx.fillStyle = "rgba(225,232,245,.92)";
+    ctx.fillText(c.id + " 5M", c.x, c.y - 36);
+    ctx.fillStyle = "rgba(127,139,163,.9)";
+    ctx.fillText(I.fills + " fills \u00b7 " + (I.dev > 0.02 ? "accumulating" : I.dev < -0.02 ? "distributing" : "neutral"), c.x, c.y - 26);
+    ctx.fillStyle = I.dev >= 0 ? "#2ecc71" : "#e74c3c";
+    ctx.fillText((I.dev >= 0 ? "+" : "") + I.dev.toFixed(2) + "%  lat " + Math.round(I.lat) + "ms  edge " + (I.edge >= 0 ? "+" : "") + I.edge.toFixed(2), c.x, c.y - 16);
+  });
+}
+
+function lqDraw2() {
+  const C = lqCtx("lqc2", 320); if (!C) return;
+  const { ctx, w, h } = C;
+  ctx.clearRect(0, 0, w, h);
+  lqGridBg(ctx, w, h);
+  const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.34;
+  const centers = LQ_IDS2.map((id, i) => {
+    const a = i / LQ_IDS2.length * 6.283 - 1.57;
+    return { id, x: cx + Math.cos(a) * R, y: cy + Math.sin(a) * R };
+  });
+  ctx.lineWidth = 1;
+  LQ_LINKS2.forEach((pr, li) => {
+    const A = centers[pr[0]], B = centers[pr[1]];
+    ctx.strokeStyle = "rgba(0,206,201,.26)";
+    ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
+    if (Math.random() < 0.008) lqImps2.push({ li, p: 0 });
+  });
+  ctx.globalCompositeOperation = "lighter";
+  for (let i = lqImps2.length - 1; i >= 0; i--) {
+    const im = lqImps2[i]; im.p += 0.018;
+    if (im.p >= 1) { lqImps2.splice(i, 1); continue; }
+    const pr = LQ_LINKS2[im.li], A = centers[pr[0]], B = centers[pr[1]];
+    ctx.fillStyle = "rgba(255,110,199,.9)";
+    ctx.beginPath(); ctx.arc(A.x + (B.x - A.x) * im.p, A.y + (B.y - A.y) * im.p, 2.4, 0, 6.283); ctx.fill();
+  }
+  const ts = Date.now() / 1000;
+  centers.forEach(c => {
+    const I = lqInstr[c.id];
+    for (const p of I.cloud) {
+      const a2 = p.a - ts * p.sp * 0.25;
+      const r2 = p.r * (24 + Math.sin(ts * 0.7 + p.ph) * 4);
+      ctx.fillStyle = I.col; ctx.globalAlpha = 0.2 + 0.45 * (0.5 + 0.5 * Math.sin(ts * 1.6 + p.ph));
+      ctx.beginPath(); ctx.arc(c.x + Math.cos(a2) * r2, c.y + Math.sin(a2) * r2 * 0.8, p.sz, 0, 6.283); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  });
+  ctx.globalCompositeOperation = "source-over";
+  ctx.font = "9px Consolas, monospace"; ctx.textAlign = "center";
+  LQ_LINKS2.forEach((pr, li) => {
+    const A = centers[pr[0]], B = centers[pr[1]];
+    const lab = ["hedge", "corr", "inverse", "expo"][li % 4];
+    const val = (0.5 + Math.abs(lqInstr[centers[pr[0]].id].dev) / 10).toFixed(2);
+    ctx.fillStyle = "rgba(127,139,163,.75)";
+    ctx.fillText(lab + " " + val, (A.x + B.x) / 2, (A.y + B.y) / 2 - 3);
+  });
+  centers.forEach(c => {
+    const I = lqInstr[c.id];
+    ctx.fillStyle = "rgba(225,232,245,.92)";
+    ctx.fillText(c.id, c.x, c.y - 30);
+    ctx.fillStyle = I.dev >= 0 ? "#2ecc71" : "#e74c3c";
+    ctx.fillText("expo " + (I.dev >= 0 ? "+" : "") + (I.dev * 1.2).toFixed(1) + "%", c.x, c.y - 20);
+  });
+}
+
+function lqDraw3() {
+  const C = lqCtx("lqc3", 320); if (!C) return;
+  const { ctx, w, h } = C;
+  ctx.clearRect(0, 0, w, h);
+  lqGridBg(ctx, w, h);
+  const cx = w / 2, cy = h / 2, R1 = Math.min(w, h) * 0.3;
+  const rotY = Date.now() / 2600, rotX = 0.6 + Math.sin(Date.now() / 5000) * 0.15;
+  const sig = Math.min(1, Math.abs(lqB.b3.tsi) / 60);
+  const rIn = R1 * 0.42 * (1 - sig * 0.35);
+  ctx.globalCompositeOperation = "lighter";
+  for (const p of lqTorus) {
+    p.u += p.su * 0.01; p.v += p.sv * 0.01;
+    const x = (R1 + rIn * Math.cos(p.v)) * Math.cos(p.u);
+    const y = rIn * Math.sin(p.v);
+    const z = (R1 + rIn * Math.cos(p.v)) * Math.sin(p.u);
+    const y2 = y * Math.cos(rotX) - z * Math.sin(rotX);
+    const z2 = y * Math.sin(rotX) + z * Math.cos(rotX);
+    const x2 = x * Math.cos(rotY) + z2 * Math.sin(rotY);
+    const z3 = -x * Math.sin(rotY) + z2 * Math.cos(rotY);
+    const s = 420 / (420 + z3);
+    ctx.fillStyle = p.mag ? "#ff6ec7" : "#00cec9";
+    ctx.globalAlpha = Math.min(1, 0.18 + 0.6 * Math.max(0, s - 0.55));
+    ctx.beginPath(); ctx.arc(cx + x2 * s, cy + y2 * s, p.sz * s, 0, 6.283); ctx.fill();
+  }
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+  ctx.textAlign = "center";
+  ctx.font = "bold 16px Consolas, monospace"; ctx.fillStyle = "#00cec9";
+  ctx.fillText("TSI " + (lqB.b3.tsi >= 0 ? "+" : "") + lqB.b3.tsi.toFixed(1) + "%", cx, cy + 5);
+  ctx.font = "9px Consolas, monospace"; ctx.fillStyle = "rgba(127,139,163,.9)";
+  ctx.fillText("SIGNAL ENGINE \u00b7 " + Math.round(lqB.b3.conf) + "% CONFIDENCE", cx, cy + 20);
+}
+
+function lqDraw4() {
+  const C = lqCtx("lqc4", 320); if (!C) return;
+  const { ctx, w, h } = C;
+  ctx.clearRect(0, 0, w, h);
+  lqGridBg(ctx, w, h);
+  const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.36;
+  const rotY = Date.now() / 3400, rotX = 0.35 + Math.sin(Date.now() / 6000) * 0.12;
+  const fl = lq4Flash; lq4Flash *= 0.94;
+  ctx.globalCompositeOperation = "lighter";
+  for (const p of lqSph) {
+    const x = p.x * Math.cos(rotY) + p.z * Math.sin(rotY);
+    const z = -p.x * Math.sin(rotY) + p.z * Math.cos(rotY);
+    const y2 = p.y * Math.cos(rotX) - z * Math.sin(rotX);
+    const z2 = p.y * Math.sin(rotX) + z * Math.cos(rotX);
+    const s = 420 / (420 + z2 * R);
+    const act = p.on || fl > 0.15;
+    ctx.fillStyle = act ? "#00cec9" : "rgba(127,139,163,.6)";
+    ctx.globalAlpha = Math.min(1, (act ? 0.35 + fl * 0.5 : 0.15) + 0.5 * Math.max(0, s - 0.6));
+    ctx.beginPath(); ctx.arc(cx + x * R * s, cy + y2 * R * s, p.sz * s * (act ? 1.4 : 1), 0, 6.283); ctx.fill();
+  }
+  ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+  ctx.textAlign = "center";
+  ctx.font = "bold 13px Consolas, monospace"; ctx.fillStyle = "#00cec9";
+  ctx.fillText("BTC 5M \u00b7 " + (lqB.b4.book.mid * 100).toFixed(1) + "%", cx, cy + 4);
+  ctx.font = "9px Consolas, monospace"; ctx.fillStyle = "rgba(127,139,163,.9)";
+  ctx.fillText("ORDER FLOW SPHERE \u00b7 " + lqB.b4.fills + " FILLS", cx, cy + 18);
+}
+
+function lqDrawSpark() {
+  const C = lqCtx("lq1spark", 44); if (!C) return;
+  const { ctx, w, h } = C;
+  const s = lqB.b1.hist;
+  ctx.clearRect(0, 0, w, h);
+  if (s.length > 1) {
+    let mn = Math.min(...s), mx = Math.max(...s); if (mx === mn) mx = mn + 1;
+    ctx.strokeStyle = s[s.length - 1] >= 0 ? "#2ecc71" : "#e74c3c"; ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    s.forEach((v, i) => { const x = i / (s.length - 1) * w, y = h - 2 - (v - mn) / (mx - mn) * (h - 6); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.stroke();
+  }
+}
+
+function lqDrawPhase1() {
+  const C = lqCtx("lq1phase", 96); if (!C) return;
+  const { ctx, w, h } = C;
+  ctx.clearRect(0, 0, w, h);
+  const now = Date.now() / 900;
+  for (const tr of lqPhase1) {
+    ctx.strokeStyle = tr.col; ctx.globalAlpha = 0.85; ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    for (let i = 0; i <= 60; i++) {
+      const th = now - (60 - i) * 0.12;
+      const x = w / 2 + Math.sin(tr.a * th + tr.ph) * (w / 2 - 8) * (0.75 + 0.25 * Math.sin(th * 0.31));
+      const y = h / 2 + Math.sin(tr.b * th) * (h / 2 - 8);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.font = "8px Consolas, monospace"; ctx.textAlign = "left";
+  ctx.fillStyle = "#2ecc71"; ctx.fillText("BULL", 4, 10);
+  ctx.fillStyle = "#e74c3c"; ctx.fillText("BEAR", 4, 20);
+  ctx.fillStyle = "#f1c40f"; ctx.fillText("NEUT", 4, 30);
+}
+
+function lqDrawSigma() {
+  const C = lqCtx("lq2sigma", 96); if (!C) return;
+  const { ctx, w, h } = C;
+  ctx.clearRect(0, 0, w, h);
+  const s = lqB.b2.sigma, mid = h / 2, band = h * 0.32;
+  ctx.fillStyle = "rgba(0,206,201,.07)"; ctx.fillRect(0, mid - band, w, band * 2);
+  ctx.strokeStyle = "rgba(127,139,163,.5)"; ctx.setLineDash([3, 3]);
+  ctx.beginPath(); ctx.moveTo(0, mid); ctx.lineTo(w, mid); ctx.stroke(); ctx.setLineDash([]);
+  if (s.length > 1) {
+    const mx = Math.max(0.3, ...s.map(Math.abs));
+    ctx.strokeStyle = "#00cec9"; ctx.lineWidth = 1.4; ctx.beginPath();
+    s.forEach((v, i) => { const x = i / (s.length - 1) * w, y = mid - v / mx * (h / 2 - 6); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.stroke();
+    const last = s[s.length - 1];
+    ctx.fillStyle = last < -mx * 0.6 ? "#2ecc71" : last > mx * 0.6 ? "#e74c3c" : "#00cec9";
+    ctx.beginPath(); ctx.arc(w - 3, mid - last / mx * (h / 2 - 6), 3, 0, 6.283); ctx.fill();
+  }
+  ctx.font = "8px Consolas, monospace"; ctx.textAlign = "left";
+  ctx.fillStyle = "#2ecc71"; ctx.fillText("CHEAP", 4, 10);
+  ctx.fillStyle = "#e74c3c"; ctx.fillText("EXPENSIVE", 4, h - 4);
+}
+
+function lqDrawPhase2() {
+  const C = lqCtx("lq2phase", 96); if (!C) return;
+  const { ctx, w, h } = C;
+  ctx.clearRect(0, 0, w, h);
+  const ts = Date.now() / 1000;
+  const cols = ["#00cec9", "#ff6ec7", "#f1c40f"];
+  for (let k = 0; k < 3; k++) {
+    ctx.strokeStyle = cols[k]; ctx.globalAlpha = 0.7; ctx.lineWidth = 1.1;
+    ctx.beginPath();
+    for (let i = 0; i <= 50; i++) {
+      const th = i / 50 * 4.5 + ts * 0.4 + k * 2;
+      const r = 4 + th * 7;
+      const x = w / 2 + Math.cos(th + k) * r * (w / 130);
+      const y = h / 2 + Math.sin(th + k) * r * (h / 110);
+      i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    }
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  const b2 = lqB.b2;
+  if (b2.ph.length > 1) {
+    ctx.strokeStyle = "rgba(255,255,255,.5)"; ctx.lineWidth = 1; ctx.beginPath();
+    b2.ph.forEach((p, i) => { const x = w / 2 + p.x * (w / 2 - 8), y = h / 2 + p.y * (h / 2 - 8); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.stroke();
+  }
+}
+
+function lqDrawFan(id, paths, hHint) {
+  const C = lqCtx(id, hHint || 100); if (!C) return;
+  const { ctx, w, h } = C;
+  ctx.clearRect(0, 0, w, h);
+  if (!paths.length) return;
+  const steps = paths[0].length;
+  let mn = 1e9, mx = -1e9;
+  for (const p of paths) for (const v of p) { if (v < mn) mn = v; if (v > mx) mx = v; }
+  if (mx === mn) mx = mn + 1;
+  ctx.lineWidth = 1;
+  for (const p of paths) {
+    ctx.strokeStyle = p[p.length - 1] >= 0 ? "rgba(46,204,113,.3)" : "rgba(231,76,60,.3)";
+    ctx.beginPath();
+    p.forEach((v, i) => { const x = i / (steps - 1) * w, y = h - 3 - (v - mn) / (mx - mn) * (h - 8); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.stroke();
+  }
+  ctx.strokeStyle = "rgba(0,206,201,.9)"; ctx.lineWidth = 1.5; ctx.beginPath();
+  for (let i = 0; i < steps; i++) {
+    let sum = 0; for (const p of paths) sum += p[i];
+    const v = sum / paths.length;
+    const x = i / (steps - 1) * w, y = h - 3 - (v - mn) / (mx - mn) * (h - 8);
+    i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+  }
+  ctx.stroke();
+}
+
+function lqDrawMinis() {
+  for (let i = 0; i < 8; i++) {
+    const C = lqCtx("lq3m" + i, 60); if (!C) continue;
+    const { ctx, w, h } = C;
+    const s = lqB.b3.minis[i];
+    ctx.clearRect(0, 0, w, h);
+    if (s.length > 1) {
+      let mn = Math.min(...s), mx = Math.max(...s); if (mx === mn) mx = mn + 0.001;
+      ctx.strokeStyle = s[s.length - 1] >= s[0] ? "#2ecc71" : "#e74c3c";
+      ctx.lineWidth = 1.3; ctx.beginPath();
+      s.forEach((v, j) => { const x = j / (s.length - 1) * w, y = h - 3 - (v - mn) / (mx - mn) * (h - 8); j ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+      ctx.stroke();
+    }
+  }
+}
+
+function lqDrawNet() {
+  const C = lqCtx("lq3net", 112); if (!C) return;
+  const { ctx, w, h } = C;
+  ctx.clearRect(0, 0, w, h);
+  const b3 = lqB.b3, cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.38;
+  ctx.lineWidth = 1;
+  for (const l of b3.links) {
+    const A = b3.net[l[0]], B = b3.net[l[1]];
+    ctx.strokeStyle = "rgba(0,206,201," + (0.08 + l[2] * 0.45) + ")";
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(A.a) * R, cy + Math.sin(A.a) * R);
+    ctx.lineTo(cx + Math.cos(B.a) * R, cy + Math.sin(B.a) * R);
+    ctx.stroke();
+  }
+  for (const n of b3.net) {
+    const x = cx + Math.cos(n.a) * R, y = cy + Math.sin(n.a) * R;
+    ctx.fillStyle = "#00cec9"; ctx.globalAlpha = 0.35 + n.w * 0.65;
+    ctx.beginPath(); ctx.arc(x, y, 2.5 + n.w * 2, 0, 6.283); ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.font = "7.5px Consolas, monospace"; ctx.textAlign = "center";
+    ctx.fillStyle = "rgba(200,210,228,.85)";
+    ctx.fillText(n.n, x, y - 6);
+  }
+}
+
+function lqDrawChart4() {
+  const C = lqCtx("lq4chart", 96); if (!C) return;
+  const { ctx, w, h } = C;
+  const s = lqB.b4.hist;
+  ctx.clearRect(0, 0, w, h);
+  if (s.length > 1) {
+    let mn = Math.min(...s), mx = Math.max(...s); if (mx === mn) mx = mn + 0.01;
+    ctx.strokeStyle = "#00cec9"; ctx.lineWidth = 1.4; ctx.beginPath();
+    s.forEach((v, i) => { const x = i / (s.length - 1) * w, y = h - 3 - (v - mn) / (mx - mn) * (h - 8); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.stroke();
+    const fair = Math.min(0.95, Math.max(0.05, 0.5));
+    const fy = h - 3 - (fair - mn) / (mx - mn) * (h - 8);
+    ctx.setLineDash([3, 3]); ctx.strokeStyle = "rgba(255,110,199,.8)"; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(0, fy); ctx.lineTo(w, fy); ctx.stroke(); ctx.setLineDash([]);
+    ctx.font = "8px Consolas, monospace"; ctx.textAlign = "left";
+    ctx.fillStyle = "rgba(255,110,199,.9)"; ctx.fillText("FAIR 0.50", 4, fy - 3);
+  }
+}
+
+function lqShowInsp(panel, id) {
+  const I = lqInstr[id], el = panel.querySelector(".lq-insp");
+  if (!el || !I) return;
+  el.textContent = id + ": price " + lqPx(I.price) + " \u00b7 fair " + lqPx(I.fair) + " \u00b7 dev " + I.dev.toFixed(2) + "% \u00b7 lat " + Math.round(I.lat) + "ms \u00b7 edge " + (I.edge >= 0 ? "+" : "") + I.edge.toFixed(2) + " \u00b7 fills " + I.fills;
+}
+
+function lqBind() {
+  document.querySelectorAll(".lq-bot").forEach(p => {
+    const fsBtn = p.querySelector(".lq-fs");
+    if (fsBtn) fsBtn.onclick = e => { e.stopPropagation(); p.classList.toggle("lq-full"); };
+    p.querySelectorAll(".lq-chip").forEach(ch => {
+      ch.onclick = () => {
+        p.querySelectorAll(".lq-chip").forEach(x => x.classList.remove("on"));
+        ch.classList.add("on");
+        lqShowInsp(p, ch.dataset.i);
+      };
+    });
+  });
+  if (document.addEventListener) document.addEventListener("keydown", e => { if (e.key === "Escape") document.querySelectorAll(".lq-bot.lq-full").forEach(p => p.classList.remove("lq-full")); });
+  if (typeof IntersectionObserver === "function") {
+    const sec = lq$("lq");
+    if (sec) new IntersectionObserver(en => { lqVisible = en[0].isIntersecting; }, { threshold: 0.05 }).observe(sec);
+  }
+}
+
+function lqBuildStatic() {
+  const mg = lq$("lq3minis");
+  if (mg) mg.innerHTML = LQ_MINIS.map((n, i) => '<div class="lq-cell"><div class="lq-ctitle">' + n + '</div><canvas id="lq3m' + i + '" class="lq-mini"></canvas><div class="lq-mrow" id="lq3v' + i + '">0.0%</div></div>').join("");
+  lqBind();
+  lqRenderStatus();
+}
+
+function lqFrame() {
+  if (lqVisible && !lqPaused) {
+    lqDraw1(); lqDraw2(); lqDraw3(); lqDraw4();
+    lqDrawSpark(); lqDrawPhase1(); lqDrawSigma(); lqDrawPhase2();
+    lqDrawFan("lq2mc", lqB.b2.mc, 104);
+    lqDrawMinis(); lqDrawNet(); lqDrawChart4();
+    lqDrawFan("lq4fan", lqB.b4.fan, 96);
+  }
+  requestAnimationFrame(lqFrame);
+}
+
 /* ================= NAVIGATION & INIT ================= */
 document.querySelectorAll("nav button").forEach(b => {
   b.onclick = () => {
@@ -3237,6 +4098,10 @@ requestAnimationFrame(ccFrame);
 ngBuildStatic();
 setInterval(ngTick, 1000);
 requestAnimationFrame(ngFrame);
+lqBuildStatic();
+lqTick();
+setInterval(lqTick, 1000);
+requestAnimationFrame(lqFrame);
 fetchRealPrices();
 setInterval(fetchRealPrices, 30000);
 setInterval(tickMarkets, 30000);
