@@ -155,6 +155,12 @@
   .pb-empty { color: var(--muted); font-size: 13px; padding: 24px 0; }
   .bump { animation: bump .5s ease; }
   @keyframes bump { 0% { transform: scale(1); } 30% { transform: scale(1.12); } 100% { transform: scale(1); } }
+  .goal-canvas { width: 100%; height: 110px; display: block; }
+  .goal-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 8px 0 4px; font-size: 12px; color: var(--muted); }
+  .goal-row input { width: 90px; background: var(--panel2); border: 1px solid var(--border); color: var(--text); border-radius: 6px; padding: 6px 8px; font-size: 13px; }
+  .goal-cur b { font-variant-numeric: tabular-nums; margin-left: 4px; }
+  .goal-month { float: right; color: var(--muted); font-size: 12px; font-weight: 400; font-family: Consolas, monospace; }
+  .goal-status { margin-top: 6px; font-size: 12px; letter-spacing: 1px; font-weight: 700; font-family: Consolas, monospace; }
   .ai-section { max-width: 1200px; margin: 0 auto; padding: 0 24px 60px; }
   .ai-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
   .ai-mode { font-size: 10px; font-weight: 700; letter-spacing: 1px; padding: 3px 8px; border-radius: 4px; background: rgba(0,206,201,.15); color: var(--accent2); text-transform: uppercase; }
@@ -283,12 +289,14 @@
   .cc-ev-t { margin-left: auto; color: #5a6478; font-size: 10px; flex-shrink: 0; }
   @media (max-width: 980px) { .cc-main { grid-template-columns: 1fr; } #ccSphere { height: 300px; } .cc-grid2 { grid-template-columns: 1fr; } }
   @media (max-width: 720px) { .cc-section { padding: 0 10px 40px; } .cc-clock { font-size: 11px; } }
-  .ng-top { display: grid; grid-template-columns: 1.25fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-  #ngMap { width: 100%; height: 340px; display: block; }
+  .ng-top { display: grid; grid-template-columns: 1.45fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  #ngMap { width: 100%; height: 430px; display: block; }
   .ng-map-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .ng-map-label { font-size: 11px; letter-spacing: 2px; color: var(--muted); margin-top: 8px; font-family: Consolas, monospace; }
   .ng-map-label span { color: var(--accent2); }
-  .ng-feed { min-height: 120px; max-height: 340px; }
+  .ng-stats { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 8px; font-size: 11px; font-family: Consolas, monospace; color: var(--muted); }
+  .ng-stats b { color: var(--accent2); font-variant-numeric: tabular-nums; }
+  .ng-feed { min-height: 120px; max-height: 430px; }
   .ng-side { font-size: 9px; font-weight: 800; letter-spacing: 1px; padding: 2px 6px; border-radius: 3px; flex-shrink: 0; }
   .ng-side.buy { color: var(--green); background: rgba(46,204,113,.12); }
   .ng-side.sell { color: var(--red); background: rgba(231,76,60,.12); }
@@ -301,7 +309,7 @@
   .ng-charts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   .ng-charts .cc-mline { height: 54px; }
   @media (max-width: 980px) { .ng-top { grid-template-columns: 1fr; } }
-  @media (max-width: 720px) { .ng-charts { grid-template-columns: repeat(2, 1fr); } #ngMap { height: 280px; } }
+  @media (max-width: 720px) { .ng-charts { grid-template-columns: repeat(2, 1fr); } #ngMap { height: 330px; } }
   @media (max-width: 900px) { .ai-grid { grid-template-columns: 1fr; } }
   @media (max-width: 720px) {
     .ai-section { padding: 0 10px 40px; }
@@ -503,6 +511,17 @@
       <h2 data-i18n="pnlBarsTitle">⚡ Last trades P&L</h2>
       <div class="pnl-bars" id="pnlBars"></div>
     </div>
+    <div class="card">
+      <h2><span data-i18n="goalTitle">🎯 Monthly goal</span><span class="goal-month" id="goalMonth"></span></h2>
+      <div class="goal-row">
+        <span data-i18n="goalSet">Target</span>
+        <input type="number" id="goalInput" min="5" step="5" value="30">
+        <span class="goal-cur"><span data-i18n="goalEarned">This month</span> <b id="goalEarned" class="pos">+0</b></span>
+        <span class="goal-cur"><span data-i18n="goalFees">Fees paid</span> <b id="goalFees" class="neg">0</b></span>
+      </div>
+      <canvas id="goalCanvas" class="goal-canvas"></canvas>
+      <div class="goal-status" id="goalStatus"></div>
+    </div>
   </section>
 
   <!-- PAGE HISTORIQUE -->
@@ -696,6 +715,11 @@
     <div class="cc-panel ng-map-wrap">
       <canvas id="ngMap"></canvas>
       <div class="ng-map-label"><span id="ngState">SCANNING</span></div>
+      <div class="ng-stats">
+        <span>⚡ <b id="ngTrades">0</b> <span data-i18n="ngStatTrades">bot trades</span></span>
+        <span>🔥 <b id="ngHot">—</b> <span data-i18n="ngStatHot">top mover</span></span>
+        <span>📍 <b id="ngHeld">0</b> <span data-i18n="ngStatHeld">held</span></span>
+      </div>
     </div>
     <div class="cc-panel">
       <h2 data-i18n="ngFeedTitle">Live bot feed</h2>
@@ -719,6 +743,7 @@
 
 /* ================= ÉTAT ================= */
 const START_CASH = 500;
+const FEE_RATE = 0.001;
 const LS_KEY = "realtrader_v1";
 
 const REAL_ASSETS = [
@@ -741,6 +766,7 @@ const I18N = {
     totalPnl: "Total P&L", winRate: "Win rate", tradesCount: "Trades", botPnlKey: "Bot P&L",
     bestTrade: "Best trade", worstTrade: "Worst trade", noDataYet: "The curve builds as prices arrive…",
     pnlBarsTitle: "⚡ Last trades P&L", pnlBarsEmpty: "No closed trades yet.", botPnlSub: "all bots combined", dashNow: "Now", dashPeak: "Peak",
+    goalTitle: "🎯 Monthly goal", goalSet: "Target", goalEarned: "This month", goalFees: "Fees paid", goalOnTrack: "ON TRACK ✓", goalBehind: "BEHIND PACE", goalDone: "GOAL REACHED 🎉",
     aiTitle: "AI Trading Bot", paperTrading: "PAPER TRADING", botActive: "BOT ACTIVE", botPaused: "BOT PAUSED",
     aiAuto: "🤖 AUTO — AI decides",
     aiAnalysis: "AI MARKET ANALYSIS", trendLab: "Trend", bullish: "BULLISH", bearish: "BEARISH", neutralLab: "NEUTRAL",
@@ -769,7 +795,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Live Bot Activity", ngCore: "DEKA CORE", ngScanning: "SCANNING", ngBuying: "BUYING", ngSelling: "SELLING",
     ngFeedTitle: "Live bot feed", ngPosTitle: "Open positions — where they're going", ngChartsTitle: "All markets — live",
-    ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.",
+    ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.", ngStatTrades: "bot trades", ngStatHot: "top mover", ngStatHeld: "held",
     resetAccount: "↺ Reset account",
     marketTitle: "Market", marketSub: "real-time prices · BTC & gold live",
     thAsset: "Asset", thPrice: "Price", thChart: "Chart", thHeld: "Held", thTrade: "Trade (amount in €)",
@@ -822,6 +848,7 @@ const I18N = {
     totalPnl: "Gesamt-P&L", winRate: "Trefferquote", tradesCount: "Trades", botPnlKey: "Bot-P&L",
     bestTrade: "Bester Trade", worstTrade: "Schlechtester Trade", noDataYet: "Die Kurve entsteht, sobald Preise eintreffen…",
     pnlBarsTitle: "⚡ Letzte Trades P&L", pnlBarsEmpty: "Noch keine abgeschlossenen Trades.", botPnlSub: "alle Bots zusammen", dashNow: "Jetzt", dashPeak: "Höchststand",
+    goalTitle: "🎯 Monatsziel", goalSet: "Ziel", goalEarned: "Diesen Monat", goalFees: "Gebühren", goalOnTrack: "IM PLAN ✓", goalBehind: "HINTERHER", goalDone: "ZIEL ERREICHT 🎉",
     aiTitle: "KI-Trading-Bot", paperTrading: "PAPER TRADING", botActive: "BOT AKTIV", botPaused: "BOT PAUSIERT",
     aiAuto: "🤖 AUTO — KI entscheidet",
     aiAnalysis: "KI-MARKTANALYSE", trendLab: "Trend", bullish: "BULLISCH", bearish: "BÄRISCH", neutralLab: "NEUTRAL",
@@ -850,7 +877,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Bot-Aktivität live", ngCore: "DEKA-KERN", ngScanning: "SCANNT", ngBuying: "KAUF", ngSelling: "VERKAUF",
     ngFeedTitle: "Bot-Feed live", ngPosTitle: "Offene Positionen — wohin sie gehen", ngChartsTitle: "Alle Märkte — live",
-    ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.",
+    ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.", ngStatTrades: "Bot-Trades", ngStatHot: "Top-Beweger", ngStatHeld: "gehalten",
     resetAccount: "↺ Konto zurücksetzen",
     marketTitle: "Markt", marketSub: "echte Preise in Echtzeit · BTC & Gold live",
     thAsset: "Asset", thPrice: "Preis", thChart: "Chart", thHeld: "Gehalten", thTrade: "Handel (Betrag in €)",
@@ -903,6 +930,7 @@ const I18N = {
     totalPnl: "P&L total", winRate: "Taux de réussite", tradesCount: "Trades", botPnlKey: "P&L du bot",
     bestTrade: "Meilleur trade", worstTrade: "Pire trade", noDataYet: "La courbe se construit à mesure que les prix arrivent…",
     pnlBarsTitle: "⚡ P&L des derniers trades", pnlBarsEmpty: "Aucun trade clôturé pour le moment.", botPnlSub: "tous les bots réunis", dashNow: "Actuel", dashPeak: "Pic",
+    goalTitle: "🎯 Objectif du mois", goalSet: "Objectif", goalEarned: "Ce mois", goalFees: "Frais payés", goalOnTrack: "DANS LE RYTHME ✓", goalBehind: "EN RETARD", goalDone: "OBJECTIF ATTEINT 🎉",
     aiTitle: "Bot de trading IA", paperTrading: "PAPER TRADING", botActive: "BOT ACTIF", botPaused: "BOT EN PAUSE",
     aiAuto: "🤖 AUTO — l’IA décide",
     aiAnalysis: "ANALYSE DE MARCHÉ IA", trendLab: "Tendance", bullish: "HAUSSIER", bearish: "BAISSIER", neutralLab: "NEUTRE",
@@ -931,7 +959,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Activité des bots en direct", ngCore: "CŒUR DEKA", ngScanning: "SCAN EN COURS", ngBuying: "ACHAT", ngSelling: "VENTE",
     ngFeedTitle: "Flux des bots en direct", ngPosTitle: "Positions ouvertes — où elles vont", ngChartsTitle: "Tous les marchés — en direct",
-    ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.",
+    ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.", ngStatTrades: "trades bots", ngStatHot: "plus actif", ngStatHeld: "détenus",
     resetAccount: "↺ Réinitialiser le compte",
     marketTitle: "Marché", marketSub: "prix en temps réel · BTC & or en direct",
     thAsset: "Actif", thPrice: "Prix", thChart: "Graphique", thHeld: "Détenu", thTrade: "Trade (montant en €)",
@@ -984,6 +1012,7 @@ const I18N = {
     totalPnl: "P&L total", winRate: "Shkalla e suksesit", tradesCount: "Tregtime", botPnlKey: "P&L i botit",
     bestTrade: "Tregtimi më i mirë", worstTrade: "Tregtimi më i keq", noDataYet: "Kurba ndërtohet ndërsa çmimet arrijnë…",
     pnlBarsTitle: "⚡ P&L e tregtimeve të fundit", pnlBarsEmpty: "Asnjë tregtim i mbyllur ende.", botPnlSub: "të gjithë botet bashkë", dashNow: "Tani", dashPeak: "Kulmi",
+    goalTitle: "🎯 Objektivi mujor", goalSet: "Objektivi", goalEarned: "Këtë muaj", goalFees: "Tarifat e paguara", goalOnTrack: "NË RITËM ✓", goalBehind: "ME VONCËM", goalDone: "OBJEKTIVI ARRITUR 🎉",
     aiTitle: "Boti i tregtisë me AI", paperTrading: "PAPER TRADING", botActive: "BOTI AKTIV", botPaused: "BOTI NË PAUZË",
     aiAuto: "🤖 AUTO — AI vendos",
     aiAnalysis: "ANALIZA E TREGUT ME AI", trendLab: "Trendi", bullish: "RRITËS", bearish: "RËNËS", neutralLab: "I PANDRUAR",
@@ -1012,7 +1041,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Aktiviteti i botëve live", ngCore: "BËRTHAMA DEKA", ngScanning: "PO SKANON", ngBuying: "BLERJE", ngSelling: "SHITJE",
     ngFeedTitle: "Fluxi i botëve live", ngPosTitle: "Pozicionet e hapura — ku po shkojnë", ngChartsTitle: "Të gjitha tregjet — live",
-    ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.",
+    ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.", ngStatTrades: "tregtime botesh", ngStatHot: "më aktiv", ngStatHeld: "të mbajtura",
     resetAccount: "↺ Rivendis llogarinë",
     marketTitle: "Tregu", marketSub: "çmime reale në kohë reale · BTC & ari live",
     thAsset: "Aseti", thPrice: "Çmimi", thChart: "Grafiku", thHeld: "Në posedim", thTrade: "Tregto (shuma në €)",
@@ -1098,7 +1127,7 @@ let state = loadState() || {
   coinPrices: {},          // id -> { price, open, hist: [] }
   equity: [],
   equityLong: [],
-  stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [] },
+  stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [], fees: 0 },
 };
 
 seedPrices();
@@ -1110,10 +1139,11 @@ if (!state.botComm) state.botComm = { enabled: false, strategy: "auto", amount: 
 if (!state.botCrypto) state.botCrypto = { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 };
 if (!state.equity) state.equity = [];
 if (!state.equityLong) state.equityLong = [];
-if (!state.stats) state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [] };
+if (!state.stats) state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [], fees: 0 };
 if (!state.ai) state.ai = { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "AUTO", auto: true };
 if (state.ai.balance !== undefined) { state.cash += state.ai.balance - 500; delete state.ai.balance; }
 if (!state.ai.auto) { state.ai.pair = "AUTO"; state.ai.auto = true; }
+if (!state.goal) state.goal = { amount: 30, month: "", start: 0 };
 
 function loadState() {
   try { const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : null; }
@@ -1191,8 +1221,10 @@ function buyCoin(id, amount, via, note) {
   if (!amount || amount <= 0) return toast(t("invalidAmount"));
   if (s.price <= 0) return toast(t("priceNotLoaded"));
   if (amount > state.cash) return toast(t("insufficient"));
-  const qty = amount / s.price;
+  const fee = amount * FEE_RATE;
+  const qty = (amount - fee) / s.price;
   state.cash -= amount;
+  if (state.stats) state.stats.fees = (state.stats.fees || 0) + fee;
   const h = state.holdings[id] || { qty: 0, cost: 0 };
   h.qty += qty;
   h.cost += amount;
@@ -1212,8 +1244,10 @@ function sellCoin(id, amount, via) {
   if (amount > h.cost) return toast(t("amountExceeds"));
   const ratio = amount / h.cost;
   const qty = h.qty * ratio;
-  const proceeds = qty * s.price;
+  const fee = qty * s.price * FEE_RATE;
+  const proceeds = qty * s.price - fee;
   state.cash += proceeds;
+  if (state.stats) state.stats.fees = (state.stats.fees || 0) + fee;
   h.qty -= qty;
   h.cost -= amount;
   if (h.qty < 1e-12) delete state.holdings[id];
@@ -1295,7 +1329,7 @@ function botTickFor(b, ids) {
     }
     if (state.cash < b.amount) return;
     const sig = botSignal(s, b);
-    if (sig) buyCoin(id, b.amount, "bot", t(sig));
+    if (sig && b.tp >= 3 * FEE_RATE * 200) buyCoin(id, b.amount, "bot", t(sig));
   });
 }
 
@@ -1756,7 +1790,9 @@ function openAiPos(sym, price, a) {
   const spend = Math.min(state.cash * 0.2, state.cash);
   if (spend < 10 || price <= 0) return;
   state.cash -= spend;
-  ai.positions.push({ pair: sym, entry: price, sl: a.sl, tp: a.tp, qty: spend / price, at: Date.now() });
+  const fee = spend * FEE_RATE;
+  if (state.stats) state.stats.fees = (state.stats.fees || 0) + fee;
+  ai.positions.push({ pair: sym, entry: price, sl: a.sl, tp: a.tp, qty: (spend - fee) / price, at: Date.now() });
   ccLogEvent("buy", "EXECUTOR", t("ccEvOpened") + " · " + aiPairName(sym));
   ccPulse("#00cec9");
 }
@@ -1766,8 +1802,10 @@ function closeAiPos(pos, price, reason) {
   const idx = ai.positions.indexOf(pos);
   if (idx === -1 || !(price > 0)) return;
   ai.positions.splice(idx, 1);
-  const pnl = pos.qty * (price - pos.entry);
-  state.cash += pos.qty * price;
+  const fee = pos.qty * price * FEE_RATE;
+  const pnl = pos.qty * price - fee - pos.qty * pos.entry;
+  state.cash += pos.qty * price - fee;
+  if (state.stats) state.stats.fees = (state.stats.fees || 0) + fee;
   const st = ai.stats;
   st.trades++;
   if (pnl >= 0) st.wins++; else st.losses++;
@@ -1809,6 +1847,7 @@ function aiTick() {
       if (ai.positions.some(pos => pos.pair === sym)) continue;
       const a = aiAnalysis(sym);
       if (a.signal !== "BUY" || a.confidence < 65) continue;
+      if ((a.tp - a.entry) / a.entry * 100 < 3 * FEE_RATE * 200) continue;
       const sc = a.confidence + Math.abs(a.mom);
       if (sc > bestScore) { bestScore = sc; best = { sym, p, a }; }
     }
@@ -2185,6 +2224,108 @@ function drawDashboard() {
   dashSet(dWorst, st.worst === null ? "\u2014" : "\u2212" + fmtEur(Math.abs(st.worst)), "scard-v neg");
   drawPnlBars();
   drawEquity();
+  drawGoal();
+}
+
+const goalSparks = Array.from({ length: 16 }, () => ({ x: Math.random(), y: Math.random(), s: 0.3 + Math.random() * 0.9 }));
+
+function goalTick() {
+  const g = state.goal;
+  const key = new Date().toISOString().slice(0, 7);
+  if (g.month !== key) {
+    g.month = key;
+    g.start = state.cash + cryptoValue() + betsValue();
+  }
+}
+
+function drawGoal() {
+  const c = document.getElementById("goalCanvas");
+  if (!c) return;
+  const dpr = window.devicePixelRatio || 1;
+  const wCss = c.clientWidth || 500, hCss = 110;
+  if (c.width !== Math.round(wCss * dpr)) { c.width = Math.round(wCss * dpr); c.height = Math.round(hCss * dpr); }
+  const ctx = c.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, wCss, hCss);
+  const g = state.goal;
+  const total = state.cash + cryptoValue() + betsValue();
+  const pnl = total - (g.start || total);
+  const target = Math.max(5, g.amount || 30);
+  const prog = clamp(pnl / target, 0, 1);
+  const ts = Date.now();
+  const now = new Date();
+  const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const monthFrac = (now.getDate() - 1 + now.getHours() / 24) / days;
+  const bx = 14, bw = wCss - 28, by = hCss / 2 - 15, bh = 30;
+  ctx.fillStyle = "#131822";
+  ctx.strokeStyle = "#252d3d";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  if (ctx.roundRect) { ctx.roundRect(bx, by, bw, bh, 8); ctx.fill(); ctx.stroke(); }
+  else { ctx.fillRect(bx, by, bw, bh); ctx.strokeRect(bx, by, bw, bh); }
+  const fw = bw * prog;
+  if (fw > 2) {
+    const grad = ctx.createLinearGradient(bx, 0, bx + bw, 0);
+    grad.addColorStop(0, "#ff3b30");
+    grad.addColorStop(0.5, "#f6c85f");
+    grad.addColorStop(1, "#2ecc71");
+    ctx.save();
+    ctx.shadowColor = "rgba(46,204,113,.6)";
+    ctx.shadowBlur = 12;
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    if (ctx.roundRect) { ctx.roundRect(bx, by, fw, bh, 8); ctx.fill(); }
+    else { ctx.fillRect(bx, by, fw, bh); }
+    ctx.restore();
+    const shX = bx + ((ts * 0.12) % (fw + 60)) - 30;
+    const sh = ctx.createLinearGradient(shX - 18, 0, shX + 18, 0);
+    sh.addColorStop(0, "rgba(255,255,255,0)");
+    sh.addColorStop(0.5, "rgba(255,255,255,.25)");
+    sh.addColorStop(1, "rgba(255,255,255,0)");
+    ctx.fillStyle = sh;
+    ctx.fillRect(Math.max(bx, shX - 18), by, 36, bh);
+    for (const sp of goalSparks) {
+      const sy = by + bh - ((ts * 0.00004 * sp.s + sp.y) % 1) * bh;
+      const sx = bx + (sp.x * fw);
+      ctx.beginPath();
+      ctx.arc(sx, sy, 1.2 * sp.s, 0, 6.283);
+      ctx.fillStyle = "rgba(180,255,250," + (0.25 + 0.35 * sp.s).toFixed(2) + ")";
+      ctx.fill();
+    }
+  }
+  ctx.setLineDash([3, 4]);
+  [0.25, 0.5, 0.75].forEach(f => {
+    const x = bx + bw * f;
+    ctx.strokeStyle = "rgba(139,149,168,.25)";
+    ctx.beginPath(); ctx.moveTo(x, by - 6); ctx.lineTo(x, by + bh + 6); ctx.stroke();
+  });
+  const px = bx + bw * clamp(monthFrac, 0, 1);
+  ctx.strokeStyle = "rgba(230,235,244,.55)";
+  ctx.beginPath(); ctx.moveTo(px, by - 10); ctx.lineTo(px, by + bh + 10); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.moveTo(px, by - 16); ctx.lineTo(px - 5, by - 24); ctx.lineTo(px + 5, by - 24);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(230,235,244,.7)"; ctx.fill();
+  ctx.font = "700 15px Consolas, monospace";
+  ctx.textAlign = "center";
+  ctx.fillStyle = pnl >= target ? "#2ecc71" : "#e6ebf4";
+  ctx.shadowColor = pnl >= target ? "rgba(46,204,113,.8)" : "rgba(0,240,255,.5)";
+  ctx.shadowBlur = 10;
+  ctx.fillText(Math.round(pnl / target * 100) + " %", bx + bw / 2, by + bh / 2 + 5);
+  ctx.shadowBlur = 0;
+  const eEl = document.getElementById("goalEarned");
+  if (eEl) { eEl.textContent = (pnl >= 0 ? "+" : "") + fmtEur(pnl); eEl.className = pnl >= 0 ? "pos" : "neg"; }
+  const fEl = document.getElementById("goalFees");
+  if (fEl) fEl.textContent = fmtEur(state.stats.fees || 0);
+  const mEl = document.getElementById("goalMonth");
+  if (mEl) mEl.textContent = g.month;
+  const stEl = document.getElementById("goalStatus");
+  if (stEl) {
+    const done = pnl >= target;
+    stEl.textContent = done ? t("goalDone") : pnl >= target * monthFrac ? t("goalOnTrack") : t("goalBehind");
+    stEl.style.color = done ? "#2ecc71" : pnl >= target * monthFrac ? "#00cec9" : "#f6c85f";
+  }
 }
 
 
@@ -2717,6 +2858,7 @@ const ngPriceFlash = {};
 const ngNodeFlash = [];
 const NG_AMBIENT = ["#00f0ff", "#a29bfe", "#ff6ec7"];
 let ngStateUntil = 0;
+let ngTradeCount = 0;
 
 function ngBuildStatic() {
   const charts = document.getElementById("ngCharts");
@@ -2741,6 +2883,9 @@ function ngBotTrade(id, side, price, pnl) {
     list.prepend(li);
     while (list.children.length > 25) list.removeChild(list.lastChild);
   }
+  ngTradeCount++;
+  const trEl = document.getElementById("ngTrades");
+  if (trEl) trEl.textContent = ngTradeCount;
   const st = document.getElementById("ngState");
   if (st) { st.textContent = (side === "buy" ? t("ngBuying") : t("ngSelling")) + " " + id; ngStateUntil = Date.now() + 3000; }
 }
@@ -2822,6 +2967,17 @@ function ngTick() {
     if (pe) { pe.textContent = (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%"; pe.style.color = pct >= 0 ? "var(--green)" : "var(--red)"; }
     ngDrawChart(a.id, d.hist);
   });
+  let hot = null, hotAbs = 0;
+  NG_ASSETS.forEach(a => {
+    const d = a.get();
+    if (!d || !(d.price > 0) || !d.open) return;
+    const pct = Math.abs((d.price - d.open) / d.open * 100);
+    if (pct > hotAbs) { hotAbs = pct; hot = a.id; }
+  });
+  const hotEl = document.getElementById("ngHot");
+  if (hotEl) hotEl.textContent = hot ? hot + " +" + hotAbs.toFixed(2) + "%" : "—";
+  const heldEl = document.getElementById("ngHeld");
+  if (heldEl) heldEl.textContent = Object.keys(state.holdings).length + (state.ai && state.ai.positions ? state.ai.positions.length : 0);
   ngRenderPositions();
 }
 
@@ -2845,12 +3001,18 @@ function ngDrawMap() {
   nb.addColorStop(0, "rgba(108,92,231,.14)");
   nb.addColorStop(1, "rgba(0,0,0,0)");
   ctx.fillStyle = nb; ctx.fillRect(0, 0, W, H);
+  const na = t * 0.00005;
+  const nx = cx0 + Math.cos(na) * R * 0.3, ny = cy0 + Math.sin(na) * R * 0.19;
+  const nb2 = ctx.createRadialGradient(nx, ny, 0, nx, ny, R);
+  nb2.addColorStop(0, "rgba(255,110,199,.09)");
+  nb2.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = nb2; ctx.fillRect(0, 0, W, H);
   const rot = t * 0.00004;
   const nodes = NG_ASSETS.map((a, i) => {
     const ang = rot + i / NG_ASSETS.length * 6.283;
     const d = a.get();
     const held = !!state.holdings[a.id] || (state.ai && state.ai.positions.some(pos => pos.pair === a.id + "USDT"));
-    return { id: a.id, a, ang, x: cx0 + Math.cos(ang) * R, y: cy0 + Math.sin(ang) * R * 0.62, price: d && d.price > 0 ? d.price : 0, held };
+    return { id: a.id, a, ang, x: cx0 + Math.cos(ang) * R, y: cy0 + Math.sin(ang) * R * 0.62, price: d && d.price > 0 ? d.price : 0, d, held };
   });
   ctx.lineWidth = 1;
   ctx.setLineDash([5, 7]);
@@ -2860,6 +3022,15 @@ function ngDrawMap() {
     ctx.beginPath(); ctx.moveTo(cx0, cy0); ctx.lineTo(n.x, n.y); ctx.stroke();
   }
   ctx.setLineDash([]);
+  nodes.forEach((n, i) => {
+    for (let k = 0; k < 2; k++) {
+      const tt = (t * 0.00013 * (n.held ? 1.6 : 1) + i * 0.37 + k * 0.5) % 1;
+      const dx = cx0 + (n.x - cx0) * tt, dy = cy0 + (n.y - cy0) * tt;
+      ctx.beginPath(); ctx.arc(dx, dy, 1.7 * (W / 320), 0, 6.283);
+      ctx.fillStyle = n.held ? "rgba(46,204,113,.85)" : "rgba(0,240,255,.5)";
+      ctx.fill();
+    }
+  });
   ctx.save(); ctx.translate(cx0, cy0); ctx.scale(1, 0.62);
   ctx.setLineDash([3, 7]); ctx.lineDashOffset = -t * 0.012; ctx.strokeStyle = "rgba(108,92,231,.35)";
   ctx.beginPath(); ctx.arc(0, 0, R, 0, 6.283); ctx.stroke();
@@ -2867,11 +3038,16 @@ function ngDrawMap() {
   ctx.setLineDash([12, 10]); ctx.strokeStyle = "rgba(255,110,199,.2)";
   ctx.beginPath(); ctx.arc(0, 0, R * 1.18, 0, 6.283); ctx.stroke();
   ctx.restore(); ctx.setLineDash([]);
-  for (let k = 0; k < 3; k++) {
-    const sa = t * 0.00025 * (k % 2 ? -1 : 1) + k * 2.1;
+  ctx.save(); ctx.translate(cx0, cy0); ctx.scale(1, 0.62);
+  ctx.rotate(t * 0.00009);
+  ctx.setLineDash([2, 9]); ctx.strokeStyle = "rgba(0,240,255,.22)";
+  ctx.beginPath(); ctx.arc(0, 0, R * 1.34, 0, 6.283); ctx.stroke();
+  ctx.restore(); ctx.setLineDash([]);
+  for (let k = 0; k < 6; k++) {
+    const sa = t * 0.00025 * (k % 2 ? -1 : 1) + k * 1.05;
     ctx.beginPath();
     ctx.arc(cx0 + Math.cos(sa) * R, cy0 + Math.sin(sa) * R * 0.62, 2 * (W / 320), 0, 6.283);
-    ctx.fillStyle = NG_AMBIENT[k];
+    ctx.fillStyle = NG_AMBIENT[k % 3];
     ctx.fill();
   }
   const pulse = 1 + Math.sin(t * 0.003) * 0.08;
@@ -2887,8 +3063,8 @@ function ngDrawMap() {
   ctx.translate(cx0, cy0);
   ctx.rotate(t * 0.0004);
   ctx.lineWidth = 1.2;
-  for (let k = 0; k < 8; k++) {
-    ctx.rotate(6.283 / 8);
+  for (let k = 0; k < 12; k++) {
+    ctx.rotate(6.283 / 12);
     ctx.beginPath();
     ctx.moveTo(13 * (W / 320), 0);
     ctx.lineTo(24 * (W / 320) * (1 + 0.2 * Math.sin(t * 0.002 + k)), 0);
@@ -2936,9 +3112,14 @@ function ngDrawMap() {
       const fl = t - (ngPriceFlash[n.id] || 0) < 900;
       ctx.fillStyle = fl ? (dirUp ? "rgba(46,204,113,.95)" : "rgba(231,76,60,.95)") : "rgba(139,149,168,.9)";
       ctx.fillText(fmtPrice(n.price), n.x, n.y + r + 12);
+      if (n.d && n.d.open) {
+        const pct = (n.price - n.d.open) / n.d.open * 100;
+        ctx.fillStyle = pct >= 0 ? "rgba(46,204,113,.9)" : "rgba(231,76,60,.9)";
+        ctx.fillText((pct >= 0 ? "+" : "") + pct.toFixed(2) + "%", n.x, n.y + r + 23);
+      }
     }
   });
-  if (ngPulses.length < 5 && Math.random() < 0.05) {
+  if (ngPulses.length < 8 && Math.random() < 0.09) {
     const a = NG_ASSETS[Math.floor(Math.random() * NG_ASSETS.length)];
     ngPulses.push({ id: a.id, dir: Math.random() < 0.6 ? 1 : -1, p: 0, col: NG_AMBIENT[Math.floor(Math.random() * NG_AMBIENT.length)] });
   }
@@ -2991,13 +3172,14 @@ document.getElementById("btnReset").onclick = () => {
     botComm: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
     botCrypto: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
     equity: [], equityLong: [],
-    stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [] },
+    stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [], fees: 0 },
     ai: { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "AUTO", auto: true },
   };
   seedPrices();
   state.equity = [];
   state.equityLong = [];
-  state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [] };
+  state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [], fees: 0 };
+  state.goal = { amount: state.goal ? state.goal.amount : 30, month: "", start: 0 };
   state.ai = { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "AUTO", auto: true };
   saveState(); render(); renderBot(); renderAi();
   toast(t("resetToast", { amt: fmtEur(START_CASH) }));
@@ -3041,6 +3223,9 @@ document.getElementById("aiToggle").onclick = () => {
 const aiPairSel = document.getElementById("aiPairSel");
 aiPairSel.value = state.ai.pair || "AUTO";
 aiPairSel.onchange = e => { state.ai.pair = e.target.value; saveState(); renderAi(); };
+const goalInput = document.getElementById("goalInput");
+goalInput.value = state.goal.amount;
+goalInput.onchange = () => { state.goal.amount = Math.max(5, parseFloat(goalInput.value) || 30); goalInput.value = state.goal.amount; saveState(); drawGoal(); };
 
 render();
 renderBot();
@@ -3055,7 +3240,7 @@ requestAnimationFrame(ngFrame);
 fetchRealPrices();
 setInterval(fetchRealPrices, 30000);
 setInterval(tickMarkets, 30000);
-setInterval(() => { sampleEquity(); aiTick(); saveState(); drawDashboard(); renderAi(); }, 1000);
+setInterval(() => { sampleEquity(); aiTick(); goalTick(); saveState(); drawDashboard(); renderAi(); }, 1000);
 connectWS();
 window.addEventListener("resize", () => { renderChart(); drawDashboard(); });
 </script>
