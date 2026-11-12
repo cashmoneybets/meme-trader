@@ -110,9 +110,14 @@
   .tag.payout { background: rgba(108,92,231,.25); color: #a29bfe; }
   .tag.resolve { background: rgba(0,206,201,.15); color: var(--accent2); }
   .tag.bot { background: rgba(108,92,231,.25); color: #a29bfe; }
-  .bot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-  @media (min-width: 1101px) { .bot-grid { grid-template-columns: 1fr 1fr 1fr; } }
-  @media (max-width: 900px) { .bot-grid { grid-template-columns: 1fr; } }
+  .bot-tv-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; align-items: start; }
+  @media (max-width: 1100px) { .bot-tv-row { grid-template-columns: 1fr; } }
+  .bot-stack { display: grid; gap: 20px; }
+  .tv-frame { position: relative; width: 100%; padding-top: 56.25%; border-radius: 8px; overflow: hidden; background: #000; }
+  .tv-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .tv-link { font-size: 11.5px; margin-top: 8px; }
+  .tv-link a { color: var(--accent2); text-decoration: none; }
+  .tv-link a:hover { text-decoration: underline; }
   .ai-auto-info { font-size: 12px; color: var(--muted); padding: 4px 0 2px; line-height: 1.4; }
   .fee-card { margin-bottom: 20px; }
   .fee-row { display: flex; gap: 30px; flex-wrap: wrap; }
@@ -477,7 +482,8 @@
   <!-- PAGE MARCHÉ -->
   <section class="page active" id="page-coins">
     <div class="reset-row"><button id="btnReset" data-i18n="resetAccount">↺ Reset account</button></div>
-    <div class="bot-grid">
+    <div class="bot-tv-row">
+    <div class="bot-stack">
       <div class="card">
         <h2><span data-i18n="botTitleComm">🛢️ Bot — Commodities</span> <small id="botStatusComm">stopped</small></h2>
         <div class="bot-controls">
@@ -535,6 +541,12 @@
           <button class="act buy" id="aiToggleTop" data-i18n="startBot">▶ Start bot</button>
         </div>
       </div>
+    </div>
+    <div class="card tv-card">
+      <h2><span data-i18n="tvTitle">📺 LIVE TV — BLOOMBERG</span></h2>
+      <div class="tv-frame"><iframe src="https://www.youtube-nocookie.com/embed/live_stream?channel=UCIALMKvObZNtJ6AmdCLP7Lg" title="Bloomberg TV live" loading="lazy" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+      <div class="tv-link"><a href="https://www.youtube.com/channel/UCIALMKvObZNtJ6AmdCLP7Lg" target="_blank" rel="noopener" data-i18n="tvWatch">Watch on YouTube</a></div>
+    </div>
     </div>
     <div class="card fee-card">
       <div class="lq-ctitle" data-i18n="feeBoxTitle">REAL TRADING FEES</div>
@@ -1082,7 +1094,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Live Bot Activity", ngCore: "DEKA CORE", ngScanning: "SCANNING", ngBuying: "BUYING", ngSelling: "SELLING",
     ngFeedTitle: "Live bot feed", ngFeedEmpty: "No bot activity yet \u2014 the bots scan the market live here.", ngFScan: "SCAN", ngFSig: "SIGNAL", ngFRisk: "RISK", ngPosTitle: "Open positions — where they're going", ngChartsTitle: "All markets — live",
-    ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.", ngStatTrades: "bot trades", ngStatHot: "top mover", ngStatHeld: "held", lqTitle: "Live Quant Control Center", botTitleAI: "🤖 Bot \u2014 AI \u00b7 14 pairs", aiPairLabel: "Pair", aiStakeLabel: "Stake per trade (% of cash)", aiAutoInfo: "🧠 The AI picks the pair and trend itself \u2014 TP/SL are calculated automatically.", feeBoxTitle: "REAL TRADING FEES", feePaid: "Fees paid (total)", feeRateLab: "Fee rate", feeRoundTrip: "Round trip (stake)", feeTradesLab: "Trades",
+    ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.", ngStatTrades: "bot trades", ngStatHot: "top mover", ngStatHeld: "held", lqTitle: "Live Quant Control Center", botTitleAI: "🤖 Bot \u2014 AI \u00b7 14 pairs", aiPairLabel: "Pair", aiStakeLabel: "Stake per trade (% of cash)", aiAutoInfo: "🧠 The AI picks the pair and trend itself \u2014 TP/SL are calculated automatically.", tvTitle: "📺 LIVE TV \u2014 BLOOMBERG", tvWatch: "Watch on YouTube", feeBoxTitle: "REAL TRADING FEES", feePaid: "Fees paid (total)", feeRateLab: "Fee rate", feeRoundTrip: "Round trip (stake)", feeTradesLab: "Trades",
     resetAccount: "↺ Reset account",
     marketTitle: "Market", marketSub: "real-time prices · BTC & gold live",
     thAsset: "Asset", thPrice: "Price", thChart: "Chart", thHeld: "Held", thTrade: "Trade (amount in €)",
@@ -1164,7 +1176,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Bot-Aktivität live", ngCore: "DEKA-KERN", ngScanning: "SCANNT", ngBuying: "KAUF", ngSelling: "VERKAUF",
     ngFeedTitle: "Bot-Feed live", ngFeedEmpty: "Noch keine Bot-Aktivität \u2014 die Bots scannen hier live den Markt.", ngFScan: "SCAN", ngFSig: "SIGNAL", ngFRisk: "RISIKO", ngPosTitle: "Offene Positionen — wohin sie gehen", ngChartsTitle: "Alle Märkte — live",
-    ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.", ngStatTrades: "Bot-Trades", ngStatHot: "Top-Beweger", ngStatHeld: "gehalten", lqTitle: "Live-Quant-Kontrollzentrum", botTitleAI: "🤖 Bot \u2014 KI \u00b7 14 Paare", aiPairLabel: "Paar", aiStakeLabel: "Einsatz pro Trade (% vom Guthaben)", aiAutoInfo: "🧠 Die KI wählt Paar und Trend selbst \u2014 TP/SL werden automatisch berechnet.", feeBoxTitle: "ECHTE HANDELSGEB\u00dcHREN", feePaid: "Bezahlte Geb\u00fchren", feeRateLab: "Geb\u00fchrensatz", feeRoundTrip: "Roundtrip (Einsatz)", feeTradesLab: "Trades",
+    ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.", ngStatTrades: "Bot-Trades", ngStatHot: "Top-Beweger", ngStatHeld: "gehalten", lqTitle: "Live-Quant-Kontrollzentrum", botTitleAI: "🤖 Bot \u2014 KI \u00b7 14 Paare", aiPairLabel: "Paar", aiStakeLabel: "Einsatz pro Trade (% vom Guthaben)", aiAutoInfo: "🧠 Die KI wählt Paar und Trend selbst \u2014 TP/SL werden automatisch berechnet.", tvTitle: "📺 LIVE-TV \u2014 BLOOMBERG", tvWatch: "Auf YouTube ansehen", feeBoxTitle: "ECHTE HANDELSGEB\u00dcHREN", feePaid: "Bezahlte Geb\u00fchren", feeRateLab: "Geb\u00fchrensatz", feeRoundTrip: "Roundtrip (Einsatz)", feeTradesLab: "Trades",
     resetAccount: "↺ Konto zurücksetzen",
     marketTitle: "Markt", marketSub: "echte Preise in Echtzeit · BTC & Gold live",
     thAsset: "Asset", thPrice: "Preis", thChart: "Chart", thHeld: "Gehalten", thTrade: "Handel (Betrag in €)",
@@ -1246,7 +1258,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Activité des bots en direct", ngCore: "CŒUR DEKA", ngScanning: "SCAN EN COURS", ngBuying: "ACHAT", ngSelling: "VENTE",
     ngFeedTitle: "Flux des bots en direct", ngFeedEmpty: "Aucune activité pour le moment \u2014 les bots scannent le marché en direct ici.", ngFScan: "SCAN", ngFSig: "SIGNAL", ngFRisk: "RISQUE", ngPosTitle: "Positions ouvertes — où elles vont", ngChartsTitle: "Tous les marchés — en direct",
-    ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.", ngStatTrades: "trades bots", ngStatHot: "plus actif", ngStatHeld: "détenus", lqTitle: "Centre de contrôle Quant en direct", botTitleAI: "🤖 Bot \u2014 IA \u00b7 14 paires", aiPairLabel: "Paire", aiStakeLabel: "Mise par trade (% du cash)", aiAutoInfo: "🧠 L\u2019IA choisit elle-même la paire et la tendance \u2014 TP/SL calculés automatiquement.", feeBoxTitle: "FRAIS DE TRADING R\u00c9ELS", feePaid: "Frais pay\u00e9s (total)", feeRateLab: "Taux de frais", feeRoundTrip: "Aller-retour (mise)", feeTradesLab: "Trades",
+    ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.", ngStatTrades: "trades bots", ngStatHot: "plus actif", ngStatHeld: "détenus", lqTitle: "Centre de contrôle Quant en direct", botTitleAI: "🤖 Bot \u2014 IA \u00b7 14 paires", aiPairLabel: "Paire", aiStakeLabel: "Mise par trade (% du cash)", aiAutoInfo: "🧠 L\u2019IA choisit elle-même la paire et la tendance \u2014 TP/SL calculés automatiquement.", tvTitle: "📺 TV EN DIRECT \u2014 BLOOMBERG", tvWatch: "Voir sur YouTube", feeBoxTitle: "FRAIS DE TRADING R\u00c9ELS", feePaid: "Frais pay\u00e9s (total)", feeRateLab: "Taux de frais", feeRoundTrip: "Aller-retour (mise)", feeTradesLab: "Trades",
     resetAccount: "↺ Réinitialiser le compte",
     marketTitle: "Marché", marketSub: "prix en temps réel · BTC & or en direct",
     thAsset: "Actif", thPrice: "Prix", thChart: "Graphique", thHeld: "Détenu", thTrade: "Trade (montant en €)",
@@ -1328,7 +1340,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Aktiviteti i botëve live", ngCore: "BËRTHAMA DEKA", ngScanning: "PO SKANON", ngBuying: "BLERJE", ngSelling: "SHITJE",
     ngFeedTitle: "Fluxi i botëve live", ngFeedEmpty: "Asgjë për momentin \u2014 botët po skanojnë tregun live këtu.", ngFScan: "SKANIM", ngFSig: "SINAL", ngFRisk: "RREZIK", ngPosTitle: "Pozicionet e hapura — ku po shkojnë", ngChartsTitle: "Të gjitha tregjet — live",
-    ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.", ngStatTrades: "tregtime botesh", ngStatHot: "më aktiv", ngStatHeld: "të mbajtura", lqTitle: "Qendra e kontrollit Quant Live", botTitleAI: "🤖 Boti \u2014 AI \u00b7 14 çifte", aiPairLabel: "Çift", aiStakeLabel: "Mishë për tregti (% nga keshi)", aiAutoInfo: "🧠 AI zgjedh vetë çiftin dhe trendin \u2014 TP/SL llogariten automatikisht.", feeBoxTitle: "TARIFAT REALE T\u00cb TRADINGUT", feePaid: "Tarifat e paguara", feeRateLab: "Shkalla e tarif\u00ebs", feeRoundTrip: "Round trip (mish\u00eb)", feeTradesLab: "Tregtime",
+    ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.", ngStatTrades: "tregtime botesh", ngStatHot: "më aktiv", ngStatHeld: "të mbajtura", lqTitle: "Qendra e kontrollit Quant Live", botTitleAI: "🤖 Boti \u2014 AI \u00b7 14 çifte", aiPairLabel: "Çift", aiStakeLabel: "Mishë për tregti (% nga keshi)", aiAutoInfo: "🧠 AI zgjedh vetë çiftin dhe trendin \u2014 TP/SL llogariten automatikisht.", tvTitle: "📺 TV LIVE \u2014 BLOOMBERG", tvWatch: "Shiko n\u00eb YouTube", feeBoxTitle: "TARIFAT REALE T\u00cb TRADINGUT", feePaid: "Tarifat e paguara", feeRateLab: "Shkalla e tarif\u00ebs", feeRoundTrip: "Round trip (mish\u00eb)", feeTradesLab: "Tregtime",
     resetAccount: "↺ Rivendis llogarinë",
     marketTitle: "Tregu", marketSub: "çmime reale në kohë reale · BTC & ari live",
     thAsset: "Aseti", thPrice: "Çmimi", thChart: "Grafiku", thHeld: "Në posedim", thTrade: "Tregto (shuma në €)",
