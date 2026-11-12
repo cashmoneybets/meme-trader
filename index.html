@@ -1057,7 +1057,8 @@ if (!state.botCrypto) state.botCrypto = { enabled: false, strategy: "auto", amou
 if (!state.equity) state.equity = [];
 if (!state.equityLong) state.equityLong = [];
 if (!state.stats) state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0 };
-if (!state.ai) state.ai = { enabled: false, balance: 500, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "BTCUSDT" };
+if (!state.ai) state.ai = { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "BTCUSDT" };
+if (state.ai.balance !== undefined) { state.cash += state.ai.balance - 500; delete state.ai.balance; }
 
 function loadState() {
   try { const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : null; }
@@ -1265,8 +1266,12 @@ function renderBot() {
 
 /* ================= VALEURS ================= */
 function cryptoValue() {
-  return Object.entries(state.holdings)
-    .reduce((sum, [id, h]) => sum + h.qty * state.coinPrices[id].price, 0);
+  const held = Object.entries(state.holdings)
+    .reduce((sum, [id, h]) => sum + h.qty * (state.coinPrices[id] ? state.coinPrices[id].price : 0), 0);
+  const aiMv = state.ai && state.ai.positions
+    ? state.ai.positions.reduce((s, pos) => { const pp = aiPrices[pos.pair]; return s + (pp && pp.price > 0 ? pos.qty * pp.price : pos.qty * pos.entry); }, 0)
+    : 0;
+  return held + aiMv;
 }
 function betsValue() {
   return state.bets.filter(b => !b.settled).reduce((sum, b) => {
@@ -1674,9 +1679,9 @@ function aiAnalysis(sym) {
 
 function openAiPos(sym, price, a) {
   const ai = state.ai;
-  const spend = Math.min(ai.balance * 0.2, ai.balance);
+  const spend = Math.min(state.cash * 0.2, state.cash);
   if (spend < 10 || price <= 0) return;
-  ai.balance -= spend;
+  state.cash -= spend;
   ai.positions.push({ pair: sym, entry: price, sl: a.sl, tp: a.tp, qty: spend / price, at: Date.now() });
   ccLogEvent("buy", "EXECUTOR", t("ccEvOpened") + " · " + aiPairName(sym));
   ccPulse("#00cec9");
@@ -1688,7 +1693,7 @@ function closeAiPos(pos, price, reason) {
   if (idx === -1 || !(price > 0)) return;
   ai.positions.splice(idx, 1);
   const pnl = pos.qty * (price - pos.entry);
-  ai.balance += pos.qty * price;
+  state.cash += pos.qty * price;
   const st = ai.stats;
   st.trades++;
   if (pnl >= 0) st.wins++; else st.losses++;
@@ -1723,7 +1728,7 @@ function aiTick() {
     const p = aiPrices[sym];
     if (!p || p.hist.length < 30 || p.price <= 0) return;
     if (ai.positions.some(pos => pos.pair === sym)) return;
-    if (ai.balance < 10) return;
+    if (state.cash < 10) return;
     const a = aiAnalysis(sym);
     if (a.signal === "BUY" && a.confidence >= 65) openAiPos(sym, p.price, a);
   });
@@ -1782,8 +1787,8 @@ function renderAi() {
 
   const mv = ai.positions.reduce((s, pos) => { const pp = aiPrices[pos.pair]; return s + (pp && pp.price > 0 ? pos.qty * pp.price : pos.qty * pos.entry); }, 0);
   const unreal = ai.positions.reduce((s, pos) => { const pp = aiPrices[pos.pair]; return s + (pp && pp.price > 0 ? (pp.price - pos.entry) * pos.qty : 0); }, 0);
-  document.getElementById("aiVirtual").textContent = fmtEur(ai.balance + mv);
-  document.getElementById("aiBalance").textContent = fmtEur(ai.balance);
+  document.getElementById("aiVirtual").textContent = fmtEur(state.cash + mv);
+  document.getElementById("aiBalance").textContent = fmtEur(state.cash);
   document.getElementById("aiOpenPos").textContent = ai.positions.length;
   const unEl = document.getElementById("aiUnreal");
   unEl.textContent = (unreal >= 0 ? "+" : "") + fmtEur(unreal);
@@ -2609,8 +2614,25 @@ function ngRenderPositions() {
   const root = document.getElementById("ngPos");
   if (!root) return;
   const ids = Object.keys(state.holdings);
-  if (!ids.length) { root.innerHTML = `<div class="cc-empty">${t("ngNoPos")}</div>`; return; }
-  root.innerHTML = ids.map(id => {
+  const aiRows = (state.ai && state.ai.positions ? state.ai.positions : []).map(pos => {
+    const pp = aiPrices[pos.pair];
+    if (!pp || !(pp.price > 0)) return "";
+    const id = pos.pair.replace("USDT", "");
+    const cost = pos.qty * pos.entry;
+    const val = pos.qty * pp.price;
+    const pnl = val - cost;
+    const pnlPct = cost ? pnl / cost * 100 : 0;
+    const frac = clamp((pp.price - pos.sl) / ((pos.tp - pos.sl) || 1), 0, 1);
+    const a = NG_ASSETS.find(x => x.id === id);
+    const col = a ? a.color : "var(--accent2)";
+    return `<div class="ng-posrow">
+      <div class="cc-mhead"><b style="color:${col};">${id}</b><span style="color:var(--accent2);font-weight:700;">AI</span><span>${fmtEur(val)}</span></div>
+      <div class="ng-track"><div class="ng-zone-l"></div><div class="ng-zone-r"></div><div class="ng-marker" style="left:${(frac * 100).toFixed(1)}%;"></div></div>
+      <div class="cc-mhead"><span style="color:var(--red);">SL ${fmtPrice(pos.sl)}</span><span style="color:${pnl >= 0 ? "var(--green)" : "var(--red)"};font-weight:700;">${(pnl >= 0 ? "+" : "") + fmtEur(pnl)} (${fmtPct(pnlPct)})</span><span style="color:var(--green);">TP ${fmtPrice(pos.tp)}</span></div>
+    </div>`;
+  }).join("");
+  if (!ids.length && !aiRows) { root.innerHTML = `<div class="cc-empty">${t("ngNoPos")}</div>`; return; }
+  root.innerHTML = aiRows + ids.map(id => {
     const h = state.holdings[id];
     const s = state.coinPrices[id];
     if (!s || !(s.price > 0)) return "";
@@ -2668,7 +2690,8 @@ function ngDrawMap() {
   const nodes = NG_ASSETS.map((a, i) => {
     const ang = rot + i / NG_ASSETS.length * 6.283;
     const d = a.get();
-    return { id: a.id, a, ang, x: cx0 + Math.cos(ang) * R, y: cy0 + Math.sin(ang) * R * 0.62, price: d && d.price > 0 ? d.price : 0, held: !!state.holdings[a.id] };
+    const held = !!state.holdings[a.id] || (state.ai && state.ai.positions.some(pos => pos.pair === a.id + "USDT"));
+    return { id: a.id, a, ang, x: cx0 + Math.cos(ang) * R, y: cy0 + Math.sin(ang) * R * 0.62, price: d && d.price > 0 ? d.price : 0, held };
   });
   ctx.lineWidth = 1;
   ctx.setLineDash([5, 7]);
@@ -2810,7 +2833,7 @@ document.getElementById("btnReset").onclick = () => {
     botCrypto: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
     equity: [], equityLong: [],
     stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0 },
-    ai: { enabled: false, balance: 500, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "BTCUSDT" },
+    ai: { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "BTCUSDT" },
   };
   seedPrices();
   state.equity = [];
