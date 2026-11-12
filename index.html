@@ -189,7 +189,7 @@
   .lq-dot.warn { background: #f39c12; box-shadow: 0 0 8px #f39c12; }
   .lq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
   @media (max-width: 980px) { .lq-grid { grid-template-columns: 1fr; } }
-  .lq-bot { position: relative; background: var(--panel2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; overflow: hidden; }
+  .lq-bot { position: relative; background: var(--panel2); border: 1px solid var(--border); border-radius: 12px; padding: 14px; overflow: hidden; display: flex; flex-direction: column; }
   .lq-bhead { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
   .lq-live { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #2ecc71; font-family: Consolas, monospace; }
   .lq-bname { font-size: 12px; font-weight: 700; letter-spacing: 1px; }
@@ -201,9 +201,10 @@
   .lq-fs:hover { color: var(--text); border-color: var(--accent2); }
   .lq-big { width: 100%; height: 320px; display: block; border: 1px solid var(--border); border-radius: 8px; background: rgba(0,0,0,.35); }
   .lq-insp { margin-top: 8px; font-size: 11px; font-family: Consolas, monospace; color: var(--accent2); min-height: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .lq-sub { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .lq-sub { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; flex: 1; }
   @media (max-width: 720px) { .lq-big { height: 240px; } .lq-sub { grid-template-columns: 1fr; } }
-  .lq-cell { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; background: rgba(0,0,0,.25); min-width: 0; }
+  .lq-cell { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; background: rgba(0,0,0,.25); min-width: 0; display: flex; flex-direction: column; }
+  .lq-cell .lq-log, .lq-cell .lq-tape { flex: 1; max-height: none; min-height: 0; }
   .lq-ctitle { font-size: 9px; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; font-family: Consolas, monospace; margin-bottom: 6px; }
   .lq-log { list-style: none; margin: 0; padding: 0; font-family: Consolas, monospace; font-size: 10.5px; max-height: 132px; overflow: hidden; }
   .lq-log li { padding: 1px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: lqIn .35s ease; color: var(--muted); }
@@ -357,17 +358,6 @@
   .cc-meter-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #2ecc71, #00cec9); transition: width .9s ease; }
   .cc-meter-fill.hot { background: linear-gradient(90deg, #f6c85f, #e74c3c); }
   .cc-meter-v { font-size: 11px; width: 42px; text-align: right; font-variant-numeric: tabular-nums; }
-  .cc-siglist { display: flex; flex-wrap: wrap; gap: 7px; min-height: 60px; }
-  .cc-sig { font-size: 10px; font-weight: 700; letter-spacing: .5px; padding: 4px 9px; border-radius: 4px; border: 1px solid; animation: slideIn .4s ease; }
-  .cc-sig.sg-buy, .cc-sig.sg-sbuy { color: var(--green); border-color: rgba(46,204,113,.4); background: rgba(46,204,113,.08); }
-  .cc-sig.sg-sbuy { box-shadow: 0 0 10px rgba(46,204,113,.35); }
-  .cc-sig.sg-sell, .cc-sig.sg-ssell { color: var(--red); border-color: rgba(231,76,60,.4); background: rgba(231,76,60,.08); }
-  .cc-sig.sg-ssell { box-shadow: 0 0 10px rgba(231,76,60,.35); }
-  .cc-sig.sg-wait { color: var(--muted); border-color: var(--border); background: rgba(139,149,168,.06); }
-  .cc-sig.sg-vol { color: #f6c85f; border-color: rgba(246,200,95,.4); background: rgba(246,200,95,.07); }
-  .cc-sig.sg-brk { color: var(--accent2); border-color: rgba(0,206,201,.4); background: rgba(0,206,201,.08); }
-  .cc-sig.sg-rev { color: #a29bfe; border-color: rgba(162,155,254,.4); background: rgba(162,155,254,.08); }
-  .cc-sig.sg-mom { color: #74b9ff; border-color: rgba(116,185,255,.4); background: rgba(116,185,255,.08); }
   .cc-loglist { list-style: none; max-height: 240px; overflow-y: auto; }
   .cc-loglist li { padding: 6px 4px; border-bottom: 1px solid #1a2130; font-size: 12px; font-family: Consolas, monospace; animation: slideIn .35s ease; display: flex; gap: 8px; align-items: baseline; }
   .cc-loglist li:last-child { border-bottom: none; }
@@ -381,14 +371,15 @@
   .cc-ev-t { margin-left: auto; color: #5a6478; font-size: 10px; flex-shrink: 0; }
   @media (max-width: 980px) { .cc-main { grid-template-columns: 1fr; } #ccSphere { height: 300px; } .cc-grid2 { grid-template-columns: 1fr; } }
   @media (max-width: 720px) { .cc-section { padding: 0 10px 40px; } .cc-clock { font-size: 11px; } }
-  .ng-top { display: grid; grid-template-columns: 1.45fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .ng-top { display: grid; grid-template-columns: 1.6fr 0.85fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .ng-feed-panel { align-self: start; }
   #ngMap { width: 100%; height: 430px; display: block; }
   .ng-map-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .ng-map-label { font-size: 11px; letter-spacing: 2px; color: var(--muted); margin-top: 8px; font-family: Consolas, monospace; }
   .ng-map-label span { color: var(--accent2); }
   .ng-stats { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 8px; font-size: 11px; font-family: Consolas, monospace; color: var(--muted); }
   .ng-stats b { color: var(--accent2); font-variant-numeric: tabular-nums; }
-  .ng-feed { min-height: 120px; max-height: 430px; }
+  .ng-feed { min-height: 100px; max-height: 300px; overflow-y: auto; }
   .ng-feed-empty { color: var(--muted); font-size: 12px; padding: 14px 4px; text-align: center; line-height: 1.5; }
   .ng-side { font-size: 9px; font-weight: 800; letter-spacing: 1px; padding: 2px 6px; border-radius: 3px; flex-shrink: 0; }
   .ng-side.buy { color: var(--green); background: rgba(46,204,113,.12); }
@@ -703,7 +694,7 @@
           <div class="lq-ctitle">LATENCY EDGE WATERFALL</div>
           <div id="lq1wf"></div>
         </div>
-        <div class="lq-cell">
+        <div class="lq-cell" style="grid-column: 1 / -1;">
           <div class="lq-ctitle">FILL ARRIVAL</div>
           <div class="lq-tape" id="lq1fills"></div>
         </div>
@@ -1001,14 +992,6 @@
         <h2 data-i18n="ccRiskTitle">Risk monitor</h2>
         <div id="ccMeters"></div>
       </div>
-      <div class="cc-panel">
-        <h2 data-i18n="ccSignalsTitle">AI market signals</h2>
-        <div class="cc-siglist" id="ccSigList"></div>
-      </div>
-    </div>
-    <div class="cc-panel" style="margin-top:14px;">
-      <h2 data-i18n="ccTradeFlow">Live trade flow</h2>
-      <ul class="cc-loglist" id="ccLog"></ul>
     </div>
   </div>
 </section>
@@ -1025,7 +1008,7 @@
         <span>📍 <b id="ngHeld">0</b> <span data-i18n="ngStatHeld">held</span></span>
       </div>
     </div>
-    <div class="cc-panel">
+    <div class="cc-panel ng-feed-panel">
       <h2 data-i18n="ngFeedTitle">Live bot feed</h2>
       <ul class="cc-loglist ng-feed" id="ngFeed"><li class="ng-feed-empty" id="ngFeedEmpty" data-i18n="ngFeedEmpty">No bot activity yet — the bots scan the market live here.</li></ul>
     </div>
@@ -1092,7 +1075,7 @@ const I18N = {
     ccAgentsTitle: "AI Trading Agents", ccLiveTrade: "Live trade", ccNoTrade: "No open trade — agents are scanning the market.",
     ccEquityTitle: "Equity / P&L", ccStartBal: "Start", ccCurBal: "Balance", ccUnreal: "Unrealized", ccRealized: "Realized", ccDrawdown: "Drawdown", ccWinsLab: "Wins", ccLossesLab: "Losses",
     ccRiskTitle: "Risk monitor", ccMRisk: "Risk level", ccMExposure: "Exposure", ccMPosSize: "Position size", ccMDrawdown: "Drawdown", ccMVolatility: "Volatility", ccMMarketConf: "Market confidence", ccMTradeConf: "Trade confidence",
-    ccSignalsTitle: "AI market signals", ccSize: "Size", ccLev: "Leverage", ccDuration: "Duration", ccReason: "Reason",
+    ccSize: "Size", ccLev: "Leverage", ccDuration: "Duration", ccReason: "Reason",
     ccAgScanner: "SCANNER", ccAgRisk: "RISK CHECK", ccAgAnalyzer: "ANALYZER", ccAgSignal: "SIGNAL", ccAgSizer: "SIZER", ccAgExecutor: "EXECUTOR", ccAgLogger: "LOGGER", ccAgEquity: "EQUITY", ccAgRegime: "MARKET REGIME",
     ccSigBuy: "BUY", ccSigSell: "SELL", ccSigWait: "WAIT", ccSigStrongBuy: "STRONG BUY", ccSigStrongSell: "STRONG SELL", ccSigHighVol: "HIGH VOLATILITY", ccSigBreakout: "BREAKOUT", ccSigReversal: "REVERSAL", ccSigMomentum: "MOMENTUM",
     ccEvBreakout: "Breakout detected", ccEvRiskOk: "Risk acceptable", ccEvMomentum: "Momentum increasing", ccEvLong: "LONG signal generated", ccEvShort: "SHORT signal generated", ccEvSized: "Position size calculated: {amt}", ccEvOpened: "Trade opened", ccEvRecorded: "Trade recorded", ccEvEquity: "Portfolio updated", ccEvTP: "Take profit hit", ccEvSL: "Stop loss hit", ccEvVolatility: "Volatility spike monitored", ccEvReversal: "Reversal pattern observed", ccEvClosed: "Trade closed",
@@ -1174,7 +1157,7 @@ const I18N = {
     ccAgentsTitle: "KI-Handelsagenten", ccLiveTrade: "Live-Trade", ccNoTrade: "Kein offener Trade — die Agenten scannen den Markt.",
     ccEquityTitle: "Equity / P&L", ccStartBal: "Start", ccCurBal: "Guthaben", ccUnreal: "Unrealisiert", ccRealized: "Realisiert", ccDrawdown: "Drawdown", ccWinsLab: "Gewinne", ccLossesLab: "Verluste",
     ccRiskTitle: "Risiko-Monitor", ccMRisk: "Risikoniveau", ccMExposure: "Exposure", ccMPosSize: "Positionsgröße", ccMDrawdown: "Drawdown", ccMVolatility: "Volatilität", ccMMarketConf: "Marktvertrauen", ccMTradeConf: "Trade-Vertrauen",
-    ccSignalsTitle: "KI-Marktsignale", ccSize: "Größe", ccLev: "Hebel", ccDuration: "Dauer", ccReason: "Grund",
+    ccSize: "Größe", ccLev: "Hebel", ccDuration: "Dauer", ccReason: "Grund",
     ccAgScanner: "SCANNER", ccAgRisk: "RISIKO-CHECK", ccAgAnalyzer: "ANALYZER", ccAgSignal: "SIGNAL", ccAgSizer: "SIZER", ccAgExecutor: "EXECUTOR", ccAgLogger: "LOGGER", ccAgEquity: "EQUITY", ccAgRegime: "MARKT-REGIME",
     ccSigBuy: "KAUFEN", ccSigSell: "VERKAUFEN", ccSigWait: "WARTEN", ccSigStrongBuy: "STARK KAUFEN", ccSigStrongSell: "STARK VERKAUFEN", ccSigHighVol: "HOHE VOLATILITÄT", ccSigBreakout: "AUSBRUCH", ccSigReversal: "UMKEHR", ccSigMomentum: "MOMENTUM",
     ccEvBreakout: "Ausbruch erkannt", ccEvRiskOk: "Risiko akzeptabel", ccEvMomentum: "Momentum steigt", ccEvLong: "LONG-Signal erzeugt", ccEvShort: "SHORT-Signal erzeugt", ccEvSized: "Positionsgröße berechnet: {amt}", ccEvOpened: "Trade eröffnet", ccEvRecorded: "Trade aufgezeichnet", ccEvEquity: "Portfolio aktualisiert", ccEvTP: "Take-Profit erreicht", ccEvSL: "Stop-Loss erreicht", ccEvVolatility: "Volatilitätsspitze überwacht", ccEvReversal: "Umkehrmuster beobachtet", ccEvClosed: "Trade geschlossen",
@@ -1256,7 +1239,7 @@ const I18N = {
     ccAgentsTitle: "Agents de trading IA", ccLiveTrade: "Trade en direct", ccNoTrade: "Aucun trade ouvert — les agents scannent le marché.",
     ccEquityTitle: "Capital / P&L", ccStartBal: "Départ", ccCurBal: "Solde", ccUnreal: "Non réalisé", ccRealized: "Réalisé", ccDrawdown: "Drawdown", ccWinsLab: "Gains", ccLossesLab: "Pertes",
     ccRiskTitle: "Moniteur de risque", ccMRisk: "Niveau de risque", ccMExposure: "Exposition", ccMPosSize: "Taille de position", ccMDrawdown: "Drawdown", ccMVolatility: "Volatilité", ccMMarketConf: "Confiance marché", ccMTradeConf: "Confiance trade",
-    ccSignalsTitle: "Signaux de marché IA", ccSize: "Taille", ccLev: "Levier", ccDuration: "Durée", ccReason: "Raison",
+    ccSize: "Taille", ccLev: "Levier", ccDuration: "Durée", ccReason: "Raison",
     ccAgScanner: "SCANNER", ccAgRisk: "VÉRIF. RISQUE", ccAgAnalyzer: "ANALYSEUR", ccAgSignal: "SIGNAL", ccAgSizer: "TAILLE", ccAgExecutor: "EXÉCUTEUR", ccAgLogger: "JOURNAL", ccAgEquity: "CAPITAL", ccAgRegime: "RÉGIME MARCHÉ",
     ccSigBuy: "ACHAT", ccSigSell: "VENTE", ccSigWait: "ATTENDRE", ccSigStrongBuy: "FORT ACHAT", ccSigStrongSell: "FORTE VENTE", ccSigHighVol: "VOLATILITÉ HAUTE", ccSigBreakout: "CASSURE", ccSigReversal: "RETOURNEMENT", ccSigMomentum: "MOMENTUM",
     ccEvBreakout: "Cassure détectée", ccEvRiskOk: "Risque acceptable", ccEvMomentum: "Momentum en hausse", ccEvLong: "Signal LONG généré", ccEvShort: "Signal SHORT généré", ccEvSized: "Taille de position calculée : {amt}", ccEvOpened: "Trade ouvert", ccEvRecorded: "Trade enregistré", ccEvEquity: "Portefeuille mis à jour", ccEvTP: "Take profit atteint", ccEvSL: "Stop loss atteint", ccEvVolatility: "Pic de volatilité surveillé", ccEvReversal: "Figure de retournement observée", ccEvClosed: "Trade clôturé",
@@ -1338,7 +1321,7 @@ const I18N = {
     ccAgentsTitle: "Agjentët e tregtisë AI", ccLiveTrade: "Trade live", ccNoTrade: "Asnjë trade e hapur — agjentët po skanojnë tregun.",
     ccEquityTitle: "Kapitali / P&L", ccStartBal: "Fillimi", ccCurBal: "Balanca", ccUnreal: "Pa realizuar", ccRealized: "Realizuar", ccDrawdown: "Drawdown", ccWinsLab: "Fitore", ccLossesLab: "Humbje",
     ccRiskTitle: "Monitorimi i rrezikut", ccMRisk: "Niveli i rrezikut", ccMExposure: "Ekspozimi", ccMPosSize: "Madhësia e pozicionit", ccMDrawdown: "Drawdown", ccMVolatility: "Volatiliteti", ccMMarketConf: "Besimi në treg", ccMTradeConf: "Besimi në trade",
-    ccSignalsTitle: "Sinjalet e tregut AI", ccSize: "Madhësia", ccLev: "Leva", ccDuration: "Kohëzgjatja", ccReason: "Arsyeja",
+    ccSize: "Madhësia", ccLev: "Leva", ccDuration: "Kohëzgjatja", ccReason: "Arsyeja",
     ccAgScanner: "SKANERI", ccAgRisk: "KONTROLLI I RISQUT", ccAgAnalyzer: "ANALIZUESI", ccAgSignal: "SINALI", ccAgSizer: "PËRMASAT", ccAgExecutor: "EKZEKUTORI", ccAgLogger: "REGJISTRI", ccAgEquity: "KAPITALI", ccAgRegime: "REZHIMI I TREGUT",
     ccSigBuy: "BLERJE", ccSigSell: "SHITJE", ccSigWait: "PRIT", ccSigStrongBuy: "BLERJE E FORTË", ccSigStrongSell: "SHITJE E FORTË", ccSigHighVol: "VOLATILITET I LARTË", ccSigBreakout: "ZBRITJE", ccSigReversal: "KTHIM", ccSigMomentum: "MOMENTUM",
     ccEvBreakout: "Thyerje e zbuluar", ccEvRiskOk: "Rreziku i pranueshëm", ccEvMomentum: "Momentum në rritje", ccEvLong: "Sinali LONG i gjeneruar", ccEvShort: "Sinali SHORT i gjeneruar", ccEvSized: "Madhësia e pozicionit e llogaritur: {amt}", ccEvOpened: "Trade e hapur", ccEvRecorded: "Trade e regjistruar", ccEvEquity: "Portofoli i përditësuar", ccEvTP: "Take profit i arritur", ccEvSL: "Stop loss i arritur", ccEvVolatility: "Thyerja e volatilitetit nën vëzhgim", ccEvReversal: "Modeli i kthimit i vërejtur", ccEvClosed: "Trade e mbyllur",
@@ -2097,7 +2080,6 @@ function openAiPos(sym, price, a) {
   const fee = spend * FEE_RATE;
   if (state.stats) state.stats.fees = (state.stats.fees || 0) + fee;
   ai.positions.push({ pair: sym, entry: price, sl: a.sl, tp: a.tp, qty: (spend - fee) / price, at: Date.now() });
-  ccLogEvent("buy", "EXECUTOR", t("ccEvOpened") + " · " + aiPairName(sym));
   ccPulse("#00cec9");
 }
 
@@ -2122,7 +2104,6 @@ function closeAiPos(pos, price, reason) {
   if (ai.trades.length > 50) ai.trades.pop();
   ai.cooldown = Date.now() + 30000;
   saveState();
-  ccLogEvent(pnl >= 0 ? "profit" : "loss", "EQUITY", t("ccEvClosed") + " · " + aiPairName(pos.pair) + " " + (pnl >= 0 ? "+" : "") + fmtEur(pnl));
   ccPulse(pnl >= 0 ? "#2ecc71" : "#e74c3c");
 }
 
@@ -2718,16 +2699,6 @@ function ccBuildStatic() {
   }
 }
 
-function ccLogEvent(type, agent, msg) {
-  const list = document.getElementById("ccLog");
-  if (!list) return;
-  const li = document.createElement("li");
-  li.className = "cc-ev " + type;
-  li.innerHTML = `<span class="cc-ev-ag">${agent}</span><span class="cc-ev-msg">${msg}</span><span class="cc-ev-t">${new Date().toLocaleTimeString(LOCALES[lang] || "en-US", { hour12: false })}</span>`;
-  list.prepend(li);
-  while (list.children.length > 30) list.removeChild(list.lastChild);
-}
-
 function ccSetAgent(idx, status, cls, hold) {
   const st = document.getElementById("ccas-" + idx);
   if (!st) return;
@@ -2759,20 +2730,11 @@ function ccEmitSignal() {
   const sig = pool[Math.floor(Math.random() * pool.length)];
   const syms = Object.keys(ccData);
   const sym = ccState.lastSym || syms[Math.floor(Math.random() * syms.length)];
-  const list = document.getElementById("ccSigList");
-  if (list) {
-    const chip = document.createElement("span");
-    chip.className = "cc-sig " + sig.cls;
-    chip.textContent = t(sig.key) + " · " + sym;
-    list.prepend(chip);
-    while (list.children.length > 8) list.removeChild(list.lastChild);
-  }
   ccState.signals++;
   ccState.lastBull = sig.bull;
   ccState.lastReason = sig.key;
   ccState.lastSym = sym;
   ccState.lastSigAt = Date.now();
-  ccLogEvent(sig.bull === false ? "sell" : sig.bull ? "buy" : "info", "SIGNAL", t(sig.key) + " · " + sym);
   if (sig.strong) {
     ccPulse("#00cec9");
     ccSetNetState("ccNetSignal");
@@ -2796,16 +2758,13 @@ function ccOpenTrade() {
     at: Date.now(), dur: 0, pnl: 0, pnlPct: 0 };
   cs.trades++;
   ccTDisp.entry = null; ccTDisp.cur = null; ccTDisp.pnl = null; ccTDisp.pnlPct = null;
-  ccLogEvent("info", "RISK CHECK", t("ccEvRiskOk"));
   ccSetAgent(1, "RISK CHECK", "st-active", 1500);
   setTimeout(() => {
     if (!ccState.trade) return;
-    ccLogEvent("info", "SIZER", t("ccEvSized", { amt: fmtEur(size) }));
     ccSetAgent(4, "SIZING", "st-active", 1500);
   }, 380);
   setTimeout(() => {
     if (!ccState.trade) return;
-    ccLogEvent(ccState.trade.dir === 1 ? "buy" : "sell", "EXECUTOR", t(ccState.trade.dir === 1 ? "ccEvLong" : "ccEvShort") + " · " + sym);
     ccSetAgent(5, "EXECUTING", "st-active", 1500);
     ccPulse("#74b9ff");
     ccSetNetState("ccNetTrade");
@@ -2823,10 +2782,8 @@ function ccCloseTrade(evKey) {
   if (pnl >= 0) cs.wins++; else cs.losses++;
   cs.lastTrade = Object.assign({}, tr, { pnl });
   cs.trade = null;
-  ccLogEvent(pnl >= 0 ? "profit" : "loss", "LOGGER", t("ccEvRecorded") + " · " + tr.sym);
   ccSetAgent(6, "LOGGING", "st-active", 1500);
   setTimeout(() => {
-    ccLogEvent(pnl >= 0 ? "profit" : "loss", "EQUITY", t("ccEvClosed") + " · " + tr.sym + " " + (pnl >= 0 ? "+" : "") + fmtEur(pnl));
     ccSetAgent(7, "UPDATED", "st-active", 1500);
     ccSetAgent(5, pnl >= 0 ? "PROFIT" : "LOSS", pnl >= 0 ? "st-good" : "st-bad", 2600);
   }, 400);
@@ -2840,7 +2797,6 @@ function ccEngineTick() {
     cs.regime = regimes[Math.floor(Math.random() * 3)];
     cs.regimeT = Date.now() + 45000 + Math.random() * 45000;
     ccSetAgent(8, cs.regime === "bull" ? "BULL DETECTED" : cs.regime === "bear" ? "BEAR DETECTED" : "RANGE", "st-warn", 3000);
-    ccLogEvent("info", "REGIME", cs.regime === "bull" ? t("ccEvMomentum") : cs.regime === "bear" ? t("ccEvReversal") : t("ccEvVolatility"));
   }
   let volSum = 0;
   Object.keys(ccData).forEach(sym => {
