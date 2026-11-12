@@ -25,8 +25,8 @@
     min-height: 100vh;
   }
   header {
-    display: flex; flex-direction: column; align-items: stretch; gap: 12px;
-    padding: 18px 24px 12px; border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: stretch; gap: 16px;
+    padding: 22px 24px 18px; border-bottom: 1px solid var(--border);
     background: var(--panel);
   }
   .brand-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; }
@@ -424,7 +424,7 @@
     .ai-signal { font-size: 22px; }
   }
   @media (max-width: 720px) {
-    header { padding: 12px 14px 8px; gap: 10px; }
+    header { padding: 14px 14px 12px; gap: 12px; }
     .brand-row { gap: 8px; }
     .lang-btn { padding: 6px 8px; font-size: 13px; }
     .logo { font-size: 15px; gap: 8px; letter-spacing: 1.2px; }
@@ -688,6 +688,95 @@
   </section>
 </main>
 
+<section id="cc" class="cc-section">
+  <h2>🛰️ <span data-i18n="ccTitle">AI Command Center</span></h2>
+  <div class="cc-panel">
+    <div class="cc-topbar">
+      <div class="cc-badges">
+        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB1">AI SYSTEM ONLINE</span></span>
+        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB2">MARKET SCANNER ACTIVE</span></span>
+        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB3">AGENTS ONLINE</span></span>
+        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB4">MARKET DATA LIVE</span></span>
+        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB5">RISK ENGINE ACTIVE</span></span>
+        <span class="cc-badge sim" data-i18n="ccSimBadge">SIMULATION · PAPER TRADING</span>
+      </div>
+      <div class="cc-clock"><span id="ccClock">--:--:--</span><span data-i18n="ccSession">SESSION</span>&nbsp;<span id="ccSession">00:00</span></div>
+    </div>
+    <div class="cc-stats-row">
+      <div class="cc-stat"><span data-i18n="ccMarketsScanned">Markets scanned</span><b id="ccScanned">0</b></div>
+      <div class="cc-stat"><span data-i18n="ccSignalsDetected">Signals detected</span><b id="ccSignalsN">0</b></div>
+      <div class="cc-stat"><span data-i18n="ccTradesLabel">Trades</span><b id="ccTradesN">0</b></div>
+      <div class="cc-stat"><span data-i18n="ccStatusNominal">System status</span><b style="color:var(--green);">NOMINAL</b></div>
+    </div>
+    <div class="cc-ticker"><div class="cc-ticker-track" id="ccTicker"></div></div>
+    <div class="cc-main">
+      <div>
+        <h2 data-i18n="ccLiveCharts">Live markets</h2>
+        <div class="cc-charts" id="ccCharts"></div>
+      </div>
+      <div class="cc-panel cc-sphere-wrap">
+        <canvas id="ccSphere"></canvas>
+        <div class="cc-sphere-label"><span data-i18n="ccNeuralCore">NEURAL CORE</span> · <span id="ccNetState">PROCESSING</span></div>
+        <div class="cc-sphere-info">
+          <span data-i18n="ccCoreInfo">Each particle is a live market data point processed by the AI agents. Expanding waves = analysis in progress — the whole network lights up on a signal or a trade.</span>
+          <span class="cc-legend">
+            <span><i style="background:#00cec9;"></i><span data-i18n="ccLegSignal">signal</span></span>
+            <span><i style="background:#74b9ff;"></i><span data-i18n="ccLegOrder">order</span></span>
+            <span><i style="background:#2ecc71;"></i><span data-i18n="ccLegProfit">profit</span></span>
+            <span><i style="background:#e74c3c;"></i><span data-i18n="ccLegLoss">loss</span></span>
+            <span><i style="background:#a29bfe;"></i><span data-i18n="ccLegScan">scanning</span></span>
+          </span>
+        </div>
+      </div>
+      <div class="cc-agents">
+        <h2 data-i18n="ccAgentsTitle">AI Trading Agents</h2>
+        <div id="ccAgents"></div>
+      </div>
+    </div>
+    <div class="cc-grid2">
+      <div class="cc-panel">
+        <h2 data-i18n="ccLiveTrade">Live trade</h2>
+        <div id="ccTNone" class="cc-empty" data-i18n="ccNoTrade">No open trade — agents are scanning the market.</div>
+        <div id="ccTBody" style="display:none;">
+          <div class="cc-ttop"><b id="ccTPair">—</b><span class="cc-tside long" id="ccTSide">LONG</span></div>
+          <div class="cc-tbig" id="ccTPnl">—</div>
+          <div class="cc-tpct" id="ccTPnlPct">—</div>
+          <div class="cc-eq-grid">
+            <div><span data-i18n="entryLab">Entry</span><b id="ccTEntry">—</b></div>
+            <div><span data-i18n="thPrice">Price</span><b id="ccTCur">—</b></div>
+            <div><span data-i18n="ccSize">Size</span><b id="ccTSize">—</b></div>
+            <div><span data-i18n="slLab2">Stop Loss</span><b id="ccTSL" style="color:var(--red);">—</b></div>
+            <div><span data-i18n="tpLab2">Take Profit</span><b id="ccTTP" style="color:var(--green);">—</b></div>
+            <div><span data-i18n="ccLev">Leverage</span><b id="ccTLev">—</b></div>
+            <div><span data-i18n="ccDuration">Duration</span><b id="ccTDur">—</b></div>
+            <div><span data-i18n="sigConfLab">Confidence</span><b id="ccTConf">—</b></div>
+            <div><span data-i18n="ccReason">Reason</span><b id="ccTReason">—</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="cc-panel">
+        <h2 data-i18n="ccEquityTitle">Equity / P&L</h2>
+        <canvas id="ccEquity" style="width:100%; height:90px; display:block;"></canvas>
+        <div class="cc-eq-grid">
+          <div><span data-i18n="ccStartBal">Start</span><b id="ccEqStart">—</b></div>
+          <div><span data-i18n="ccCurBal">Balance</span><b id="ccEqCur">—</b></div>
+          <div><span data-i18n="ccUnreal">Unrealized</span><b id="ccEqUnreal">—</b></div>
+          <div><span data-i18n="ccRealized">Realized</span><b id="ccEqReal">—</b></div>
+          <div><span data-i18n="winRate">Win rate</span><b id="ccEqWin">—</b></div>
+          <div><span data-i18n="totalTradesLab">Trades</span><b id="ccEqTrades">0</b></div>
+          <div><span data-i18n="ccWinsLab">Wins</span><b id="ccEqWins" style="color:var(--green);">0</b></div>
+          <div><span data-i18n="ccLossesLab">Losses</span><b id="ccEqLosses" style="color:var(--red);">0</b></div>
+          <div><span data-i18n="ccDrawdown">Drawdown</span><b id="ccEqDD">0.0%</b></div>
+        </div>
+      </div>
+      <div class="cc-panel">
+        <h2 data-i18n="ccRiskTitle">Risk monitor</h2>
+        <div id="ccMeters"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= LIVE QUANT CONTROL CENTER ================= -->
 <section id="lq" class="lq-section">
   <div class="lq-head">
@@ -950,94 +1039,6 @@
   </div>
 </section>
 
-<section id="cc" class="cc-section">
-  <h2>🛰️ <span data-i18n="ccTitle">AI Command Center</span></h2>
-  <div class="cc-panel">
-    <div class="cc-topbar">
-      <div class="cc-badges">
-        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB1">AI SYSTEM ONLINE</span></span>
-        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB2">MARKET SCANNER ACTIVE</span></span>
-        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB3">AGENTS ONLINE</span></span>
-        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB4">MARKET DATA LIVE</span></span>
-        <span class="cc-badge ok"><span class="cc-blink"></span><span data-i18n="ccB5">RISK ENGINE ACTIVE</span></span>
-        <span class="cc-badge sim" data-i18n="ccSimBadge">SIMULATION · PAPER TRADING</span>
-      </div>
-      <div class="cc-clock"><span id="ccClock">--:--:--</span><span data-i18n="ccSession">SESSION</span>&nbsp;<span id="ccSession">00:00</span></div>
-    </div>
-    <div class="cc-stats-row">
-      <div class="cc-stat"><span data-i18n="ccMarketsScanned">Markets scanned</span><b id="ccScanned">0</b></div>
-      <div class="cc-stat"><span data-i18n="ccSignalsDetected">Signals detected</span><b id="ccSignalsN">0</b></div>
-      <div class="cc-stat"><span data-i18n="ccTradesLabel">Trades</span><b id="ccTradesN">0</b></div>
-      <div class="cc-stat"><span data-i18n="ccStatusNominal">System status</span><b style="color:var(--green);">NOMINAL</b></div>
-    </div>
-    <div class="cc-ticker"><div class="cc-ticker-track" id="ccTicker"></div></div>
-    <div class="cc-main">
-      <div>
-        <h2 data-i18n="ccLiveCharts">Live markets</h2>
-        <div class="cc-charts" id="ccCharts"></div>
-      </div>
-      <div class="cc-panel cc-sphere-wrap">
-        <canvas id="ccSphere"></canvas>
-        <div class="cc-sphere-label"><span data-i18n="ccNeuralCore">NEURAL CORE</span> · <span id="ccNetState">PROCESSING</span></div>
-        <div class="cc-sphere-info">
-          <span data-i18n="ccCoreInfo">Each particle is a live market data point processed by the AI agents. Expanding waves = analysis in progress — the whole network lights up on a signal or a trade.</span>
-          <span class="cc-legend">
-            <span><i style="background:#00cec9;"></i><span data-i18n="ccLegSignal">signal</span></span>
-            <span><i style="background:#74b9ff;"></i><span data-i18n="ccLegOrder">order</span></span>
-            <span><i style="background:#2ecc71;"></i><span data-i18n="ccLegProfit">profit</span></span>
-            <span><i style="background:#e74c3c;"></i><span data-i18n="ccLegLoss">loss</span></span>
-            <span><i style="background:#a29bfe;"></i><span data-i18n="ccLegScan">scanning</span></span>
-          </span>
-        </div>
-      </div>
-      <div class="cc-agents">
-        <h2 data-i18n="ccAgentsTitle">AI Trading Agents</h2>
-        <div id="ccAgents"></div>
-      </div>
-    </div>
-    <div class="cc-grid2">
-      <div class="cc-panel">
-        <h2 data-i18n="ccLiveTrade">Live trade</h2>
-        <div id="ccTNone" class="cc-empty" data-i18n="ccNoTrade">No open trade — agents are scanning the market.</div>
-        <div id="ccTBody" style="display:none;">
-          <div class="cc-ttop"><b id="ccTPair">—</b><span class="cc-tside long" id="ccTSide">LONG</span></div>
-          <div class="cc-tbig" id="ccTPnl">—</div>
-          <div class="cc-tpct" id="ccTPnlPct">—</div>
-          <div class="cc-eq-grid">
-            <div><span data-i18n="entryLab">Entry</span><b id="ccTEntry">—</b></div>
-            <div><span data-i18n="thPrice">Price</span><b id="ccTCur">—</b></div>
-            <div><span data-i18n="ccSize">Size</span><b id="ccTSize">—</b></div>
-            <div><span data-i18n="slLab2">Stop Loss</span><b id="ccTSL" style="color:var(--red);">—</b></div>
-            <div><span data-i18n="tpLab2">Take Profit</span><b id="ccTTP" style="color:var(--green);">—</b></div>
-            <div><span data-i18n="ccLev">Leverage</span><b id="ccTLev">—</b></div>
-            <div><span data-i18n="ccDuration">Duration</span><b id="ccTDur">—</b></div>
-            <div><span data-i18n="sigConfLab">Confidence</span><b id="ccTConf">—</b></div>
-            <div><span data-i18n="ccReason">Reason</span><b id="ccTReason">—</b></div>
-          </div>
-        </div>
-      </div>
-      <div class="cc-panel">
-        <h2 data-i18n="ccEquityTitle">Equity / P&L</h2>
-        <canvas id="ccEquity" style="width:100%; height:90px; display:block;"></canvas>
-        <div class="cc-eq-grid">
-          <div><span data-i18n="ccStartBal">Start</span><b id="ccEqStart">—</b></div>
-          <div><span data-i18n="ccCurBal">Balance</span><b id="ccEqCur">—</b></div>
-          <div><span data-i18n="ccUnreal">Unrealized</span><b id="ccEqUnreal">—</b></div>
-          <div><span data-i18n="ccRealized">Realized</span><b id="ccEqReal">—</b></div>
-          <div><span data-i18n="winRate">Win rate</span><b id="ccEqWin">—</b></div>
-          <div><span data-i18n="totalTradesLab">Trades</span><b id="ccEqTrades">0</b></div>
-          <div><span data-i18n="ccWinsLab">Wins</span><b id="ccEqWins" style="color:var(--green);">0</b></div>
-          <div><span data-i18n="ccLossesLab">Losses</span><b id="ccEqLosses" style="color:var(--red);">0</b></div>
-          <div><span data-i18n="ccDrawdown">Drawdown</span><b id="ccEqDD">0.0%</b></div>
-        </div>
-      </div>
-      <div class="cc-panel">
-        <h2 data-i18n="ccRiskTitle">Risk monitor</h2>
-        <div id="ccMeters"></div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <section id="ng" class="cc-section">
   <h2>🕸️ <span data-i18n="ngTitle">Neural Grid — Live Bot Activity</span> <span class="cc-badge sim" data-i18n="ccSimBadge">SIMULATION · PAPER TRADING</span></h2>
