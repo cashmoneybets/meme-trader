@@ -29,8 +29,20 @@
     padding: 14px 24px; border-bottom: 1px solid var(--border);
     background: var(--panel); position: sticky; top: 0; z-index: 10; flex-wrap: wrap; gap: 10px;
   }
-  .logo { font-size: 20px; font-weight: 700; letter-spacing: .5px; }
+  .logo { font-size: 20px; font-weight: 700; letter-spacing: .5px; display: flex; align-items: center; gap: 10px; }
   .logo span { color: #ff3b30; }
+  .logo-cv { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: rgba(0,0,0,.35); flex-shrink: 0; }
+  .lang-dd { position: relative; }
+  .lang-btn { display: flex; align-items: center; gap: 7px; background: var(--panel2); border: 1px solid var(--border); color: var(--text); padding: 8px 10px; border-radius: 6px; font-size: 14px; cursor: pointer; font-weight: 600; }
+  .lang-btn:hover { border-color: var(--accent2); }
+  .lang-caret { font-size: 10px; color: var(--muted); }
+  .lang-flag { display: inline-flex; width: 20px; height: 14px; border-radius: 2px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.12); flex-shrink: 0; }
+  .lang-flag svg { width: 100%; height: 100%; display: block; }
+  .lang-menu { display: none; position: absolute; right: 0; top: calc(100% + 6px); background: var(--panel2); border: 1px solid var(--border); border-radius: 8px; padding: 4px; z-index: 50; min-width: 160px; box-shadow: 0 8px 24px rgba(0,0,0,.5); }
+  .lang-dd.open .lang-menu { display: block; }
+  .lang-opt { display: flex; align-items: center; gap: 9px; width: 100%; background: none; border: none; color: var(--text); padding: 8px 10px; font-size: 13.5px; cursor: pointer; border-radius: 6px; text-align: left; font-weight: 600; }
+  .lang-opt:hover { background: rgba(255,255,255,.06); }
+  .lang-opt.on { color: var(--accent2); }
   .stats { display: flex; gap: 22px; flex-wrap: wrap; }
   .stat { text-align: right; }
   .stat .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
@@ -101,7 +113,10 @@
   .bot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
   @media (min-width: 1101px) { .bot-grid { grid-template-columns: 1fr 1fr 1fr; } }
   @media (max-width: 900px) { .bot-grid { grid-template-columns: 1fr; } }
-  .fee-box { border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; background: rgba(0,0,0,.25); }
+  .fee-card { margin-bottom: 20px; }
+  .fee-row { display: flex; gap: 30px; flex-wrap: wrap; }
+  .fee-item { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .fee-item b { font-size: 17px; font-variant-numeric: tabular-nums; }
   .bot-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .bot-controls label { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
   #toast {
@@ -390,7 +405,10 @@
   @media (max-width: 720px) {
     header { padding: 10px 14px; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 6px 10px; }
     .logo { grid-row: 1; font-size: 17px; }
-    .lang-sel { grid-row: 1; grid-column: 2; justify-self: end; padding: 6px 8px; font-size: 13px; }
+    .lang-dd { grid-row: 1; grid-column: 2; justify-self: end; }
+    .lang-btn { padding: 6px 8px; font-size: 13px; }
+    .logo-cv { width: 26px; height: 26px; }
+    .logo { font-size: 14px; gap: 8px; }
     .stats { grid-row: 2; grid-column: 1 / -1; gap: 12px; }
     .stats { gap: 12px; }
     .stat { text-align: left; }
@@ -429,7 +447,7 @@
 <body>
 
 <header>
-  <div class="logo">📊 Dorian <span>- DEKA</span></div>
+  <div class="logo"><canvas id="logoCv" class="logo-cv"></canvas>DORIAN&nbsp;<span>- TRADING BOT</span></div>
   <div class="stats">
     <div class="stat"><div class="label" data-i18n="cash">Cash</div><div class="value" id="stCash">—</div></div>
     <div class="stat"><div class="label" data-i18n="cryptoPos">Crypto position</div><div class="value" id="stCrypto">—</div></div>
@@ -437,12 +455,17 @@
     <div class="stat"><div class="label" data-i18n="total">Total</div><div class="value" id="stTotal">—</div></div>
     <div class="stat"><div class="label" data-i18n="pnl">Overall P&L</div><div class="value" id="stPnl">—</div></div>
   </div>
-  <select id="langSel" class="lang-sel" aria-label="Language">
-    <option value="en">🇬🇧 EN</option>
-    <option value="de">🇩🇪 DE</option>
-    <option value="fr">🇫🇷 FR</option>
-    <option value="sq">🇦🇱 AL</option>
-  </select>
+  <div class="lang-dd" id="langDD">
+    <button class="lang-btn" id="langBtn" aria-label="Language">
+      <span class="lang-flag" id="langCurFlag"></span><span id="langCurCode">EN</span><span class="lang-caret">▾</span>
+    </button>
+    <div class="lang-menu" id="langMenu">
+      <button class="lang-opt" data-lang="en"><span class="lang-flag"><svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#012169"/><path d="M0,0 L20,14 M20,0 L0,14" stroke="#fff" stroke-width="3"/><path d="M0,0 L20,14 M20,0 L0,14" stroke="#C8102E" stroke-width="1.4"/><rect x="8" width="4" height="14" fill="#fff"/><rect y="5" width="20" height="4" fill="#fff"/><rect x="8.8" width="2.4" height="14" fill="#C8102E"/><rect y="5.8" width="20" height="2.4" fill="#C8102E"/></svg></span>EN &middot; English</button>
+      <button class="lang-opt" data-lang="de"><span class="lang-flag"><svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#000"/><rect y="4.67" width="20" height="4.66" fill="#DD0000"/><rect y="9.33" width="20" height="4.67" fill="#FFCE00"/></svg></span>DE &middot; Deutsch</button>
+      <button class="lang-opt" data-lang="fr"><span class="lang-flag"><svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#fff"/><rect width="6.67" height="14" fill="#002395"/><rect x="13.33" width="6.67" height="14" fill="#ED2939"/></svg></span>FR &middot; Français</button>
+      <button class="lang-opt" data-lang="sq"><span class="lang-flag"><svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#E41E20"/><path d="M10 2.6 L11.4 4.8 L14 3.8 L12.7 6.1 L15.2 7 L12.7 7.9 L14 10.2 L11.4 9.2 L10 11.4 L8.6 9.2 L6 10.2 L7.3 7.9 L4.8 7 L7.3 6.1 L6 3.8 L8.6 4.8 Z" fill="#000"/></svg></span>AL &middot; Shqip</button>
+    </div>
+  </div>
 </header>
 
 <nav>
@@ -504,15 +527,17 @@
       <div class="card">
         <h2><span data-i18n="botTitleAI">🤖 Bot — AI · 14 pairs</span> <small id="botStatusAITop">stopped</small></h2>
         <div class="bot-controls">
-          <div class="fee-box">
-            <div class="lq-ctitle" data-i18n="feeBoxTitle">REAL TRADING FEES</div>
-            <div class="lq-kvrow"><span data-i18n="feePaid">Fees paid (total)</span><b id="feesTotal" class="neg">€0.00</b></div>
-            <div class="lq-kvrow"><span data-i18n="feeRateLab">Fee rate</span><b>0.10% / side</b></div>
-            <div class="lq-kvrow"><span data-i18n="feeRoundTrip">Round trip (stake)</span><b id="feesRT">€0.10</b></div>
-            <div class="lq-kvrow"><span data-i18n="feeTradesLab">Trades</span><b id="feesTrades">0</b></div>
-          </div>
           <button class="act buy" id="aiToggleTop" data-i18n="startBot">▶ Start bot</button>
         </div>
+      </div>
+    </div>
+    <div class="card fee-card">
+      <div class="lq-ctitle" data-i18n="feeBoxTitle">REAL TRADING FEES</div>
+      <div class="fee-row">
+        <div class="fee-item"><span data-i18n="feePaid">Fees paid (total)</span><b id="feesTotal" class="neg">€0.00</b></div>
+        <div class="fee-item"><span data-i18n="feeRateLab">Fee rate</span><b>0.10% / side</b></div>
+        <div class="fee-item"><span data-i18n="feeRoundTrip">Round trip (stake)</span><b id="feesRT">€0.10</b></div>
+        <div class="fee-item"><span data-i18n="feeTradesLab">Trades</span><b id="feesTrades">0</b></div>
       </div>
     </div>
     <div class="card" style="margin-bottom:20px;">
@@ -1058,7 +1083,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Live Bot Activity", ngCore: "DEKA CORE", ngScanning: "SCANNING", ngBuying: "BUYING", ngSelling: "SELLING",
     ngFeedTitle: "Live bot feed", ngPosTitle: "Open positions — where they're going", ngChartsTitle: "All markets — live",
-    ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.", ngStatTrades: "bot trades", ngStatHot: "top mover", ngStatHeld: "held", lqTitle: "Live Quant Control Center", botTitleAI: "\U0001f916 Bot \u2014 AI \u00b7 14 pairs", feeBoxTitle: "REAL TRADING FEES", feePaid: "Fees paid (total)", feeRateLab: "Fee rate", feeRoundTrip: "Round trip (stake)", feeTradesLab: "Trades",
+    ngBotComm: "Commodities bot", ngBotCrypto: "Crypto bot", ngNoPos: "No open positions yet — the bots are watching the market.", ngStatTrades: "bot trades", ngStatHot: "top mover", ngStatHeld: "held", lqTitle: "Live Quant Control Center", botTitleAI: "🤖 Bot \u2014 AI \u00b7 14 pairs", feeBoxTitle: "REAL TRADING FEES", feePaid: "Fees paid (total)", feeRateLab: "Fee rate", feeRoundTrip: "Round trip (stake)", feeTradesLab: "Trades",
     resetAccount: "↺ Reset account",
     marketTitle: "Market", marketSub: "real-time prices · BTC & gold live",
     thAsset: "Asset", thPrice: "Price", thChart: "Chart", thHeld: "Held", thTrade: "Trade (amount in €)",
@@ -1140,7 +1165,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Bot-Aktivität live", ngCore: "DEKA-KERN", ngScanning: "SCANNT", ngBuying: "KAUF", ngSelling: "VERKAUF",
     ngFeedTitle: "Bot-Feed live", ngPosTitle: "Offene Positionen — wohin sie gehen", ngChartsTitle: "Alle Märkte — live",
-    ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.", ngStatTrades: "Bot-Trades", ngStatHot: "Top-Beweger", ngStatHeld: "gehalten", lqTitle: "Live-Quant-Kontrollzentrum", botTitleAI: "\U0001f916 Bot \u2014 KI \u00b7 14 Paare", feeBoxTitle: "ECHTE HANDELSGEB\u00dcHREN", feePaid: "Bezahlte Geb\u00fchren", feeRateLab: "Geb\u00fchrensatz", feeRoundTrip: "Roundtrip (Einsatz)", feeTradesLab: "Trades",
+    ngBotComm: "Rohstoffe-Bot", ngBotCrypto: "Krypto-Bot", ngNoPos: "Keine offenen Positionen — die Bots beobachten den Markt.", ngStatTrades: "Bot-Trades", ngStatHot: "Top-Beweger", ngStatHeld: "gehalten", lqTitle: "Live-Quant-Kontrollzentrum", botTitleAI: "🤖 Bot \u2014 KI \u00b7 14 Paare", feeBoxTitle: "ECHTE HANDELSGEB\u00dcHREN", feePaid: "Bezahlte Geb\u00fchren", feeRateLab: "Geb\u00fchrensatz", feeRoundTrip: "Roundtrip (Einsatz)", feeTradesLab: "Trades",
     resetAccount: "↺ Konto zurücksetzen",
     marketTitle: "Markt", marketSub: "echte Preise in Echtzeit · BTC & Gold live",
     thAsset: "Asset", thPrice: "Preis", thChart: "Chart", thHeld: "Gehalten", thTrade: "Handel (Betrag in €)",
@@ -1222,7 +1247,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Activité des bots en direct", ngCore: "CŒUR DEKA", ngScanning: "SCAN EN COURS", ngBuying: "ACHAT", ngSelling: "VENTE",
     ngFeedTitle: "Flux des bots en direct", ngPosTitle: "Positions ouvertes — où elles vont", ngChartsTitle: "Tous les marchés — en direct",
-    ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.", ngStatTrades: "trades bots", ngStatHot: "plus actif", ngStatHeld: "détenus", lqTitle: "Centre de contrôle Quant en direct", botTitleAI: "\U0001f916 Bot \u2014 IA \u00b7 14 paires", feeBoxTitle: "FRAIS DE TRADING R\u00c9ELS", feePaid: "Frais pay\u00e9s (total)", feeRateLab: "Taux de frais", feeRoundTrip: "Aller-retour (mise)", feeTradesLab: "Trades",
+    ngBotComm: "Bot matières premières", ngBotCrypto: "Bot crypto", ngNoPos: "Aucune position ouverte — les bots surveillent le marché.", ngStatTrades: "trades bots", ngStatHot: "plus actif", ngStatHeld: "détenus", lqTitle: "Centre de contrôle Quant en direct", botTitleAI: "🤖 Bot \u2014 IA \u00b7 14 paires", feeBoxTitle: "FRAIS DE TRADING R\u00c9ELS", feePaid: "Frais pay\u00e9s (total)", feeRateLab: "Taux de frais", feeRoundTrip: "Aller-retour (mise)", feeTradesLab: "Trades",
     resetAccount: "↺ Réinitialiser le compte",
     marketTitle: "Marché", marketSub: "prix en temps réel · BTC & or en direct",
     thAsset: "Actif", thPrice: "Prix", thChart: "Graphique", thHeld: "Détenu", thTrade: "Trade (montant en €)",
@@ -1304,7 +1329,7 @@ const I18N = {
     ccSideLong: "LONG", ccSideShort: "SHORT",
     ngTitle: "Neural Grid — Aktiviteti i botëve live", ngCore: "BËRTHAMA DEKA", ngScanning: "PO SKANON", ngBuying: "BLERJE", ngSelling: "SHITJE",
     ngFeedTitle: "Fluxi i botëve live", ngPosTitle: "Pozicionet e hapura — ku po shkojnë", ngChartsTitle: "Të gjitha tregjet — live",
-    ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.", ngStatTrades: "tregtime botesh", ngStatHot: "më aktiv", ngStatHeld: "të mbajtura", lqTitle: "Qendra e kontrollit Quant Live", botTitleAI: "\U0001f916 Boti \u2014 AI \u00b7 14 çifte", feeBoxTitle: "TARIFAT REALE T\u00cb TRADINGUT", feePaid: "Tarifat e paguara", feeRateLab: "Shkalla e tarif\u00ebs", feeRoundTrip: "Round trip (mish\u00eb)", feeTradesLab: "Tregtime",
+    ngBotComm: "Boti i mallrave", ngBotCrypto: "Boti i kriptove", ngNoPos: "Asnjë pozicion i hapur — botët po mbikëqyrin tregun.", ngStatTrades: "tregtime botesh", ngStatHot: "më aktiv", ngStatHeld: "të mbajtura", lqTitle: "Qendra e kontrollit Quant Live", botTitleAI: "🤖 Boti \u2014 AI \u00b7 14 çifte", feeBoxTitle: "TARIFAT REALE T\u00cb TRADINGUT", feePaid: "Tarifat e paguara", feeRateLab: "Shkalla e tarif\u00ebs", feeRoundTrip: "Round trip (mish\u00eb)", feeTradesLab: "Tregtime",
     resetAccount: "↺ Rivendis llogarinë",
     marketTitle: "Tregu", marketSub: "çmime reale në kohë reale · BTC & ari live",
     thAsset: "Aseti", thPrice: "Çmimi", thChart: "Grafiku", thHeld: "Në posedim", thTrade: "Tregto (shuma në €)",
@@ -4081,6 +4106,37 @@ function lqFrame() {
   requestAnimationFrame(lqFrame);
 }
 
+/* ================= LOGO ANIME ================= */
+const logoCandles = [];
+let logoLast = 0;
+function logoFrame() {
+  const c = document.getElementById("logoCv");
+  if (c) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    if (c.width !== Math.round(34 * dpr)) { c.width = Math.round(34 * dpr); c.height = Math.round(34 * dpr); }
+    const ctx = c.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, 34, 34);
+    const now = Date.now();
+    if (now - logoLast > 420) {
+      logoLast = now;
+      const prev = logoCandles.length ? logoCandles[logoCandles.length - 1].c : 17;
+      const cl = Math.max(5, Math.min(29, prev + (Math.random() - 0.47) * 9));
+      logoCandles.push({ o: prev, c: cl });
+      if (logoCandles.length > 6) logoCandles.shift();
+    }
+    logoCandles.forEach((cd, i) => {
+      const x = 4.5 + i * 4.4;
+      const col = cd.c >= cd.o ? "#2ecc71" : "#e74c3c";
+      ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x + 1.7, 4); ctx.lineTo(x + 1.7, 30); ctx.stroke();
+      ctx.fillRect(x, Math.min(cd.o, cd.c), 3.4, Math.max(1.8, Math.abs(cd.c - cd.o)));
+    });
+  }
+  requestAnimationFrame(logoFrame);
+}
+requestAnimationFrame(logoFrame);
+
 /* ================= NAVIGATION & INIT ================= */
 document.querySelectorAll("nav button").forEach(b => {
   b.onclick = () => {
@@ -4128,9 +4184,25 @@ function bindBotToggle(prefix, key) {
 bindBotToggle("Comm", "botComm");
 bindBotToggle("Crypto", "botCrypto");
 
-document.getElementById("langSel").onchange = e => {
-  lang = e.target.value;
+const LANG_FLAGS = {
+  en: '<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#012169"/><path d="M0,0 L20,14 M20,0 L0,14" stroke="#fff" stroke-width="3"/><path d="M0,0 L20,14 M20,0 L0,14" stroke="#C8102E" stroke-width="1.4"/><rect x="8" width="4" height="14" fill="#fff"/><rect y="5" width="20" height="4" fill="#fff"/><rect x="8.8" width="2.4" height="14" fill="#C8102E"/><rect y="5.8" width="20" height="2.4" fill="#C8102E"/></svg>',
+  de: '<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#000"/><rect y="4.67" width="20" height="4.66" fill="#DD0000"/><rect y="9.33" width="20" height="4.67" fill="#FFCE00"/></svg>',
+  fr: '<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#fff"/><rect width="6.67" height="14" fill="#002395"/><rect x="13.33" width="6.67" height="14" fill="#ED2939"/></svg>',
+  sq: '<svg viewBox="0 0 20 14" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="14" fill="#E41E20"/><path d="M10 2.6 L11.4 4.8 L14 3.8 L12.7 6.1 L15.2 7 L12.7 7.9 L14 10.2 L11.4 9.2 L10 11.4 L8.6 9.2 L6 10.2 L7.3 7.9 L4.8 7 L7.3 6.1 L6 3.8 L8.6 4.8 Z" fill="#000"/></svg>'
+};
+const langDD = document.getElementById("langDD");
+const langMenu = document.getElementById("langMenu");
+function setLangUI(l) {
+  const f = document.getElementById("langCurFlag");
+  if (f) f.innerHTML = LANG_FLAGS[l] || "";
+  const c = document.getElementById("langCurCode");
+  if (c) c.textContent = l.toUpperCase();
+  if (langMenu) langMenu.querySelectorAll(".lang-opt").forEach(o => o.classList.toggle("on", o.dataset.lang === l));
+}
+function applyLang(l) {
+  lang = l;
   localStorage.setItem("dt_lang", lang);
+  setLangUI(lang);
   applyI18n();
   render();
   renderBot();
@@ -4138,9 +4210,12 @@ document.getElementById("langSel").onchange = e => {
   aiLastPosCount = -1;
   renderAi();
   ccBuildStatic();
-};
-
-document.getElementById("langSel").value = lang;
+}
+const langBtn = document.getElementById("langBtn");
+if (langBtn) langBtn.onclick = e => { e.stopPropagation(); langDD.classList.toggle("open"); };
+if (langMenu) langMenu.querySelectorAll(".lang-opt").forEach(o => { o.onclick = () => { applyLang(o.dataset.lang); langDD.classList.remove("open"); }; });
+if (document.addEventListener) document.addEventListener("click", () => { if (langDD) langDD.classList.remove("open"); });
+setLangUI(lang);
 applyI18n();
 function renderFees() {
   const el = document.getElementById("feesTotal");
