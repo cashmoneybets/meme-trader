@@ -3428,14 +3428,9 @@ function lqCtx(id, hHint) {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   return { ctx, w, h };
 }
-function lqCloud(n) {
-  const pts = [];
-  for (let i = 0; i < n; i++) pts.push({ a: Math.random() * 6.283, r: Math.pow(Math.random(), 0.6), sp: lqRnd(0.08, 0.45), sz: lqRnd(0.6, 2.2), ph: Math.random() * 6.283 });
-  return pts;
-}
 const lqInstr = {};
 LQ_IDS2.forEach((id, i) => {
-  lqInstr[id] = { id, fair: LQ_BASE[id], price: LQ_BASE[id], dev: 0, mom: 0, edge: 0, lat: lqRnd(12, 28), fills: 180 + Math.floor(lqRnd(0, 300)), cloud: lqCloud(id === "HYPE" ? 60 : 72), col: LQ_COL[i % LQ_COL.length] };
+  lqInstr[id] = { id, fair: LQ_BASE[id], price: LQ_BASE[id], dev: 0, mom: 0, edge: 0, lat: lqRnd(12, 28), fills: 180 + Math.floor(lqRnd(0, 300)), col: LQ_COL[i % LQ_COL.length] };
 });
 const lqB = {
   b1: { pnl: 0, trades: 0, wins: 0, hist: [], log: [], fills: [], assets: {}, wf: [], agents: [], d: {} },
@@ -3447,6 +3442,17 @@ for (let i = 0; i < 9; i++) for (let j = i + 1; j < 9; j++) if (Math.random() < 
 ["SCOUT", "SIGNAL", "RISK", "EXECUTION", "ARBITRAGE", "MONITOR"].forEach(n => lqB.b1.agents.push({ n, st: "ONLINE" }));
 let lqVisible = true, lqPaused = false, lq4Flash = 0;
 const lqImps1 = [], lqImps2 = [];
+const LQ_DUSTCOL = ["#b39dff", "#7fe3ff", "#ff9ad5"];
+const lqNebula = [
+  { x: 0.30, y: 0.35, r: 0.45, col: "rgba(120,60,220,", sp: 0.11, ph: 0 },
+  { x: 0.68, y: 0.60, r: 0.50, col: "rgba(0,150,200,", sp: 0.09, ph: 2 },
+  { x: 0.50, y: 0.80, r: 0.38, col: "rgba(220,60,150,", sp: 0.13, ph: 4 },
+  { x: 0.75, y: 0.25, r: 0.30, col: "rgba(60,220,180,", sp: 0.07, ph: 1 }
+];
+const lqStars = Array.from({ length: 130 }, () => ({ x: Math.random(), y: Math.random(), sz: lqRnd(0.4, 1.4), ph: Math.random() * 6.283 }));
+const lqDust = Array.from({ length: 220 }, () => ({ a: Math.random() * 6.283, r: Math.pow(Math.random(), 0.5), sp: lqRnd(0.05, 0.3) * (Math.random() < 0.5 ? 1 : -1), sz: lqRnd(0.4, 1.6), ph: Math.random() * 6.283, col: Math.floor(Math.random() * 3) }));
+const lqLava = [];
+const lqSmoke = Array.from({ length: 14 }, () => ({ x: lqRnd(-12, 12), y: lqRnd(0, 0.4), r: lqRnd(8, 20), sp: lqRnd(0.004, 0.01) }));
 const lqPhase1 = [
   { col: "#2ecc71", a: 3, b: 2, ph: 0 },
   { col: "#e74c3c", a: 2, b: 3, ph: 1.2 },
@@ -3638,50 +3644,67 @@ function lqDraw1() {
   const C = lqCtx("lqc1", 320); if (!C) return;
   const { ctx, w, h } = C;
   ctx.clearRect(0, 0, w, h);
-  lqGridBg(ctx, w, h);
-  const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.34;
+  const ts = Date.now() / 1000;
+  const cx = w / 2, cy = h / 2, MR = Math.min(w, h);
+  ctx.globalCompositeOperation = "lighter";
+  for (const b of lqNebula) {
+    const bx = (b.x + Math.sin(ts * b.sp + b.ph) * 0.04) * w;
+    const by = (b.y + Math.cos(ts * b.sp * 0.8 + b.ph) * 0.05) * h;
+    const br = b.r * MR * (1 + Math.sin(ts * 0.5 + b.ph) * 0.08);
+    const g = ctx.createRadialGradient(bx, by, 0, bx, by, br);
+    g.addColorStop(0, b.col + (0.13 + 0.05 * Math.sin(ts * 0.7 + b.ph)).toFixed(3) + ")");
+    g.addColorStop(1, b.col + "0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(bx, by, br, 0, 6.283); ctx.fill();
+  }
+  for (const s of lqStars) {
+    ctx.globalAlpha = 0.2 + 0.55 * (0.5 + 0.5 * Math.sin(ts * 2.2 + s.ph));
+    ctx.fillStyle = "#dfe8ff";
+    ctx.beginPath(); ctx.arc(s.x * w, s.y * h, s.sz, 0, 6.283); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  for (const p of lqDust) {
+    const a2 = p.a + ts * p.sp;
+    const r2 = p.r * MR * 0.42 * (1 + Math.sin(ts * 0.6 + p.ph) * 0.1);
+    ctx.fillStyle = LQ_DUSTCOL[p.col];
+    ctx.globalAlpha = 0.3 + 0.4 * (0.5 + 0.5 * Math.sin(ts * 1.8 + p.ph));
+    ctx.beginPath(); ctx.arc(cx + Math.cos(a2) * r2, cy + Math.sin(a2) * r2 * 0.62, p.sz, 0, 6.283); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, MR * 0.15);
+  cg.addColorStop(0, "rgba(255,255,255,.45)"); cg.addColorStop(0.4, "rgba(160,120,255,.22)"); cg.addColorStop(1, "rgba(160,120,255,0)");
+  ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(cx, cy, MR * 0.15, 0, 6.283); ctx.fill();
   const centers = LQ_IDS1.map((id, i) => {
     const a = i / LQ_IDS1.length * 6.283 - 1.57;
-    return { id, x: cx + Math.cos(a) * R, y: cy + Math.sin(a) * R };
+    return { id, x: cx + Math.cos(a) * MR * 0.37, y: cy + Math.sin(a) * MR * 0.37 };
   });
   ctx.lineWidth = 1;
   for (const pr of LQ_LINKS1) {
     const A = centers[pr[0]], B = centers[pr[1]];
-    const g = ctx.createLinearGradient(A.x, A.y, B.x, B.y);
-    g.addColorStop(0, "rgba(0,206,201,.22)"); g.addColorStop(1, "rgba(255,110,199,.22)");
-    ctx.strokeStyle = g;
+    ctx.strokeStyle = "rgba(179,157,255,.16)";
     ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
   }
   if (Math.random() < 0.12) { const pr = lqPick(LQ_LINKS1); lqImps1.push({ a: pr[0], b: pr[1], p: 0 }); }
-  ctx.globalCompositeOperation = "lighter";
   for (let i = lqImps1.length - 1; i >= 0; i--) {
     const im = lqImps1[i]; im.p += 0.02;
     if (im.p >= 1) { lqImps1.splice(i, 1); continue; }
     const A = centers[im.a], B = centers[im.b];
-    ctx.fillStyle = "rgba(0,206,201,.9)";
-    ctx.beginPath(); ctx.arc(A.x + (B.x - A.x) * im.p, A.y + (B.y - A.y) * im.p, 2.4, 0, 6.283); ctx.fill();
+    ctx.fillStyle = "rgba(179,157,255,.95)";
+    ctx.beginPath(); ctx.arc(A.x + (B.x - A.x) * im.p, A.y + (B.y - A.y) * im.p, 2.2, 0, 6.283); ctx.fill();
   }
-  const ts = Date.now() / 1000;
-  centers.forEach(c => {
-    const I = lqInstr[c.id];
-    for (const p of I.cloud) {
-      const a2 = p.a + ts * p.sp * 0.3;
-      const r2 = p.r * (26 + Math.sin(ts * 0.8 + p.ph) * 5) * (1 + Math.abs(I.dev) * 2);
-      ctx.fillStyle = I.col; ctx.globalAlpha = 0.22 + 0.5 * (0.5 + 0.5 * Math.sin(ts * 2 + p.ph));
-      ctx.beginPath(); ctx.arc(c.x + Math.cos(a2) * r2, c.y + Math.sin(a2) * r2 * 0.8, p.sz, 0, 6.283); ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-  });
   ctx.globalCompositeOperation = "source-over";
   ctx.font = "9px Consolas, monospace"; ctx.textAlign = "center";
   centers.forEach(c => {
     const I = lqInstr[c.id];
+    ctx.strokeStyle = I.col; ctx.globalAlpha = 0.9;
+    ctx.beginPath(); ctx.arc(c.x, c.y, 4, 0, 6.283); ctx.stroke();
+    ctx.globalAlpha = 1;
     ctx.fillStyle = "rgba(225,232,245,.92)";
-    ctx.fillText(c.id + " 5M", c.x, c.y - 36);
+    ctx.fillText(c.id + " 5M", c.x, c.y - 30);
     ctx.fillStyle = "rgba(127,139,163,.9)";
-    ctx.fillText(I.fills + " fills \u00b7 " + (I.dev > 0.02 ? "accumulating" : I.dev < -0.02 ? "distributing" : "neutral"), c.x, c.y - 26);
+    ctx.fillText(I.fills + " fills \u00b7 " + (I.dev > 0.02 ? "accumulating" : I.dev < -0.02 ? "distributing" : "neutral"), c.x, c.y - 20);
     ctx.fillStyle = I.dev >= 0 ? "#2ecc71" : "#e74c3c";
-    ctx.fillText((I.dev >= 0 ? "+" : "") + I.dev.toFixed(2) + "%  lat " + Math.round(I.lat) + "ms  edge " + (I.edge >= 0 ? "+" : "") + I.edge.toFixed(2), c.x, c.y - 16);
+    ctx.fillText((I.dev >= 0 ? "+" : "") + I.dev.toFixed(2) + "%  lat " + Math.round(I.lat) + "ms  edge " + (I.edge >= 0 ? "+" : "") + I.edge.toFixed(2), c.x, c.y - 10);
   });
 }
 
@@ -3690,53 +3713,87 @@ function lqDraw2() {
   const { ctx, w, h } = C;
   ctx.clearRect(0, 0, w, h);
   lqGridBg(ctx, w, h);
-  const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.34;
-  const centers = LQ_IDS2.map((id, i) => {
-    const a = i / LQ_IDS2.length * 6.283 - 1.57;
-    return { id, x: cx + Math.cos(a) * R, y: cy + Math.sin(a) * R };
-  });
-  ctx.lineWidth = 1;
-  LQ_LINKS2.forEach((pr, li) => {
-    const A = centers[pr[0]], B = centers[pr[1]];
-    ctx.strokeStyle = "rgba(0,206,201,.26)";
-    ctx.beginPath(); ctx.moveTo(A.x, A.y); ctx.lineTo(B.x, B.y); ctx.stroke();
-    if (Math.random() < 0.008) lqImps2.push({ li, p: 0 });
-  });
-  ctx.globalCompositeOperation = "lighter";
-  for (let i = lqImps2.length - 1; i >= 0; i--) {
-    const im = lqImps2[i]; im.p += 0.018;
-    if (im.p >= 1) { lqImps2.splice(i, 1); continue; }
-    const pr = LQ_LINKS2[im.li], A = centers[pr[0]], B = centers[pr[1]];
-    ctx.fillStyle = "rgba(255,110,199,.9)";
-    ctx.beginPath(); ctx.arc(A.x + (B.x - A.x) * im.p, A.y + (B.y - A.y) * im.p, 2.4, 0, 6.283); ctx.fill();
-  }
   const ts = Date.now() / 1000;
-  centers.forEach(c => {
-    const I = lqInstr[c.id];
-    for (const p of I.cloud) {
-      const a2 = p.a - ts * p.sp * 0.25;
-      const r2 = p.r * (24 + Math.sin(ts * 0.7 + p.ph) * 4);
-      ctx.fillStyle = I.col; ctx.globalAlpha = 0.2 + 0.45 * (0.5 + 0.5 * Math.sin(ts * 1.6 + p.ph));
-      ctx.beginPath(); ctx.arc(c.x + Math.cos(a2) * r2, c.y + Math.sin(a2) * r2 * 0.8, p.sz, 0, 6.283); ctx.fill();
-    }
-    ctx.globalAlpha = 1;
-  });
+  const cx = w / 2, baseY = h * 0.86, peakY = h * 0.30;
+  const press = Math.min(1, LQ_IDS2.reduce((s, id) => s + Math.abs(lqInstr[id].dev), 0) / 0.5);
+  ctx.globalCompositeOperation = "lighter";
+  const hg = ctx.createRadialGradient(cx, peakY, 0, cx, peakY, Math.min(w, h) * (0.25 + press * 0.15));
+  hg.addColorStop(0, "rgba(255,120,40," + (0.10 + press * 0.22).toFixed(3) + ")");
+  hg.addColorStop(1, "rgba(255,120,40,0)");
+  ctx.fillStyle = hg; ctx.beginPath(); ctx.arc(cx, peakY, Math.min(w, h) * 0.4, 0, 6.283); ctx.fill();
+  ctx.globalCompositeOperation = "source-over";
+  const half = w * 0.30, rim = w * 0.05;
+  ctx.beginPath();
+  ctx.moveTo(cx - half, baseY);
+  ctx.lineTo(cx - rim, peakY);
+  ctx.lineTo(cx - rim * 0.4, peakY + 6);
+  ctx.lineTo(cx + rim * 0.4, peakY + 6);
+  ctx.lineTo(cx + rim, peakY);
+  ctx.lineTo(cx + half, baseY);
+  ctx.closePath();
+  const mg = ctx.createLinearGradient(0, peakY, 0, baseY);
+  mg.addColorStop(0, "#3a2430"); mg.addColorStop(1, "#141821");
+  ctx.fillStyle = mg; ctx.fill();
+  ctx.strokeStyle = "rgba(255,120,40,.35)"; ctx.lineWidth = 1; ctx.stroke();
+  const cg2 = ctx.createRadialGradient(cx, peakY + 3, 0, cx, peakY + 3, rim * 2.2);
+  cg2.addColorStop(0, "rgba(255,200,80," + (0.5 + press * 0.4).toFixed(3) + ")");
+  cg2.addColorStop(1, "rgba(255,80,30,0)");
+  ctx.fillStyle = cg2;
+  ctx.beginPath(); ctx.arc(cx, peakY + 3, rim * 2.2, 0, 6.283); ctx.fill();
+  ctx.strokeStyle = "rgba(255,110,40,.5)"; ctx.lineWidth = 1.4;
+  for (let k = 0; k < 3; k++) {
+    const dir = k === 1 ? 0 : (k === 0 ? -1 : 1);
+    const wob = Math.sin(ts * 1.5 + k * 2) * 3;
+    ctx.globalAlpha = 0.3 + 0.3 * (0.5 + 0.5 * Math.sin(ts * 2 + k));
+    ctx.beginPath();
+    ctx.moveTo(cx + dir * rim * 0.6, peakY + 8);
+    ctx.quadraticCurveTo(cx + dir * (rim + half) * 0.5 + wob, (peakY + baseY) / 2, cx + dir * half * 0.7 + wob, baseY - 2);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  for (const s of lqSmoke) {
+    s.y += s.sp;
+    if (s.y > 0.55) { s.y = 0.02; s.x = lqRnd(-12, 12); }
+    ctx.fillStyle = "rgba(150,150,170,.12)";
+    ctx.beginPath(); ctx.arc(cx + s.x + Math.sin(ts * 1.2 + s.y * 9) * 6 * s.y * 4, peakY - s.y * h * 0.55, s.r * (1 + s.y * 2), 0, 6.283); ctx.fill();
+  }
+  if (lqLava.length < 90) for (let k = 0; k < 2 + press * 3; k++) lqLava.push({ x: cx + lqRnd(-rim * 0.5, rim * 0.5), y: peakY + 4, vx: lqRnd(-0.9, 0.9), vy: lqRnd(-2.6, -1.2) * (0.6 + press * 0.7), life: 1, sz: lqRnd(1, 2.6) });
+  ctx.globalCompositeOperation = "lighter";
+  for (let i = lqLava.length - 1; i >= 0; i--) {
+    const p = lqLava[i];
+    p.x += p.vx; p.y += p.vy; p.vy += 0.055; p.life -= 0.012;
+    if (p.life <= 0 || p.y > baseY) { lqLava.splice(i, 1); continue; }
+    const cols = p.life > 0.7 ? "255,220,120" : p.life > 0.4 ? "255,140,50" : "200,60,30";
+    ctx.fillStyle = "rgba(" + cols + "," + p.life.toFixed(2) + ")";
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.sz, 0, 6.283); ctx.fill();
+  }
+  const vents = LQ_IDS2.map((id, i) => ({ id, x: w * (0.10 + i * 0.80 / (LQ_IDS2.length - 1)), y: baseY + 12 }));
+  ctx.lineWidth = 1;
+  for (const v of vents) {
+    ctx.strokeStyle = "rgba(255,110,40,.18)";
+    ctx.beginPath(); ctx.moveTo(cx, peakY + 6); ctx.lineTo(v.x, v.y); ctx.stroke();
+  }
+  if (Math.random() < 0.1) lqImps2.push({ vi: Math.floor(Math.random() * vents.length), p: 0 });
+  for (let i = lqImps2.length - 1; i >= 0; i--) {
+    const im = lqImps2[i]; im.p += 0.02;
+    if (im.p >= 1) { lqImps2.splice(i, 1); continue; }
+    const v = vents[im.vi];
+    ctx.fillStyle = "rgba(255,180,80,.9)";
+    ctx.beginPath(); ctx.arc(cx + (v.x - cx) * im.p, peakY + 6 + (v.y - peakY - 6) * im.p, 2.2, 0, 6.283); ctx.fill();
+  }
   ctx.globalCompositeOperation = "source-over";
   ctx.font = "9px Consolas, monospace"; ctx.textAlign = "center";
-  LQ_LINKS2.forEach((pr, li) => {
-    const A = centers[pr[0]], B = centers[pr[1]];
-    const lab = ["hedge", "corr", "inverse", "expo"][li % 4];
-    const val = (0.5 + Math.abs(lqInstr[centers[pr[0]].id].dev) / 10).toFixed(2);
-    ctx.fillStyle = "rgba(127,139,163,.75)";
-    ctx.fillText(lab + " " + val, (A.x + B.x) / 2, (A.y + B.y) / 2 - 3);
-  });
-  centers.forEach(c => {
-    const I = lqInstr[c.id];
-    ctx.fillStyle = "rgba(225,232,245,.92)";
-    ctx.fillText(c.id, c.x, c.y - 30);
+  for (const v of vents) {
+    const I = lqInstr[v.id];
     ctx.fillStyle = I.dev >= 0 ? "#2ecc71" : "#e74c3c";
-    ctx.fillText("expo " + (I.dev >= 0 ? "+" : "") + (I.dev * 1.2).toFixed(1) + "%", c.x, c.y - 20);
-  });
+    ctx.beginPath(); ctx.arc(v.x, v.y - 2, 2.5, 0, 6.283); ctx.fill();
+    ctx.fillStyle = "rgba(225,232,245,.92)";
+    ctx.fillText(v.id, v.x, v.y + 12);
+    ctx.fillStyle = "rgba(127,139,163,.9)";
+    ctx.fillText("hedge " + (0.5 + Math.abs(I.dev) / 10).toFixed(2), v.x, v.y + 22);
+  }
+  ctx.fillStyle = "rgba(255,140,60,.9)";
+  ctx.fillText("RISK PRESSURE " + Math.round(press * 100) + "%", cx, peakY - 12);
 }
 
 function lqDraw3() {
