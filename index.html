@@ -483,6 +483,32 @@
     ul#history li .vol, ul#positions li .vol { float: none; display: block; margin-top: 3px; }
     #toast { left: 14px; right: 14px; bottom: 14px; text-align: center; }
   }
+
+  /* LIVE BOT COMMAND CENTER */
+  .lbcc-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .lbcc-title { margin: 0; font-size: 18px; letter-spacing: 2px; color: #a29bfe; text-shadow: 0 0 14px rgba(162,155,254,.45); font-family: Consolas, monospace; }
+  .lbcc-live { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; font-family: Consolas, monospace; }
+  .lbcc-dot { width: 8px; height: 8px; border-radius: 50%; background: #3a4152; display: inline-block; flex: none; }
+  .lbcc-dot.on { background: #2ecc71; box-shadow: 0 0 8px #2ecc71; animation: lbccPulse 1.6s infinite; }
+  @keyframes lbccPulse { 0%, 100% { opacity: 1; } 50% { opacity: .45; } }
+  .lbcc-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .lbcc-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(162,155,254,.06); border: 1px solid var(--border); color: var(--text); border-radius: 20px; padding: 5px 12px; font-size: 12px; cursor: pointer; opacity: .4; }
+  .lbcc-chip.on { opacity: 1; border-color: rgba(162,155,254,.5); }
+  .lbcc-chip i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .lbcc-chartwrap { background: #05070c; border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 14px; }
+  #lbccChart { width: 100%; height: 320px; display: block; }
+  .lbcc-actwrap { margin-top: 8px; }
+  .lbcc-actlab { font-size: 10px; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; font-family: Consolas, monospace; }
+  #lbccActCv { width: 100%; height: 54px; display: block; }
+  .lbcc-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  .lbcc-card { background: rgba(162,155,254,.05); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+  .lbcc-k { font-size: 10px; letter-spacing: 1.2px; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; font-family: Consolas, monospace; }
+  .lbcc-v { font-size: 22px; font-weight: 800; font-family: Consolas, monospace; color: var(--text); }
+  .lbcc-sub { font-size: 10px; color: var(--muted); margin-top: 4px; font-family: Consolas, monospace; }
+  .lbcc-strow { font-size: 11.5px; display: flex; align-items: center; gap: 6px; padding: 2px 0; color: var(--text); }
+  .lbcc-last { font-size: 12px; color: var(--text); min-height: 30px; font-family: Consolas, monospace; }
+  @media (max-width: 1100px) { .lbcc-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 700px) { .lbcc-grid { grid-template-columns: repeat(2, 1fr); } #lbccChart { height: 230px; } .lbcc-title { font-size: 15px; } .lbcc-v { font-size: 18px; } }
 </style>
 </head>
 <body>
@@ -518,6 +544,7 @@
   <button data-page="coins" class="active" data-i18n="navMarket">📈 Market</button>
   <button data-page="dashboard" data-i18n="navDashboard">📊 Dashboard</button>
   <button data-page="history" data-i18n="navHistory">📜 History</button>
+  <button data-page="lbcc" data-i18n="navLbcc">🛰️ Bot Command</button>
 </nav>
 
 <main>
@@ -691,6 +718,40 @@
     <h2 data-i18n="historyTitle">📜 Trade history</h2>
     <ul id="history"></ul>
   </section>
+
+  <!-- LIVE BOT COMMAND CENTER -->
+  <section class="page" id="page-lbcc">
+    <div class="lbcc-head">
+      <h2 class="lbcc-title" data-i18n="lbccTitle">LIVE BOT COMMAND CENTER</h2>
+      <div class="lbcc-live"><span class="lbcc-dot on"></span><span data-i18n="lbccLive">LIVE</span><span>&middot;</span><span data-i18n="lbccUpdated">Last update</span><b id="lbccUp">&mdash;</b></div>
+    </div>
+    <div class="lbcc-legend">
+      <button class="lbcc-chip on" data-bot="COMM"><i style="background:#FFD700;"></i><span data-i18n="ngBotComm">Commodities bot</span></button>
+      <button class="lbcc-chip on" data-bot="CRYPTO"><i style="background:#f7931a;"></i><span data-i18n="ngBotCrypto">Crypto bot</span></button>
+      <button class="lbcc-chip on" data-bot="AI"><i style="background:#00cec9;"></i><span data-i18n="aiTitle">AI Trading Bot</span></button>
+    </div>
+    <div class="lbcc-chartwrap">
+      <canvas id="lbccChart"></canvas>
+      <div class="lbcc-actwrap">
+        <div class="lbcc-actlab" data-i18n="lbccActivity">Bot activity</div>
+        <canvas id="lbccActCv"></canvas>
+      </div>
+    </div>
+    <div class="lbcc-grid">
+      <div class="lbcc-card">
+        <div class="lbcc-k" data-i18n="lbccStatus">BOT STATUS</div>
+        <div class="lbcc-strow" id="lbccStCOMM"></div>
+        <div class="lbcc-strow" id="lbccStCRYPTO"></div>
+        <div class="lbcc-strow" id="lbccStAI"></div>
+      </div>
+      <div class="lbcc-card"><div class="lbcc-k" data-i18n="lbccSignals">Signals</div><div class="lbcc-v" id="lbccSigs">0</div></div>
+      <div class="lbcc-card"><div class="lbcc-k" data-i18n="lbccWinRate">Win rate</div><div class="lbcc-v" id="lbccWr">&mdash;</div></div>
+      <div class="lbcc-card"><div class="lbcc-k" data-i18n="lbccActive">Active trades</div><div class="lbcc-v" id="lbccAct">0</div><div class="lbcc-sub" id="lbccActSub"></div></div>
+      <div class="lbcc-card"><div class="lbcc-k" data-i18n="confidence">Confidence</div><div class="lbcc-v" id="lbccConf">&mdash;</div></div>
+      <div class="lbcc-card"><div class="lbcc-k" data-i18n="lbccLastSig">Last signal</div><div class="lbcc-last" id="lbccLast">&mdash;</div></div>
+    </div>
+  </section>
+
 </main>
 
 <section id="cc" class="cc-section">
@@ -1121,6 +1182,7 @@ const I18N = {
     totalPnl: "Total P&L", winRate: "Win rate", tradesCount: "Trades", botPnlKey: "Bot P&L",
     bestTrade: "Best trade", worstTrade: "Worst trade", noDataYet: "The curve builds as prices arrive…",
     pnlBarsTitle: "⚡ Last trades P&L", pnlBarsEmpty: "No closed trades yet.", botPnlSub: "all bots combined", dashNow: "Now", dashPeak: "Peak",
+    navLbcc: "🛰️ Bot Command", lbccTitle: "LIVE BOT COMMAND CENTER", lbccLive: "LIVE", lbccUpdated: "Last update", lbccStatus: "BOT STATUS", lbccSignals: "Signals", lbccWinRate: "Win rate", lbccActive: "Active trades", lbccLastSig: "Last signal", lbccOnline: "ONLINE", lbccOffline: "OFFLINE", lbccNoSig: "No signal yet", lbccActivity: "Bot activity",
     goalTitle: "🎯 Monthly goal", goalSet: "Target", goalEarned: "This month", goalFees: "Fees paid", goalOnTrack: "ON TRACK ✓", goalBehind: "BEHIND PACE", goalDone: "GOAL REACHED 🎉",
     aiTitle: "AI Trading Bot", paperTrading: "PAPER TRADING", botActive: "BOT ACTIVE", botPaused: "BOT PAUSED",
     aiAuto: "🤖 AUTO — AI decides",
@@ -1204,6 +1266,7 @@ const I18N = {
     totalPnl: "Gesamt-P&L", winRate: "Trefferquote", tradesCount: "Trades", botPnlKey: "Bot-P&L",
     bestTrade: "Bester Trade", worstTrade: "Schlechtester Trade", noDataYet: "Die Kurve entsteht, sobald Preise eintreffen…",
     pnlBarsTitle: "⚡ Letzte Trades P&L", pnlBarsEmpty: "Noch keine abgeschlossenen Trades.", botPnlSub: "alle Bots zusammen", dashNow: "Jetzt", dashPeak: "Höchststand",
+    navLbcc: "🛰️ Bot-Kommando", lbccTitle: "LIVE BOT-KOMMANDOZENTRALE", lbccLive: "LIVE", lbccUpdated: "Letzte Aktualisierung", lbccStatus: "BOT-STATUS", lbccSignals: "Signale", lbccWinRate: "Trefferquote", lbccActive: "Aktive Trades", lbccLastSig: "Letztes Signal", lbccOnline: "ONLINE", lbccOffline: "AUS", lbccNoSig: "Noch kein Signal", lbccActivity: "Bot-Aktivität",
     goalTitle: "🎯 Monatsziel", goalSet: "Ziel", goalEarned: "Diesen Monat", goalFees: "Gebühren", goalOnTrack: "IM PLAN ✓", goalBehind: "HINTERHER", goalDone: "ZIEL ERREICHT 🎉",
     aiTitle: "KI-Trading-Bot", paperTrading: "PAPER TRADING", botActive: "BOT AKTIV", botPaused: "BOT PAUSIERT",
     aiAuto: "🤖 AUTO — KI entscheidet",
@@ -1287,6 +1350,7 @@ const I18N = {
     totalPnl: "P&L total", winRate: "Taux de réussite", tradesCount: "Trades", botPnlKey: "P&L du bot",
     bestTrade: "Meilleur trade", worstTrade: "Pire trade", noDataYet: "La courbe se construit à mesure que les prix arrivent…",
     pnlBarsTitle: "⚡ P&L des derniers trades", pnlBarsEmpty: "Aucun trade clôturé pour le moment.", botPnlSub: "tous les bots réunis", dashNow: "Actuel", dashPeak: "Pic",
+    navLbcc: "🛰️ Commande des bots", lbccTitle: "CENTRE DE COMMANDE DES BOTS EN DIRECT", lbccLive: "EN DIRECT", lbccUpdated: "Dernière mise à jour", lbccStatus: "STATUT DES BOTS", lbccSignals: "Signaux", lbccWinRate: "Taux de réussite", lbccActive: "Trades actifs", lbccLastSig: "Dernier signal", lbccOnline: "EN LIGNE", lbccOffline: "HORS LIGNE", lbccNoSig: "Aucun signal pour le moment", lbccActivity: "Activité des bots",
     goalTitle: "🎯 Objectif du mois", goalSet: "Objectif", goalEarned: "Ce mois", goalFees: "Frais payés", goalOnTrack: "DANS LE RYTHME ✓", goalBehind: "EN RETARD", goalDone: "OBJECTIF ATTEINT 🎉",
     aiTitle: "Bot de trading IA", paperTrading: "PAPER TRADING", botActive: "BOT ACTIF", botPaused: "BOT EN PAUSE",
     aiAuto: "🤖 AUTO — l’IA décide",
@@ -1370,6 +1434,7 @@ const I18N = {
     totalPnl: "P&L total", winRate: "Shkalla e suksesit", tradesCount: "Tregtime", botPnlKey: "P&L i botit",
     bestTrade: "Tregtimi më i mirë", worstTrade: "Tregtimi më i keq", noDataYet: "Kurba ndërtohet ndërsa çmimet arrijnë…",
     pnlBarsTitle: "⚡ P&L e tregtimeve të fundit", pnlBarsEmpty: "Asnjë tregtim i mbyllur ende.", botPnlSub: "të gjithë botet bashkë", dashNow: "Tani", dashPeak: "Kulmi",
+    navLbcc: "🛰️ Komanda e botëve", lbccTitle: "QENDRA E KOMANDËS SË BOTËVE LIVE", lbccLive: "LIVE", lbccUpdated: "Përditësimi i fundit", lbccStatus: "STATUSI I BOTËVE", lbccSignals: "Sinjale", lbccWinRate: "Shkalla e suksesit", lbccActive: "Tregtime aktive", lbccLastSig: "Sinjali i fundit", lbccOnline: "ONLINE", lbccOffline: "JO AKTIV", lbccNoSig: "Asnjë sinjal ende", lbccActivity: "Aktiviteti i botëve",
     goalTitle: "🎯 Objektivi mujor", goalSet: "Objektivi", goalEarned: "Këtë muaj", goalFees: "Tarifat e paguara", goalOnTrack: "NË RITËM ✓", goalBehind: "ME VONCËM", goalDone: "OBJEKTIVI ARRITUR 🎉",
     aiTitle: "Boti i tregtisë me AI", paperTrading: "PAPER TRADING", botActive: "BOTI AKTIV", botPaused: "BOTI NË PAUZË",
     aiAuto: "🤖 AUTO — AI vendos",
@@ -1624,6 +1689,7 @@ function sellCoin(id, amount, via) {
   }
   log(via === "bot" ? "bot" : "sell", t("logSell", { id, amt: fmtEur(amount), proceeds: fmtEur(proceeds), pnl: (pnl >= 0 ? "+" : "") + fmtEur(pnl) }));
   if (via === "bot") ngBotTrade(id, "sell", s.price, pnl);
+  if (via === "bot") lbccTrade(COMM_IDS.includes(id) ? "COMM" : "CRYPTO", pnl);
   saveState(); render();
   if (via !== "bot") toast(t("toastSold", { id, pnl: (pnl >= 0 ? "+" : "") + fmtEur(pnl) }));
 }
@@ -1690,7 +1756,7 @@ function botTickFor(b, ids) {
     }
     if (state.cash < b.amount) return;
     const sig = botSignal(s, b);
-    if (sig && b.tp >= 3 * FEE_RATE * 200) buyCoin(id, b.amount, "bot", t(sig));
+    if (sig && b.tp >= 3 * FEE_RATE * 200) { lbccSignal(b === state.botComm ? "COMM" : "CRYPTO", t(sig) + " · " + id); buyCoin(id, b.amount, "bot", t(sig)); }
   });
 }
 
@@ -2156,6 +2222,7 @@ function openAiPos(sym, price, a) {
   if (state.stats) state.stats.fees = (state.stats.fees || 0) + fee;
   ai.positions.push({ pair: sym, entry: price, sl: a.sl, tp: a.tp, qty: (spend - fee) / price, at: Date.now() });
   ccPulse("#00cec9");
+  lbccSignal("AI", "BUY " + sym);
 }
 
 function closeAiPos(pos, price, reason) {
@@ -2180,6 +2247,7 @@ function closeAiPos(pos, price, reason) {
   ai.cooldown = Date.now() + 30000;
   saveState();
   ccPulse(pnl >= 0 ? "#2ecc71" : "#e74c3c");
+  lbccTrade("AI", pnl);
 }
 
 function aiTick() {
@@ -4491,6 +4559,177 @@ lqBuildStatic();
 lqTick();
 setInterval(lqTick, 1000);
 requestAnimationFrame(lqFrame);
+
+/* ================= LIVE BOT COMMAND CENTER ================= */
+const lbccWinMs = 120000;
+const lbccLedger = {
+  COMM: { realized: 0, trades: 0, wins: 0, sigs: 0 },
+  CRYPTO: { realized: 0, trades: 0, wins: 0, sigs: 0 },
+  AI: { realized: 0, trades: 0, wins: 0, sigs: 0 }
+};
+let lbccLastSig = null, lbccLastSample = 0;
+const lbccSer = { COMM: [], CRYPTO: [], AI: [] };
+const lbccActs = [];
+const lbccShow = { COMM: true, CRYPTO: true, AI: true };
+const lbccCols = { COMM: "#FFD700", CRYPTO: "#f7931a", AI: "#00cec9" };
+function lbccTrade(bot, pnl) {
+  const L = lbccLedger[bot]; if (!L) return;
+  L.trades++; if (pnl >= 0) L.wins++;
+  if (bot !== "AI") L.realized += pnl;
+  lbccActs.push({ tm: Date.now(), n: 1, col: pnl >= 0 ? "#2ecc71" : "#e74c3c" });
+  if (lbccActs.length > 240) lbccActs.shift();
+}
+function lbccSignal(bot, msg) {
+  const L = lbccLedger[bot]; if (!L) return;
+  L.sigs++;
+  lbccLastSig = { bot, msg, tm: new Date().toTimeString().slice(0, 8) };
+  lbccActs.push({ tm: Date.now(), n: 1, col: "#a29bfe" });
+  if (lbccActs.length > 240) lbccActs.shift();
+}
+function lbccBotPnl(bot) {
+  if (bot === "AI") {
+    const ai = state.ai;
+    const un = (ai.positions || []).reduce((s2, pos) => {
+      const p = aiPrices[pos.pair];
+      const px = p && p.price > 0 ? p.price : pos.entry;
+      return s2 + pos.qty * (px - pos.entry);
+    }, 0);
+    return ai.stats.totalPnl + un;
+  }
+  const ids = bot === "COMM" ? COMM_IDS : CRYPTO_IDS;
+  let un = 0;
+  ids.forEach(id => {
+    const h = state.holdings[id], pr = state.coinPrices[id];
+    if (h && pr && pr.price > 0) un += h.qty * pr.price - h.cost;
+  });
+  return lbccLedger[bot].realized + un;
+}
+function lbccSample() {
+  const now = Date.now();
+  for (const b of ["COMM", "CRYPTO", "AI"]) {
+    const arr = lbccSer[b];
+    arr.push({ tm: now, v: lbccBotPnl(b) });
+    while (arr.length && arr[0].tm < now - lbccWinMs - 4000) arr.shift();
+  }
+  lbccLastSample = now;
+  lbccRenderStats();
+}
+function lbccRenderStats() {
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  const ai = state.ai, L = lbccLedger;
+  [["COMM", state.botComm && state.botComm.enabled], ["CRYPTO", state.botCrypto && state.botCrypto.enabled], ["AI", ai.enabled]].forEach(pr => {
+    const el = document.getElementById("lbccSt" + pr[0]); if (!el) return;
+    el.innerHTML = '<span class="lbcc-dot' + (pr[1] ? " on" : "") + '"></span>' + pr[0] + " \u00b7 " + (pr[1] ? t("lbccOnline") : t("lbccOffline"));
+  });
+  set("lbccSigs", L.COMM.sigs + L.CRYPTO.sigs + L.AI.sigs);
+  const tr = L.COMM.trades + L.CRYPTO.trades + (ai.stats.trades || 0);
+  const wn = L.COMM.wins + L.CRYPTO.wins + (ai.stats.wins || 0);
+  set("lbccWr", tr ? (wn / tr * 100).toFixed(1) + " %" : "\u2014");
+  const actC = COMM_IDS.filter(id => state.holdings[id]).length;
+  const actK = CRYPTO_IDS.filter(id => state.holdings[id]).length;
+  const actA = (ai.positions || []).length;
+  set("lbccAct", actC + actK + actA);
+  set("lbccActSub", "COMM " + actC + " \u00b7 CRYPTO " + actK + " \u00b7 AI " + actA);
+  let conf = null;
+  try { const a = aiAnalysis(aiFocusPair()); if (a && a.confidence) conf = a.confidence; } catch (e) {}
+  set("lbccConf", conf !== null ? conf + " %" : "\u2014");
+  const ls = document.getElementById("lbccLast");
+  if (ls) ls.innerHTML = lbccLastSig
+    ? '<b style="color:' + lbccCols[lbccLastSig.bot] + '">' + lbccLastSig.bot + '</b> \u00b7 ' + lbccLastSig.msg + ' \u00b7 ' + lbccLastSig.tm
+    : t("lbccNoSig");
+  set("lbccUp", new Date().toTimeString().slice(0, 8));
+}
+function lbccCv(id, hHint) {
+  const c = document.getElementById(id);
+  const page = document.getElementById("page-lbcc");
+  if (!c || !c.getContext || !page || !page.classList.contains("active")) return null;
+  const W = c.clientWidth || 600, H = c.clientHeight || hHint || 100;
+  const dpr = Math.min(1.5, window.devicePixelRatio || 1);
+  if (c.width !== Math.round(W * dpr) || c.height !== Math.round(H * dpr)) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); }
+  const ctx = c.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, W, H };
+}
+function lbccDrawChart() {
+  const C = lbccCv("lbccChart", 320); if (!C) return;
+  const { ctx, W, H } = C;
+  const now = Date.now();
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = "#05070c"; ctx.fillRect(0, 0, W, H);
+  const padL = 8, padT = 10, padB = 14;
+  const plotW = W - padL - 8, plotH = H - padT - padB;
+  const pxPerMs = plotW / lbccWinMs;
+  ctx.strokeStyle = "rgba(162,155,254,.09)"; ctx.lineWidth = 1;
+  const off = (now % 15000) * pxPerMs, step15 = 15000 * pxPerMs;
+  for (let x = padL + plotW - off; x > padL; x -= step15) { ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, padT + plotH); ctx.stroke(); }
+  for (let i = 0; i <= 4; i++) { const y = padT + plotH * i / 4; ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(padL + plotW, y); ctx.stroke(); }
+  let mn = Infinity, mx = -Infinity;
+  for (const b of ["COMM", "CRYPTO", "AI"]) if (lbccShow[b]) for (const p of lbccSer[b]) { if (p.v < mn) mn = p.v; if (p.v > mx) mx = p.v; }
+  if (!isFinite(mn)) { mn = 0; mx = 1; }
+  if (mx - mn < 1) { mx += 0.5; mn -= 0.5; }
+  const pd = (mx - mn) * 0.12; mn -= pd; mx += pd;
+  const Y = v => padT + plotH - (v - mn) / (mx - mn) * plotH;
+  if (mn < 0 && mx > 0) {
+    ctx.setLineDash([3, 5]); ctx.strokeStyle = "rgba(127,139,163,.35)";
+    ctx.beginPath(); ctx.moveTo(padL, Y(0)); ctx.lineTo(padL + plotW, Y(0)); ctx.stroke(); ctx.setLineDash([]);
+  }
+  for (const b of ["COMM", "CRYPTO", "AI"]) {
+    if (!lbccShow[b]) continue;
+    const arr = lbccSer[b]; if (arr.length < 2) continue;
+    const col = lbccCols[b];
+    const X = tm => padL + plotW - (now - tm) * pxPerMs;
+    ctx.beginPath();
+    arr.forEach((p, i) => { const x = X(p.tm), y = Y(p.v); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.lineTo(X(arr[arr.length - 1].tm), padT + plotH); ctx.lineTo(X(arr[0].tm), padT + plotH); ctx.closePath();
+    const fg = ctx.createLinearGradient(0, padT, 0, padT + plotH);
+    fg.addColorStop(0, col + "26"); fg.addColorStop(1, col + "00");
+    ctx.fillStyle = fg; ctx.fill();
+    ctx.beginPath();
+    arr.forEach((p, i) => { const x = X(p.tm), y = Y(p.v); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
+    ctx.strokeStyle = col; ctx.lineWidth = 1.8;
+    ctx.shadowColor = col; ctx.shadowBlur = 8;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    const lp = arr[arr.length - 1];
+    ctx.fillStyle = col;
+    ctx.beginPath(); ctx.arc(X(lp.tm), Y(lp.v), 2.6, 0, 6.283); ctx.fill();
+    ctx.globalAlpha = 0.22 + 0.18 * Math.sin(now / 300);
+    ctx.beginPath(); ctx.arc(X(lp.tm), Y(lp.v), 6, 0, 6.283); ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  ctx.font = "9px Consolas, monospace"; ctx.textAlign = "left"; ctx.fillStyle = "rgba(127,139,163,.8)";
+  ctx.fillText("P&L EUR \u00b7 2 MIN WINDOW", padL + 2, H - 3);
+}
+function lbccDrawActs() {
+  const C = lbccCv("lbccActCv", 54); if (!C) return;
+  const { ctx, W, H } = C;
+  const now = Date.now();
+  ctx.clearRect(0, 0, W, H);
+  const pxPerMs = W / lbccWinMs;
+  while (lbccActs.length && lbccActs[0].tm < now - lbccWinMs - 4000) lbccActs.shift();
+  for (const a of lbccActs) {
+    const x = W - (now - a.tm) * pxPerMs;
+    if (x < -4) continue;
+    const bh = Math.min(H - 4, 8 + a.n * 10);
+    ctx.fillStyle = a.col;
+    ctx.globalAlpha = 0.85;
+    ctx.shadowColor = a.col; ctx.shadowBlur = 6;
+    ctx.fillRect(x - 1.5, H - bh - 2, 3, bh);
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
+  }
+}
+function lbccFrame() {
+  lbccDrawChart();
+  lbccDrawActs();
+  requestAnimationFrame(lbccFrame);
+}
+document.querySelectorAll(".lbcc-chip").forEach(ch => {
+  ch.onclick = () => { const b = ch.dataset.bot; lbccShow[b] = !lbccShow[b]; ch.classList.toggle("on", lbccShow[b]); };
+});
+lbccSample();
+setInterval(lbccSample, 1000);
+requestAnimationFrame(lbccFrame);
 fetchRealPrices();
 setInterval(fetchRealPrices, 30000);
 setInterval(() => { sampleEquity(); aiTick(); goalTick(); saveState(); drawDashboard(); renderAi(); }, 1000);
