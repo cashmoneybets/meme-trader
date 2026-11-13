@@ -507,7 +507,6 @@
     <div class="stat"><div class="label" data-i18n="cash">Cash</div><div class="value" id="stCash">—</div></div>
     <div class="stat"><div class="label" data-i18n="startCapLab">Start</div><div class="value" id="stStart">—</div></div>
     <div class="stat"><div class="label" data-i18n="cryptoPos">Crypto position</div><div class="value" id="stCrypto">—</div></div>
-    <div class="stat"><div class="label" data-i18n="betsPos">Bets position</div><div class="value" id="stBets">—</div></div>
     <div class="stat"><div class="label" data-i18n="total">Total</div><div class="value" id="stTotal">—</div></div>
     <div class="stat"><div class="label" data-i18n="pnl">Overall P&L</div><div class="value" id="stPnl">—</div></div>
   </div>
@@ -517,7 +516,6 @@
 
 <nav>
   <button data-page="coins" class="active" data-i18n="navMarket">📈 Market</button>
-  <button data-page="markets">🎲 Polymarket</button>
   <button data-page="dashboard" data-i18n="navDashboard">📊 Dashboard</button>
   <button data-page="history" data-i18n="navHistory">📜 History</button>
 </nav>
@@ -646,14 +644,6 @@
   </section>
 
   <!-- PAGE POLYMARKET -->
-  <section class="page" id="page-markets">
-    <h2><span data-i18n="pmTitle">🎲 Prediction markets</span> <small data-i18n="pmSub">buy YES or NO — earn €1 per share if you're right</small></h2>
-    <div id="marketList"></div>
-    <div class="disclaimer" style="margin-top:6px;" data-i18n="pmDisclaimer_html">
-      Simulated markets. Probabilities drift with fictional news flow and resolve randomly at expiry. Real Polymarket
-      works similarly, but the risk of losing your entire stake is real.
-    </div>
-  </section>
 
   <!-- PAGE DASHBOARD -->
   <section class="page" id="page-dashboard">
@@ -925,7 +915,7 @@
     <div class="lq-bot" id="lqb4">
       <div class="lq-bhead">
         <span class="lq-live"><span class="lq-dot"></span>LIVE</span>
-        <span class="lq-bname">BOT 04 &middot; POLYMARKET EXECUTION</span>
+        <span class="lq-bname">BOT 04 &middot; TRADE HIGHWAY</span>
         <div class="lq-bstats">
           <span>PNL <b id="lq4hpnl">+$0</b></span>
           <span>TRADES <b id="lq4htr">0</b></span>
@@ -935,14 +925,14 @@
         <button class="lq-fs" title="Fullscreen">&#9974;</button>
       </div>
       <canvas id="lqc4" class="lq-big"></canvas>
-      <div class="lq-insp" id="lq4insp">Order-flow sphere &mdash; flashes = fills hitting the book</div>
+      <div class="lq-insp" id="lq4insp">Live trade highway &mdash; each car is a trade routed by a bot to its asset gate</div>
       <div class="lq-sub">
         <div class="lq-cell">
-          <div class="lq-ctitle">ORDER BOOK &mdash; BTC 5M</div>
-          <div id="lq4ob"></div>
+          <div class="lq-ctitle">TRADE ROUTER &mdash; BOT &rarr; ASSET</div>
+          <div id="lq4route"></div>
         </div>
         <div class="lq-cell">
-          <div class="lq-ctitle">PRICE / FAIR VALUE</div>
+          <div class="lq-ctitle">FLOW RATE &mdash; FILLS/TICK</div>
           <canvas id="lq4chart" class="lq-mini" style="height:96px;"></canvas>
         </div>
         <div class="lq-cell">
@@ -1756,7 +1746,6 @@ function render() {
   const pnl = total - cap0;
   document.getElementById("stCash").textContent = fmtEur(state.cash);
   document.getElementById("stCrypto").textContent = fmtEur(cv);
-  document.getElementById("stBets").textContent = fmtEur(bv);
   document.getElementById("stTotal").textContent = fmtEur(total);
   const pnlEl = document.getElementById("stPnl");
   pnlEl.textContent = `${pnl >= 0 ? "+" : ""}${fmtEur(pnl)} (${fmtPct(pnl / cap0 * 100)})`;
@@ -1767,7 +1756,6 @@ function render() {
   renderCoins();
   renderChart();
   renderPositions();
-  renderMarkets();
   renderHistory();
   drawDashboard();
 }
@@ -3561,7 +3549,7 @@ const lqB = {
   b1: { pnl: 0, trades: 0, wins: 0, hist: [], log: [], fills: [], assets: {}, wf: [], agents: [], d: {} },
   b2: { pnl: 0, trades: 0, wins: 0, hist: [], tape: [], rows: [], sigma: [], hedgeHist: [], d: {} },
   b3: { pnl: 0, trades: 0, wins: 0, hist: [], log: [], minis: Array.from({ length: 8 }, () => []), net: LQ_NET.map((n, i) => ({ n, a: i / 9 * 6.283 - 1.57, w: Math.random() })), links: [], tsi: 0, conf: 50, inst: [], d: {} },
-  b4: { pnl: 0, n: 0, wins: 0, fills: 0, hist: [], tape: [], book: { asks: [], bids: [], mid: 0.5 }, trades: [], pnlHist: [], d: {} }
+  b4: { pnl: 0, n: 0, wins: 0, fills: 0, hist: [], tape: [], gates: {}, routes: {}, cars: [], gateFl: {}, trades: [], pnlHist: [], d: {} }
 };
 for (let i = 0; i < 9; i++) for (let j = i + 1; j < 9; j++) if (Math.random() < 0.35) lqB.b3.links.push([i, j, Math.random()]);
 ["SCOUT", "SIGNAL", "RISK", "EXECUTION", "ARBITRAGE", "MONITOR"].forEach(n => lqB.b1.agents.push({ n, st: "ONLINE" }));
@@ -3585,10 +3573,31 @@ const lqPhase1 = [
 ];
 const lqTorus = [];
 for (let i = 0; i < 300; i++) lqTorus.push({ u: Math.random() * 6.283, v: Math.random() * 6.283, su: lqRnd(0.04, 0.18), sv: lqRnd(0.04, 0.18), sz: lqRnd(0.5, 1.8), mag: Math.random() < 0.15 });
-const lqSph = [];
-for (let i = 0; i < 300; i++) {
-  const y0 = 1 - (i / 299) * 2, r0 = Math.sqrt(Math.max(0, 1 - y0 * y0)), th = i * 2.39996;
-  lqSph.push({ x: Math.cos(th) * r0, y: y0, z: Math.sin(th) * r0, sz: lqRnd(0.7, 1.9), on: Math.random() < 0.12 });
+const LQ_LANES = [
+  { bot: "COMM", col: "#FFD700", ids: ["XAU", "XAG", "WTI", "NG"] },
+  { bot: "CRYPTO", col: "#f7931a", ids: ["BTC"] },
+  { bot: "AI", col: "#00cec9", ids: ["BTC", "ETH", "SOL", "XRP", "DOGE"] },
+  { bot: "LQ DESK", col: "#a29bfe", ids: ["BTC", "ETH", "SOL", "XRP", "HYPE"] }
+];
+const LQ_GATES = ["BTC", "XAU", "XAG", "WTI", "NG", "ETH"];
+let lqRT = null, lqAT = null;
+function lqAssetPx(a) {
+  const v = state.coinPrices[a];
+  if (v && v > 0) return v;
+  if (lqInstr[a]) return lqInstr[a].price;
+  return { XAU: 2650, XAG: 31, WTI: 70, NG: 3 }[a] || 100;
+}
+function lqSpawnCar(b4, lane, asset, hot) {
+  const L = LQ_LANES[lane];
+  const I = lqInstr[asset];
+  const mom = I ? I.mom : 0;
+  const side = Math.random() < 0.5 + Math.max(-0.35, Math.min(0.35, mom * 0.1)) ? "BUY" : "SELL";
+  b4.cars.push({ lane, x: -30 - Math.random() * 60, sp: lqRnd(60, 130), col: L.col, asset, side, hot });
+  if (b4.cars.length > 40) b4.cars.splice(0, b4.cars.length - 40);
+  const key = L.bot + "\u2192" + asset;
+  const r = b4.routes[key] || (b4.routes[key] = { n: 0, bot: L.bot, col: L.col, asset });
+  r.n++; r.side = side; r.tm = new Date().toTimeString().slice(0, 8);
+  b4.d.routes = true;
 }
 
 function lqTick() {
@@ -3683,21 +3692,25 @@ function lqTick() {
   b3.d.inst = true;
 
   const b4 = lqB.b4;
-  const mid = Math.min(0.95, Math.max(0.05, 0.5 + lqInstr.BTC.dev * 2));
-  b4.book.mid = mid;
-  b4.book.asks = Array.from({ length: 5 }, (_, i) => ({ p: Math.min(0.99, mid + 0.012 * (i + 1)), s: lqRnd(5, 90) }));
-  b4.book.bids = Array.from({ length: 5 }, (_, i) => ({ p: Math.max(0.01, mid - 0.012 * (i + 1)), s: lqRnd(5, 90) }));
-  b4.d.book = true;
-  lqPush(b4.hist, mid, 90);
+  if (lqRT === null) { lqRT = state.stats.trades; lqAT = state.ai.stats.trades; }
+  if (state.stats.trades !== lqRT) { lqRT = state.stats.trades; lqSpawnCar(b4, 0, lqPick(LQ_LANES[0].ids), true); }
+  if (state.ai.stats.trades !== lqAT) { lqAT = state.ai.stats.trades; lqSpawnCar(b4, 2, lqPick(LQ_LANES[2].ids), true); }
+  const nSpawn = Math.random() < 0.75 ? (Math.random() < 0.3 ? 2 : 1) : 0;
+  for (let i = 0; i < nSpawn; i++) {
+    const ln = Math.floor(Math.random() * LQ_LANES.length);
+    lqSpawnCar(b4, ln, lqPick(LQ_LANES[ln].ids), false);
+  }
+  lqPush(b4.hist, b4.fills, 90);
   if (Math.random() < 0.6) {
     lqTape(b4, Math.random() < 0.5 + lqInstr.BTC.mom ? "BUY" : "SELL", Math.floor(lqRnd(10, 90)), lqRnd(0.3, 0.9), lqRnd(-0.01, 0.05));
     lq4Flash = 1;
     b4.fills++;
   }
   if (Math.random() < 0.35) {
+    const asset = lqPick(LQ_GATES);
     const pnl = lqRnd(-15, 45);
     b4.pnl += pnl; b4.n++; if (pnl >= 0) b4.wins++;
-    lqPush(b4.trades, { tm, mkt: lqPick(["BTC-UP-5M", "BTC-DOWN-5M", "ETH-UP-1H", "SOL-UP-1H"]), side: Math.random() < 0.5 ? "BUY" : "SELL", px: lqRnd(0.3, 0.85), size: Math.floor(lqRnd(10, 90)), edge: lqRnd(0.001, 0.05), fee: lqRnd(0.1, 1.2), pnl, st: "FILLED" }, 12);
+    lqPush(b4.trades, { tm, mkt: asset, side: Math.random() < 0.5 ? "BUY" : "SELL", px: lqAssetPx(asset), size: Math.floor(lqRnd(10, 90)), edge: lqRnd(0.001, 0.05), fee: lqRnd(0.1, 1.2), pnl, st: "FILLED" }, 12);
     b4.d.tbl = true;
   }
   lqPush(b4.pnlHist, b4.pnl, 90);
@@ -3744,9 +3757,9 @@ function lqDomTick() {
   if (b2.d.tape) { const el = lq$("lq2tape"); if (el) el.innerHTML = b2.tape.slice(-7).reverse().map(f => '<div class="' + (f.side === "BUY" ? "b" : "s") + '">' + f.tm + ' ' + f.side + ' ' + f.size + ' @ ' + lqPx(f.px) + ' \u00b7 edge ' + (f.edge >= 0 ? "+" : "") + f.edge.toFixed(3) + '</div>').join(""); b2.d.tape = false; }
   if (b3.d.log) { const el = lq$("lq3log"); if (el) el.innerHTML = b3.log.slice(-12).reverse().map(x => '<li class="' + x.cls + '"><b>' + x.tm + '</b> ' + x.msg + '</li>').join(""); b3.d.log = false; }
   if (b3.d.inst) { const el = lq$("lq3inst"); if (el) el.innerHTML = b3.inst.map(pr => { const id = pr[0], I = pr[1]; return '<div class="lq-kvrow"><span>' + id + ' <b>' + lqPx(I.price) + '</b></span><span>sig <b class="' + (I.dev >= 0 ? "pos" : "neg") + '">' + (I.dev >= 0 ? "LONG" : "SHORT") + '</b> \u00b7 dev ' + (I.dev >= 0 ? "+" : "") + I.dev.toFixed(2) + '%</span></div>'; }).join(""); b3.d.inst = false; }
-  if (b4.d.book) { const el = lq$("lq4ob"); if (el) { const mx = Math.max(1, ...b4.book.asks.map(a => a.s), ...b4.book.bids.map(a => a.s)); el.innerHTML = b4.book.asks.slice().reverse().map(a => '<div class="lq-obrow ask"><i style="width:' + (a.s / mx * 100).toFixed(0) + '%"></i><span>' + a.p.toFixed(3) + '</span><span>' + a.s.toFixed(1) + '</span></div>').join("") + '<div class="lq-obmid">' + b4.book.mid.toFixed(3) + '</div>' + b4.book.bids.map(a => '<div class="lq-obrow bid"><i style="width:' + (a.s / mx * 100).toFixed(0) + '%"></i><span>' + a.p.toFixed(3) + '</span><span>' + a.s.toFixed(1) + '</span></div>').join(""); b4.d.book = false; } }
+  if (b4.d.routes) { const el = lq$("lq4route"); if (el) { const rows = Object.values(b4.routes).sort((a, b) => b.n - a.n).slice(0, 6); el.innerHTML = rows.map(r => '<div class="lq-kvrow"><span style="color:' + r.col + '">' + r.bot + ' &rarr; ' + r.asset + '</span><b>' + r.n + ' <i style="color:rgba(127,139,163,.7);font-style:normal">' + (r.side === "BUY" ? "\u25b2" : "\u25bc") + ' ' + r.tm + '</i></b></div>').join(""); b4.d.routes = false; } }
   if (b4.d.tape) { const el = lq$("lq4tape"); if (el) el.innerHTML = b4.tape.slice(-7).reverse().map(f => '<div class="' + (f.side === "BUY" ? "b" : "s") + '">' + f.tm + ' ' + f.side + ' ' + f.size + ' @ ' + f.px.toFixed(2) + ' \u00b7 edge ' + (f.edge >= 0 ? "+" : "") + f.edge.toFixed(3) + '</div>').join(""); b4.d.tape = false; }
-  if (b4.d.tbl) { const el = lq$("lq4tbl"); if (el) el.innerHTML = '<div class="lq-tr"><div class="h">TIME</div><div class="h">MARKET</div><div class="h">SIDE</div><div class="h">PRICE</div><div class="h">SIZE</div><div class="h">EDGE</div><div class="h">FEE</div><div class="h">PNL</div><div class="h">STATUS</div></div>' + b4.trades.slice(-8).reverse().map(r => '<div class="lq-tr"><div>' + r.tm + '</div><div>' + r.mkt + '</div><div class="' + (r.side === "BUY" ? "up" : "dn") + '">' + r.side + '</div><div>' + r.px.toFixed(2) + '</div><div>' + r.size + '</div><div class="' + (r.edge >= 0 ? "up" : "dn") + '">' + r.edge.toFixed(3) + '</div><div>' + r.fee.toFixed(2) + '</div><div class="' + (r.pnl >= 0 ? "up" : "dn") + '">' + lqMoney(r.pnl) + '</div><div>' + r.st + '</div></div>').join(""); b4.d.tbl = false; }
+  if (b4.d.tbl) { const el = lq$("lq4tbl"); if (el) el.innerHTML = '<div class="lq-tr"><div class="h">TIME</div><div class="h">ASSET</div><div class="h">SIDE</div><div class="h">PRICE</div><div class="h">SIZE</div><div class="h">EDGE</div><div class="h">FEE</div><div class="h">PNL</div><div class="h">STATUS</div></div>' + b4.trades.slice(-8).reverse().map(r => '<div class="lq-tr"><div>' + r.tm + '</div><div>' + r.mkt + '</div><div class="' + (r.side === "BUY" ? "up" : "dn") + '">' + r.side + '</div><div>' + r.px.toFixed(2) + '</div><div>' + r.size + '</div><div class="' + (r.edge >= 0 ? "up" : "dn") + '">' + r.edge.toFixed(3) + '</div><div>' + r.fee.toFixed(2) + '</div><div class="' + (r.pnl >= 0 ? "up" : "dn") + '">' + lqMoney(r.pnl) + '</div><div>' + r.st + '</div></div>').join(""); b4.d.tbl = false; }
 }
 
 function lqHexA(hex, a) {
@@ -3952,29 +3965,81 @@ function lqDraw3() {
 function lqDraw4() {
   const C = lqCtx("lqc4", 320); if (!C) return;
   const { ctx, w, h } = C;
+  const now = Date.now();
+  const b4 = lqB.b4;
+  const dt = Math.min(0.05, Math.max(0, (now - (b4._lt || now)) / 1000));
+  b4._lt = now;
   ctx.clearRect(0, 0, w, h);
   lqGridBg(ctx, w, h);
-  const cx = w / 2, cy = h / 2, R = Math.min(w, h) * 0.36;
-  const rotY = Date.now() / 3400, rotX = 0.35 + Math.sin(Date.now() / 6000) * 0.12;
-  const fl = lq4Flash; lq4Flash *= 0.94;
-  ctx.globalCompositeOperation = "lighter";
-  for (const p of lqSph) {
-    const x = p.x * Math.cos(rotY) + p.z * Math.sin(rotY);
-    const z = -p.x * Math.sin(rotY) + p.z * Math.cos(rotY);
-    const y2 = p.y * Math.cos(rotX) - z * Math.sin(rotX);
-    const z2 = p.y * Math.sin(rotX) + z * Math.cos(rotX);
-    const s = 420 / (420 + z2 * R);
-    const act = p.on || fl > 0.15;
-    ctx.fillStyle = act ? "#00cec9" : "rgba(127,139,163,.6)";
-    ctx.globalAlpha = Math.min(1, (act ? 0.35 + fl * 0.5 : 0.15) + 0.5 * Math.max(0, s - 0.6));
-    ctx.beginPath(); ctx.arc(cx + x * R * s, cy + y2 * R * s, p.sz * s * (act ? 1.4 : 1), 0, 6.283); ctx.fill();
+  const roadTop = 12, roadBot = h - 24, laneH = (roadBot - roadTop) / LQ_LANES.length;
+  const gateX = w - 74;
+  const grd = ctx.createLinearGradient(0, roadTop, 0, roadBot);
+  grd.addColorStop(0, "rgba(10,16,28,.92)"); grd.addColorStop(1, "rgba(6,10,18,.96)");
+  ctx.fillStyle = grd; ctx.fillRect(0, roadTop, gateX, roadBot - roadTop);
+  ctx.setLineDash([10, 18]); ctx.lineDashOffset = -(now / 33) % 28;
+  ctx.strokeStyle = "rgba(127,139,163,.28)"; ctx.lineWidth = 1;
+  for (let i = 1; i < LQ_LANES.length; i++) {
+    const y = roadTop + i * laneH;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(gateX, y); ctx.stroke();
   }
-  ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+  ctx.setLineDash([]);
+  ctx.strokeStyle = "rgba(0,206,201,.55)";
+  ctx.beginPath(); ctx.moveTo(0, roadTop); ctx.lineTo(gateX, roadTop); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0, roadBot); ctx.lineTo(gateX, roadBot); ctx.stroke();
+  ctx.font = "8px Consolas, monospace"; ctx.textAlign = "left";
+  LQ_LANES.forEach((L, i) => {
+    ctx.globalAlpha = 0.85; ctx.fillStyle = L.col;
+    ctx.fillText(L.bot, 6, roadTop + i * laneH + laneH / 2 + 3);
+    ctx.globalAlpha = 1;
+  });
+  const gateH = (roadBot - roadTop) / LQ_GATES.length;
+  LQ_GATES.forEach((g, i) => {
+    const gy = roadTop + i * gateH;
+    const fl = b4.gateFl[g] || 0;
+    ctx.fillStyle = "rgba(0,206,201," + (0.06 + fl * 0.25).toFixed(3) + ")";
+    ctx.fillRect(gateX, gy + 1, w - gateX - 4, gateH - 2);
+    ctx.strokeStyle = "rgba(0,206,201," + (0.35 + fl * 0.6).toFixed(3) + ")"; ctx.lineWidth = 1;
+    ctx.strokeRect(gateX + 0.5, gy + 1.5, w - gateX - 5, gateH - 3);
+    ctx.font = "bold 8.5px Consolas, monospace"; ctx.textAlign = "left";
+    ctx.fillStyle = fl > 0.3 ? "#7fe3ff" : "rgba(200,210,228,.85)";
+    ctx.fillText(g, gateX + 6, gy + gateH / 2 + 3);
+    ctx.fillStyle = "#00cec9"; ctx.textAlign = "right";
+    ctx.fillText(String(b4.gates[g] || 0), w - 8, gy + gateH / 2 + 3);
+    if (fl > 0.02) b4.gateFl[g] = fl * 0.9;
+  });
+  const gateLine = gateX - 10;
+  for (let i = b4.cars.length - 1; i >= 0; i--) {
+    const c = b4.cars[i];
+    c.x += c.sp * dt;
+    if (c.x >= gateLine) {
+      b4.gates[c.asset] = (b4.gates[c.asset] || 0) + 1;
+      b4.gateFl[c.asset] = 1;
+      b4.cars.splice(i, 1);
+      continue;
+    }
+    const cy2 = roadTop + c.lane * laneH + laneH / 2;
+    ctx.globalCompositeOperation = "lighter";
+    const cg = ctx.createRadialGradient(c.x, cy2, 0, c.x, cy2, 12);
+    cg.addColorStop(0, c.col); cg.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.globalAlpha = c.hot ? 0.5 : 0.28;
+    ctx.fillStyle = cg;
+    ctx.fillRect(c.x - 12, cy2 - 12, 24, 24);
+    ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha = 0.35; ctx.fillStyle = c.col;
+    ctx.fillRect(c.x - 20, cy2 - 1.5, 10, 3);
+    ctx.globalAlpha = 1;
+    ctx.fillRect(c.x - 9, cy2 - 4, 18, 8);
+    ctx.fillStyle = c.side === "BUY" ? "#2ecc71" : "#e74c3c";
+    ctx.font = "7px Consolas, monospace"; ctx.textAlign = "center";
+    ctx.fillText(c.side === "BUY" ? "\u25b2" : "\u25bc", c.x, cy2 - 6);
+    if (c.hot) {
+      ctx.fillStyle = "#fff"; ctx.font = "bold 7px Consolas, monospace";
+      ctx.fillText(c.asset, c.x, cy2 + 13);
+    }
+  }
   ctx.textAlign = "center";
-  ctx.font = "bold 13px Consolas, monospace"; ctx.fillStyle = "#00cec9";
-  ctx.fillText("BTC 5M \u00b7 " + (lqB.b4.book.mid * 100).toFixed(1) + "%", cx, cy + 4);
-  ctx.font = "9px Consolas, monospace"; ctx.fillStyle = "rgba(127,139,163,.9)";
-  ctx.fillText("ORDER FLOW SPHERE \u00b7 " + lqB.b4.fills + " FILLS", cx, cy + 18);
+  ctx.font = "bold 12px Consolas, monospace"; ctx.fillStyle = "#00cec9";
+  ctx.fillText("TRADE HIGHWAY \u00b7 " + b4.fills + " FILLS ROUTED", w / 2, h - 8);
 }
 
 function lqDrawSpark() {
@@ -4079,12 +4144,6 @@ function lqDrawChart4() {
     ctx.strokeStyle = "#00cec9"; ctx.lineWidth = 1.4; ctx.beginPath();
     s.forEach((v, i) => { const x = i / (s.length - 1) * w, y = h - 3 - (v - mn) / (mx - mn) * (h - 8); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); });
     ctx.stroke();
-    const fair = Math.min(0.95, Math.max(0.05, 0.5));
-    const fy = h - 3 - (fair - mn) / (mx - mn) * (h - 8);
-    ctx.setLineDash([3, 3]); ctx.strokeStyle = "rgba(255,110,199,.8)"; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, fy); ctx.lineTo(w, fy); ctx.stroke(); ctx.setLineDash([]);
-    ctx.font = "8px Consolas, monospace"; ctx.textAlign = "left";
-    ctx.fillStyle = "rgba(255,110,199,.9)"; ctx.fillText("FAIR 0.50", 4, fy - 3);
   }
 }
 
@@ -4434,7 +4493,6 @@ setInterval(lqTick, 1000);
 requestAnimationFrame(lqFrame);
 fetchRealPrices();
 setInterval(fetchRealPrices, 30000);
-setInterval(tickMarkets, 30000);
 setInterval(() => { sampleEquity(); aiTick(); goalTick(); saveState(); drawDashboard(); renderAi(); }, 1000);
 connectWS();
 window.addEventListener("resize", () => { renderChart(); drawDashboard(); });
