@@ -141,6 +141,17 @@
   .fee-row { display: flex; gap: 30px; flex-wrap: wrap; }
   .fee-item { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
   .fee-item b { font-size: 17px; font-variant-numeric: tabular-nums; }
+  .cap-modal { display: none; position: fixed; inset: 0; background: rgba(4,7,14,.78); backdrop-filter: blur(6px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+  .cap-modal.open { display: flex; }
+  .cap-box { background: var(--panel2); border: 1px solid var(--border); border-radius: 14px; padding: 26px 24px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.6); }
+  .cap-box h3 { font-size: 18px; margin-bottom: 16px; }
+  .cap-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 14px; }
+  .cap-chip { background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 9px 14px; border-radius: 8px; cursor: pointer; font-weight: 700; font-size: 14px; }
+  .cap-chip:hover { border-color: var(--accent2); }
+  .cap-chip.on { border-color: var(--accent2); color: var(--accent2); background: rgba(0,206,201,.12); box-shadow: 0 0 12px rgba(0,206,201,.25); }
+  .cap-custom { display: flex; flex-direction: column; gap: 6px; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; text-align: left; }
+  .cap-custom input { width: 100%; box-sizing: border-box; }
+  .cap-note { font-size: 11px; color: var(--muted); margin-top: 10px; }
   .bot-controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
   .bot-controls label { font-size: 12px; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
   #toast {
@@ -494,6 +505,7 @@
   </div>
   <div class="stats">
     <div class="stat"><div class="label" data-i18n="cash">Cash</div><div class="value" id="stCash">—</div></div>
+    <div class="stat"><div class="label" data-i18n="startCapLab">Start</div><div class="value" id="stStart">—</div></div>
     <div class="stat"><div class="label" data-i18n="cryptoPos">Crypto position</div><div class="value" id="stCrypto">—</div></div>
     <div class="stat"><div class="label" data-i18n="betsPos">Bets position</div><div class="value" id="stBets">—</div></div>
     <div class="stat"><div class="label" data-i18n="total">Total</div><div class="value" id="stTotal">—</div></div>
@@ -1071,6 +1083,23 @@
 </section>
 
 <div id="toast"></div>
+<div class="cap-modal" id="capModal">
+  <div class="cap-box">
+    <h3 data-i18n="capTitle">💰 Choose your starting capital</h3>
+    <div class="cap-chips">
+      <button class="cap-chip" data-cap="100">€100</button>
+      <button class="cap-chip" data-cap="250">€250</button>
+      <button class="cap-chip on" data-cap="500">€500</button>
+      <button class="cap-chip" data-cap="1000">€1,000</button>
+      <button class="cap-chip" data-cap="5000">€5,000</button>
+    </div>
+    <label class="cap-custom"><span data-i18n="capCustom">Custom amount (€)</span>
+      <input type="number" id="capCustom" min="10" max="1000000" placeholder="500">
+    </label>
+    <button class="act buy" id="capGo" data-i18n="capGo">▶ Start trading</button>
+    <div class="cap-note" data-i18n="capNote">Virtual money only — paper trading.</div>
+  </div>
+</div>
 
 <script>
 "use strict";
@@ -1079,6 +1108,8 @@
 const START_CASH = 500;
 const FEE_RATE = 0.001;
 const LS_KEY = "realtrader_v1";
+const STATE_WAS_NEW = !localStorage.getItem(LS_KEY);
+function startCap() { return state && state.startCapital > 0 ? state.startCapital : START_CASH; }
 
 const REAL_ASSETS = [
   { id: "BTC", name: "Bitcoin", icon: "₿", color: "#f7931a", source: "binance", symbol: "BTCUSDT" },
@@ -1159,6 +1190,7 @@ const I18N = {
     toastBought: "Bought {id} for {amt}", toastSold: "Sold {id}: {pnl}",
     toastBet: "Bet placed: {shares} {side} shares", marketAlreadyResolved: "Market already resolved",
     resetConfirm: "Reset account with {amt} virtual? History will be cleared.", resetToast: "Account reset: {amt} virtual",
+    startCapLab: "Start", capTitle: "💰 Choose your starting capital", capCustom: "Custom amount (€)", capGo: "▶ Start trading", capNote: "Virtual money only \u2014 paper trading.",
     botStarted: "🤖 Bot started", botStopped: "Bot stopped",
     logBuy: "Buy {id}{note}: {amt} → {qty} units at {price}",
     logSell: "Sell {id}: {amt} → +{proceeds} (P&L {pnl})",
@@ -1241,6 +1273,7 @@ const I18N = {
     toastBought: "{id} für {amt} gekauft", toastSold: "{id} verkauft: {pnl}",
     toastBet: "Wette platziert: {shares} {side}-Anteile", marketAlreadyResolved: "Markt bereits aufgelöst",
     resetConfirm: "Konto mit {amt} virtuell zurücksetzen? Der Verlauf wird gelöscht.", resetToast: "Konto zurückgesetzt: {amt} virtuell",
+    startCapLab: "Start", capTitle: "💰 Startkapital wählen", capCustom: "Eigener Betrag (€)", capGo: "▶ Trading starten", capNote: "Nur virtuelles Geld \u2014 Paper-Trading.",
     botStarted: "🤖 Bot gestartet", botStopped: "Bot gestoppt",
     logBuy: "Kauf {id}{note}: {amt} → {qty} Einheiten zu {price}",
     logSell: "Verkauf {id}: {amt} → +{proceeds} (P&L {pnl})",
@@ -1323,6 +1356,7 @@ const I18N = {
     toastBought: "Achat de {id} pour {amt}", toastSold: "Vente de {id} : {pnl}",
     toastBet: "Pari placé : {shares} actions {side}", marketAlreadyResolved: "Marché déjà résolu",
     resetConfirm: "Réinitialiser le compte avec {amt} virtuels ? L'historique sera effacé.", resetToast: "Compte réinitialisé : {amt} virtuels",
+    startCapLab: "Départ", capTitle: "💰 Choisis ton capital de départ", capCustom: "Montant libre (€)", capGo: "▶ Commencer à trader", capNote: "Argent virtuel uniquement \u2014 paper trading.",
     botStarted: "🤖 Bot démarré", botStopped: "Bot arrêté",
     logBuy: "Achat {id}{note} : {amt} → {qty} unités à {price}",
     logSell: "Vente {id} : {amt} → +{proceeds} (P&L {pnl})",
@@ -1405,6 +1439,7 @@ const I18N = {
     toastBought: "Bleje {id} për {amt}", toastSold: "Shitje {id}: {pnl}",
     toastBet: "Bast i vendosur: {shares} aksione {side}", marketAlreadyResolved: "Tregu është zgjidhur tashmë",
     resetConfirm: "Rivendis llogarinë me {amt} virtuale? Historiku do të fshihet.", resetToast: "Llogaria u rivendos: {amt} virtuale",
+    startCapLab: "Starti", capTitle: "💰 Zgjidh kapitalin fillestar", capCustom: "Shuma e lirë (€)", capGo: "▶ Nis tregtinë", capNote: "Vetëm para virtuale \u2014 paper trading.",
     botStarted: "🤖 Boti u nis", botStopped: "Boti u ndal",
     logBuy: "Bleje {id}{note}: {amt} → {qty} njësi me {price}",
     logSell: "Shitje {id}: {amt} → +{proceeds} (P&L {pnl})",
@@ -1454,6 +1489,7 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
 let state = loadState() || {
   cash: START_CASH,
+  startCapital: START_CASH,
   holdings: {},            // id -> { qty, cost }
   bets: [],                // { marketId, side, shares, price }
   history: [],
@@ -1478,6 +1514,7 @@ if (!state.ai) state.ai = { enabled: false, positions: [], trades: [], stats: { 
 if (state.ai.balance !== undefined) { state.cash += state.ai.balance - 500; delete state.ai.balance; }
 if (!state.ai.auto) { state.ai.pair = "AUTO"; state.ai.auto = true; }
 if (!state.goal) state.goal = { amount: 30, month: "", start: 0 };
+if (!state.startCapital) state.startCapital = START_CASH;
 
 function loadState() {
   try { const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : null; }
@@ -1715,13 +1752,15 @@ function invested() {
 /* ================= RENDU ================= */
 function render() {
   const cv = cryptoValue(), bv = betsValue(), total = state.cash + cv + bv;
-  const pnl = total - START_CASH;
+  const cap0 = startCap();
+  const pnl = total - cap0;
   document.getElementById("stCash").textContent = fmtEur(state.cash);
   document.getElementById("stCrypto").textContent = fmtEur(cv);
   document.getElementById("stBets").textContent = fmtEur(bv);
   document.getElementById("stTotal").textContent = fmtEur(total);
   const pnlEl = document.getElementById("stPnl");
-  pnlEl.textContent = `${pnl >= 0 ? "+" : ""}${fmtEur(pnl)} (${fmtPct(pnl / START_CASH * 100)})`;
+  pnlEl.textContent = `${pnl >= 0 ? "+" : ""}${fmtEur(pnl)} (${fmtPct(pnl / cap0 * 100)})`;
+  document.getElementById("stStart").textContent = fmtEur(cap0);
   pnlEl.className = "value " + (pnl >= 0 ? "pos" : "neg");
   renderPxTicker();
 
@@ -2452,12 +2491,12 @@ function drawEquity() {
     ctx.fillText(t("noDataYet"), wCss / 2, hCss / 2);
     return;
   }
-  const vals = pts.map(p => p.v).concat([START_CASH]);
+  const vals = pts.map(p => p.v).concat([startCap()]);
   const min = Math.min(...vals), max = Math.max(...vals), span = max - min || 1;
   const px = i => i / (pts.length - 1) * (wCss - 10) + 5;
   const py = v => hCss - (v - min) / span * (hCss - 30) - 15;
   const last = pts[pts.length - 1].v;
-  const up = last >= START_CASH;
+  const up = last >= startCap();
   const col = up ? "#2ecc71" : "#e74c3c";
   ctx.setLineDash([3, 5]);
   ctx.strokeStyle = "rgba(139,149,168,.15)";
@@ -2488,7 +2527,7 @@ function drawEquity() {
   ctx.shadowBlur = 10;
   ctx.stroke();
   ctx.shadowBlur = 0;
-  const by = py(START_CASH);
+  const by = py(startCap());
   ctx.setLineDash([4, 4]);
   ctx.strokeStyle = "rgba(139,149,168,.5)";
   ctx.lineWidth = 1;
@@ -2507,10 +2546,10 @@ function drawEquity() {
     eqDot.style.setProperty("--dotglow", up ? "rgba(46,204,113,.4)" : "rgba(231,76,60,.4)");
   }
   if (eqLegend) {
-    const chg = (last - START_CASH) / START_CASH * 100;
+    const chg = (last - startCap()) / startCap() * 100;
     const peak = Math.max(...vals);
     eqLegend.innerHTML =
-      '<span>' + t("ccStartBal") + ' <b>' + fmtEur(START_CASH) + '</b></span>' +
+      '<span>' + t("ccStartBal") + ' <b>' + fmtEur(startCap()) + '</b></span>' +
       '<span>' + t("dashNow") + ' <b style="color:' + col + '">' + fmtEur(last) + '</b></span>' +
       '<span>' + t("dashPeak") + ' <b>' + fmtEur(peak) + '</b></span>' +
       '<span style="color:' + col + ';font-weight:700">' + fmtPct(chg) + '</span>';
@@ -2539,10 +2578,10 @@ function drawDashboard() {
   const page = document.getElementById("page-dashboard");
   if (!page || !page.classList.contains("active")) return;
   const st = state.stats;
-  const pnl = state.cash + cryptoValue() + betsValue() - START_CASH;
+  const pnl = state.cash + cryptoValue() + betsValue() - startCap();
   const dPnl = document.getElementById("dPnl");
   dashSet(dPnl, (pnl >= 0 ? "+" : "") + fmtEur(pnl), "scard-v " + (pnl >= 0 ? "pos" : "neg"));
-  const pct = pnl / START_CASH * 100;
+  const pct = pnl / startCap() * 100;
   dashSet(document.getElementById("dPnlPct"), fmtPct(pct), "dash-sub " + (pct >= 0 ? "pos" : "neg"));
   const rate = st.trades ? st.wins / st.trades * 100 : null;
   dashSet(document.getElementById("dWin"), st.trades ? rate.toFixed(1) + " %" : "\u2014");
@@ -4225,26 +4264,62 @@ document.querySelectorAll("nav button").forEach(b => {
   };
 });
 
-document.getElementById("btnReset").onclick = () => {
-  if (!confirm(t("resetConfirm", { amt: fmtEur(START_CASH) }))) return;
-  state = {
-    cash: START_CASH, holdings: {}, bets: [], history: [],
-    markets: buildMarkets(), coinPrices: {},
-    botComm: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
-    botCrypto: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
-    equity: [], equityLong: [],
-    stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [], fees: 0 },
-    ai: { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "AUTO", auto: true },
+document.getElementById("btnReset").onclick = () => openCapModal("reset");
+
+let capMode = "reset";
+function openCapModal(mode) {
+  capMode = mode;
+  const m = document.getElementById("capModal");
+  if (!m) return;
+  const cur = mode === "init" ? START_CASH : startCap();
+  m.querySelectorAll(".cap-chip").forEach(ch => ch.classList.toggle("on", parseFloat(ch.dataset.cap) === cur));
+  const ci = document.getElementById("capCustom");
+  if (ci) ci.value = "";
+  m.classList.add("open");
+}
+function closeCapModal() { const m = document.getElementById("capModal"); if (m) m.classList.remove("open"); }
+function applyCapital(cap) {
+  cap = Math.max(10, Math.min(1000000, Math.round(cap)));
+  if (capMode === "reset") {
+    state = {
+      cash: cap, startCapital: cap, holdings: {}, bets: [], history: [],
+      markets: buildMarkets(), coinPrices: {},
+      botComm: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
+      botCrypto: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
+      equity: [], equityLong: [],
+      stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [], fees: 0 },
+      ai: { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "AUTO", auto: true },
+    };
+    seedPrices();
+    state.goal = { amount: state.goal ? state.goal.amount : 30, month: "", start: 0 };
+    saveState(); render(); renderBot(); renderAi();
+  } else {
+    state.startCapital = cap;
+    state.cash = cap;
+    saveState(); render(); renderBot(); renderAi();
+  }
+  toast(t("resetToast", { amt: fmtEur(cap) }));
+  closeCapModal();
+}
+const capModalEl = document.getElementById("capModal");
+if (capModalEl) {
+  capModalEl.querySelectorAll(".cap-chip").forEach(ch => {
+    ch.onclick = () => {
+      capModalEl.querySelectorAll(".cap-chip").forEach(x => x.classList.remove("on"));
+      ch.classList.add("on");
+      const ci = document.getElementById("capCustom");
+      if (ci) ci.value = "";
+    };
+  });
+  const capGoBtn = document.getElementById("capGo");
+  if (capGoBtn) capGoBtn.onclick = () => {
+    const ci = document.getElementById("capCustom");
+    const custom = ci && ci.value !== "" ? parseFloat(ci.value) : NaN;
+    const sel = capModalEl.querySelector(".cap-chip.on");
+    applyCapital(!isNaN(custom) ? custom : (sel ? parseFloat(sel.dataset.cap) : START_CASH));
   };
-  seedPrices();
-  state.equity = [];
-  state.equityLong = [];
-  state.stats = { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [], fees: 0 };
-  state.goal = { amount: state.goal ? state.goal.amount : 30, month: "", start: 0 };
-  state.ai = { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "AUTO", auto: true };
-  saveState(); render(); renderBot(); renderAi();
-  toast(t("resetToast", { amt: fmtEur(START_CASH) }));
-};
+}
+if (STATE_WAS_NEW) openCapModal("init");
 
 function bindBotToggle(prefix, key) {
   document.getElementById("botToggle" + prefix).onclick = () => {
