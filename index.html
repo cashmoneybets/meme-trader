@@ -512,6 +512,12 @@
   .qn-btn:hover { border-color: var(--accent); box-shadow: 0 0 10px rgba(108,92,231,.35); }
   @media (max-width: 1100px) { .lbcc-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 700px) { .lbcc-grid { grid-template-columns: repeat(2, 1fr); } #lbccChart { height: 230px; } .lbcc-title { font-size: 15px; } .lbcc-v { font-size: 18px; } }
+
+  /* NEURAL QUANT CORE */
+  .nqc-wrap { background: #05070c; border: 1px solid var(--border); border-radius: 12px; padding: 10px; }
+  #nqcCv { width: 100%; height: 380px; display: block; border-radius: 8px; }
+  .nqc-insp { font-size: 11px; color: var(--muted); font-family: Consolas, monospace; padding: 8px 4px 2px; }
+  @media (max-width: 700px) { #nqcCv { height: 300px; } }
 </style>
 </head>
 <body>
@@ -558,6 +564,7 @@
       <button class="qn-btn" data-target="lq">📊 <span data-i18n="lqTitle">Live Quant Control Center</span></button>
       <button class="qn-btn" data-target="aiBot">🤖 <span data-i18n="aiTitle">AI Trading Bot</span></button>
       <button class="qn-btn" data-target="ng">🌐 <span data-i18n="ngTitle">Neural Grid</span></button>
+      <button class="qn-btn" data-target="nqc">🧬 <span data-i18n="nqcTitle">Neural Quant Core</span></button>
     </div>
     <div class="reset-row"><button id="btnReset" data-i18n="resetAccount">💰 Choose your starting capital</button></div>
     <div class="bot-tv-row">
@@ -688,6 +695,7 @@
       <button class="qn-btn" data-target="lq">📊 <span data-i18n="lqTitle">Live Quant Control Center</span></button>
       <button class="qn-btn" data-target="aiBot">🤖 <span data-i18n="aiTitle">AI Trading Bot</span></button>
       <button class="qn-btn" data-target="ng">🌐 <span data-i18n="ngTitle">Neural Grid</span></button>
+      <button class="qn-btn" data-target="nqc">🧬 <span data-i18n="nqcTitle">Neural Quant Core</span></button>
     </div>
     <h2 data-i18n="dashTitle">📊 Performance</h2>
     <div class="stat-cards">
@@ -735,6 +743,7 @@
       <button class="qn-btn" data-target="lq">📊 <span data-i18n="lqTitle">Live Quant Control Center</span></button>
       <button class="qn-btn" data-target="aiBot">🤖 <span data-i18n="aiTitle">AI Trading Bot</span></button>
       <button class="qn-btn" data-target="ng">🌐 <span data-i18n="ngTitle">Neural Grid</span></button>
+      <button class="qn-btn" data-target="nqc">🧬 <span data-i18n="nqcTitle">Neural Quant Core</span></button>
     </div>
     <h2 data-i18n="historyTitle">📜 Trade history</h2>
     <ul id="history"></ul>
@@ -747,6 +756,7 @@
       <button class="qn-btn" data-target="lq">📊 <span data-i18n="lqTitle">Live Quant Control Center</span></button>
       <button class="qn-btn" data-target="aiBot">🤖 <span data-i18n="aiTitle">AI Trading Bot</span></button>
       <button class="qn-btn" data-target="ng">🌐 <span data-i18n="ngTitle">Neural Grid</span></button>
+      <button class="qn-btn" data-target="nqc">🧬 <span data-i18n="nqcTitle">Neural Quant Core</span></button>
     </div>
     <div class="lbcc-head">
       <h2 class="lbcc-title" data-i18n="lbccTitle">LIVE BOT COMMAND CENTER</h2>
@@ -1160,6 +1170,14 @@
   </div>
 </section>
 
+<section id="nqc" class="cc-section">
+  <h2>🧬 <span data-i18n="nqcTitle">Neural Quant Core</span> <span class="cc-badge sim" data-i18n="ccSimBadge">SIMULATION &middot; PAPER TRADING</span></h2>
+  <div class="nqc-wrap">
+    <canvas id="nqcCv"></canvas>
+    <div class="nqc-insp" id="nqcInsp">AI robot scanning the live BTC market &mdash; candles are real Binance prices, pulses are neural data flowing between the robot and the market.</div>
+  </div>
+</section>
+
 <div id="toast"></div>
 <div class="cap-modal" id="capModal">
   <div class="cap-box">
@@ -1209,7 +1227,7 @@ const I18N = {
     totalPnl: "Total P&L", winRate: "Win rate", tradesCount: "Trades", botPnlKey: "Bot P&L",
     bestTrade: "Best trade", worstTrade: "Worst trade", noDataYet: "The curve builds as prices arrive…",
     pnlBarsTitle: "⚡ Last trades P&L", pnlBarsEmpty: "No closed trades yet.", botPnlSub: "all bots combined", dashNow: "Now", dashPeak: "Peak",
-    navLbcc: "🛰️ Bot Command", lbccTitle: "LIVE BOT COMMAND CENTER", lbccLive: "LIVE", lbccUpdated: "Last update", lbccStatus: "BOT STATUS", lbccSignals: "Signals", lbccWinRate: "Win rate", lbccActive: "Active trades", lbccLastSig: "Last signal", lbccOnline: "ONLINE", lbccOffline: "OFFLINE", lbccNoSig: "No signal yet", lbccActivity: "Bot activity",
+    navLbcc: "🛰️ Bot Command", lbccTitle: "LIVE BOT COMMAND CENTER", lbccLive: "LIVE", lbccUpdated: "Last update", lbccStatus: "BOT STATUS", lbccSignals: "Signals", lbccWinRate: "Win rate", lbccActive: "Active trades", lbccLastSig: "Last signal", lbccOnline: "ONLINE", lbccOffline: "OFFLINE", lbccNoSig: "No signal yet", lbccActivity: "Bot activity", nqcTitle: "Neural Quant Core",
     goalTitle: "🎯 Monthly goal", goalSet: "Target", goalEarned: "This month", goalFees: "Fees paid", goalOnTrack: "ON TRACK ✓", goalBehind: "BEHIND PACE", goalDone: "GOAL REACHED 🎉",
     aiTitle: "AI Trading Bot", paperTrading: "PAPER TRADING", botActive: "BOT ACTIVE", botPaused: "BOT PAUSED",
     aiAuto: "🤖 AUTO — AI decides",
@@ -1293,7 +1311,7 @@ const I18N = {
     totalPnl: "Gesamt-P&L", winRate: "Trefferquote", tradesCount: "Trades", botPnlKey: "Bot-P&L",
     bestTrade: "Bester Trade", worstTrade: "Schlechtester Trade", noDataYet: "Die Kurve entsteht, sobald Preise eintreffen…",
     pnlBarsTitle: "⚡ Letzte Trades P&L", pnlBarsEmpty: "Noch keine abgeschlossenen Trades.", botPnlSub: "alle Bots zusammen", dashNow: "Jetzt", dashPeak: "Höchststand",
-    navLbcc: "🛰️ Bot-Kommando", lbccTitle: "LIVE BOT-KOMMANDOZENTRALE", lbccLive: "LIVE", lbccUpdated: "Letzte Aktualisierung", lbccStatus: "BOT-STATUS", lbccSignals: "Signale", lbccWinRate: "Trefferquote", lbccActive: "Aktive Trades", lbccLastSig: "Letztes Signal", lbccOnline: "ONLINE", lbccOffline: "AUS", lbccNoSig: "Noch kein Signal", lbccActivity: "Bot-Aktivität",
+    navLbcc: "🛰️ Bot-Kommando", lbccTitle: "LIVE BOT-KOMMANDOZENTRALE", lbccLive: "LIVE", lbccUpdated: "Letzte Aktualisierung", lbccStatus: "BOT-STATUS", lbccSignals: "Signale", lbccWinRate: "Trefferquote", lbccActive: "Aktive Trades", lbccLastSig: "Letztes Signal", lbccOnline: "ONLINE", lbccOffline: "AUS", lbccNoSig: "Noch kein Signal", lbccActivity: "Bot-Aktivität", nqcTitle: "Neural-Quant-Kern",
     goalTitle: "🎯 Monatsziel", goalSet: "Ziel", goalEarned: "Diesen Monat", goalFees: "Gebühren", goalOnTrack: "IM PLAN ✓", goalBehind: "HINTERHER", goalDone: "ZIEL ERREICHT 🎉",
     aiTitle: "KI-Trading-Bot", paperTrading: "PAPER TRADING", botActive: "BOT AKTIV", botPaused: "BOT PAUSIERT",
     aiAuto: "🤖 AUTO — KI entscheidet",
@@ -1377,7 +1395,7 @@ const I18N = {
     totalPnl: "P&L total", winRate: "Taux de réussite", tradesCount: "Trades", botPnlKey: "P&L du bot",
     bestTrade: "Meilleur trade", worstTrade: "Pire trade", noDataYet: "La courbe se construit à mesure que les prix arrivent…",
     pnlBarsTitle: "⚡ P&L des derniers trades", pnlBarsEmpty: "Aucun trade clôturé pour le moment.", botPnlSub: "tous les bots réunis", dashNow: "Actuel", dashPeak: "Pic",
-    navLbcc: "🛰️ Commande des bots", lbccTitle: "CENTRE DE COMMANDE DES BOTS EN DIRECT", lbccLive: "EN DIRECT", lbccUpdated: "Dernière mise à jour", lbccStatus: "STATUT DES BOTS", lbccSignals: "Signaux", lbccWinRate: "Taux de réussite", lbccActive: "Trades actifs", lbccLastSig: "Dernier signal", lbccOnline: "EN LIGNE", lbccOffline: "HORS LIGNE", lbccNoSig: "Aucun signal pour le moment", lbccActivity: "Activité des bots",
+    navLbcc: "🛰️ Commande des bots", lbccTitle: "CENTRE DE COMMANDE DES BOTS EN DIRECT", lbccLive: "EN DIRECT", lbccUpdated: "Dernière mise à jour", lbccStatus: "STATUT DES BOTS", lbccSignals: "Signaux", lbccWinRate: "Taux de réussite", lbccActive: "Trades actifs", lbccLastSig: "Dernier signal", lbccOnline: "EN LIGNE", lbccOffline: "HORS LIGNE", lbccNoSig: "Aucun signal pour le moment", lbccActivity: "Activité des bots", nqcTitle: "Noyau Quant Neural",
     goalTitle: "🎯 Objectif du mois", goalSet: "Objectif", goalEarned: "Ce mois", goalFees: "Frais payés", goalOnTrack: "DANS LE RYTHME ✓", goalBehind: "EN RETARD", goalDone: "OBJECTIF ATTEINT 🎉",
     aiTitle: "Bot de trading IA", paperTrading: "PAPER TRADING", botActive: "BOT ACTIF", botPaused: "BOT EN PAUSE",
     aiAuto: "🤖 AUTO — l’IA décide",
@@ -1461,7 +1479,7 @@ const I18N = {
     totalPnl: "P&L total", winRate: "Shkalla e suksesit", tradesCount: "Tregtime", botPnlKey: "P&L i botit",
     bestTrade: "Tregtimi më i mirë", worstTrade: "Tregtimi më i keq", noDataYet: "Kurba ndërtohet ndërsa çmimet arrijnë…",
     pnlBarsTitle: "⚡ P&L e tregtimeve të fundit", pnlBarsEmpty: "Asnjë tregtim i mbyllur ende.", botPnlSub: "të gjithë botet bashkë", dashNow: "Tani", dashPeak: "Kulmi",
-    navLbcc: "🛰️ Komanda e botëve", lbccTitle: "QENDRA E KOMANDËS SË BOTËVE LIVE", lbccLive: "LIVE", lbccUpdated: "Përditësimi i fundit", lbccStatus: "STATUSI I BOTËVE", lbccSignals: "Sinjale", lbccWinRate: "Shkalla e suksesit", lbccActive: "Tregtime aktive", lbccLastSig: "Sinjali i fundit", lbccOnline: "ONLINE", lbccOffline: "JO AKTIV", lbccNoSig: "Asnjë sinjal ende", lbccActivity: "Aktiviteti i botëve",
+    navLbcc: "🛰️ Komanda e botëve", lbccTitle: "QENDRA E KOMANDËS SË BOTËVE LIVE", lbccLive: "LIVE", lbccUpdated: "Përditësimi i fundit", lbccStatus: "STATUSI I BOTËVE", lbccSignals: "Sinjale", lbccWinRate: "Shkalla e suksesit", lbccActive: "Tregtime aktive", lbccLastSig: "Sinjali i fundit", lbccOnline: "ONLINE", lbccOffline: "JO AKTIV", lbccNoSig: "Asnjë sinjal ende", lbccActivity: "Aktiviteti i botëve", nqcTitle: "Bërthama Kuant Neurale",
     goalTitle: "🎯 Objektivi mujor", goalSet: "Objektivi", goalEarned: "Këtë muaj", goalFees: "Tarifat e paguara", goalOnTrack: "NË RITËM ✓", goalBehind: "ME VONCËM", goalDone: "OBJEKTIVI ARRITUR 🎉",
     aiTitle: "Boti i tregtisë me AI", paperTrading: "PAPER TRADING", botActive: "BOTI AKTIV", botPaused: "BOTI NË PAUZË",
     aiAuto: "🤖 AUTO — AI vendos",
@@ -4760,6 +4778,210 @@ document.querySelectorAll(".qn-btn").forEach(b => {
 lbccSample();
 setInterval(lbccSample, 1000);
 requestAnimationFrame(lbccFrame);
+
+/* ================= NEURAL QUANT CORE ================= */
+const nqcParticles = Array.from({ length: 40 }, () => ({ x: Math.random(), y: Math.random(), sp: 0.02 + Math.random() * 0.06, sz: 0.6 + Math.random() * 1.6, ph: Math.random() * 6.283 }));
+const nqcNodes = Array.from({ length: 7 }, (_, i) => ({ a: i / 7 * 6.283, w: Math.random() }));
+const nqcPulses = [];
+let nqcLastPx = 0, nqcRing = 0, nqcConf = null;
+setInterval(() => { try { const a = aiAnalysis("BTCUSDT"); nqcConf = a && a.confidence ? a.confidence : null; } catch (e) { nqcConf = null; } }, 1000);
+function nqcCandles() {
+  const h = (aiPrices.BTCUSDT && aiPrices.BTCUSDT.hist) || [];
+  const out = [];
+  for (let i = Math.max(0, h.length - 123); i + 3 <= h.length; i += 3) {
+    const a = h[i], b = h[i + 1], c2 = h[i + 2];
+    out.push({ o: a, c: c2, hi: Math.max(a, b, c2), lo: Math.min(a, b, c2) });
+  }
+  return out.slice(-40);
+}
+function nqcRRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+function nqcDraw() {
+  const c = document.getElementById("nqcCv");
+  if (!c || !c.getContext) return;
+  const W = c.clientWidth || 900, H = c.clientHeight || 380;
+  const dpr = Math.min(1.5, window.devicePixelRatio || 1);
+  if (c.width !== Math.round(W * dpr) || c.height !== Math.round(H * dpr)) { c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); }
+  const ctx = c.getContext("2d");
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const now = Date.now(), ts = now / 1000;
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, "#04060d"); bg.addColorStop(1, "#0a1020");
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = "rgba(108,92,231,.07)"; ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  for (const p of nqcParticles) {
+    p.y -= p.sp / 60;
+    if (p.y < 0) { p.y = 1; p.x = Math.random(); }
+    const a = 0.12 + 0.12 * Math.sin(ts * 2 + p.ph);
+    ctx.fillStyle = "rgba(0,206,201," + a.toFixed(3) + ")";
+    ctx.beginPath(); ctx.arc(p.x * W, p.y * H, p.sz, 0, 6.283); ctx.fill();
+  }
+  const P = aiPrices.BTCUSDT || { price: 0, open: 0 };
+  if (P.price > 0 && nqcLastPx && Math.abs(P.price - nqcLastPx) / P.price > 0.0002) nqcRing = 1;
+  nqcLastPx = P.price; nqcRing *= 0.94;
+  const cds = nqcCandles();
+  const bx0 = W * 0.36, bx1 = W - 30, byT = 24, byB = H * 0.60;
+  if (cds.length > 1) {
+    let mn = Infinity, mx = -Infinity;
+    cds.forEach(cd => { mn = Math.min(mn, cd.lo); mx = Math.max(mx, cd.hi); });
+    if (mx === mn) mx = mn + 1;
+    const cw = (bx1 - bx0) / cds.length;
+    cds.forEach((cd, i) => {
+      const x = bx0 + i * cw + cw / 2;
+      const up = cd.c >= cd.o;
+      const yH = byB - (cd.hi - mn) / (mx - mn) * (byB - byT);
+      const yL = byB - (cd.lo - mn) / (mx - mn) * (byB - byT);
+      const yO = byB - (cd.o - mn) / (mx - mn) * (byB - byT);
+      const yC = byB - (cd.c - mn) / (mx - mn) * (byB - byT);
+      ctx.strokeStyle = ctx.fillStyle = up ? "rgba(46,204,113,.4)" : "rgba(231,76,60,.4)";
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x, yH); ctx.lineTo(x, yL); ctx.stroke();
+      ctx.fillRect(x - cw * 0.3, Math.min(yO, yC), Math.max(1.5, cw * 0.6), Math.max(1.5, Math.abs(yC - yO)));
+    });
+  }
+  const u = Math.min(W, H) / 380;
+  const bob = Math.sin(ts * 1.1) * 4;
+  const rx = W * 0.16, ry = H * 0.52 + bob;
+  ctx.strokeStyle = "rgba(0,206,201,.22)"; ctx.lineWidth = 1;
+  for (let i = 0; i < 4; i++) {
+    const y0 = H * 0.40 - 30 + i * 20, x0 = W * 0.72 + 50 * u + 6;
+    const xm = Math.min(W - 20, x0 + 40 + i * 18);
+    const y1 = y0 + (i % 2 ? 26 : -26);
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(xm, y0); ctx.lineTo(xm, y1); ctx.lineTo(W - 14, y1); ctx.stroke();
+    const total = (xm - x0) + Math.abs(y1 - y0) + (W - 14 - xm);
+    let d = ((now / 1400) + i * 0.25) % 1 * total, cx2, cy2;
+    if (d < xm - x0) { cx2 = x0 + d; cy2 = y0; }
+    else { d -= xm - x0; if (d < Math.abs(y1 - y0)) { cx2 = xm; cy2 = y0 + Math.sign(y1 - y0) * d; } else { d -= Math.abs(y1 - y0); cx2 = xm + d; cy2 = y1; } }
+    ctx.fillStyle = "#00cec9"; ctx.beginPath(); ctx.arc(cx2, cy2, 1.8, 0, 6.283); ctx.fill();
+  }
+  const bx = W * 0.72, by = H * 0.40, br = 44 * u;
+  const gg = ctx.createRadialGradient(bx, by, 0, bx, by, br * 2);
+  gg.addColorStop(0, "rgba(247,147,26,.32)"); gg.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = gg; ctx.fillRect(bx - br * 2, by - br * 2, br * 4, br * 4);
+  ctx.beginPath(); ctx.arc(bx, by, br, 0, 6.283);
+  const cg2 = ctx.createLinearGradient(bx - br, by - br, bx + br, by + br);
+  cg2.addColorStop(0, "#f7931a"); cg2.addColorStop(1, "#b96a08");
+  ctx.fillStyle = cg2; ctx.fill();
+  ctx.strokeStyle = "rgba(255,200,120,.8)"; ctx.lineWidth = 2; ctx.stroke();
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold " + Math.round(br * 1.05) + "px Consolas, monospace";
+  ctx.textAlign = "center";
+  ctx.fillText("B", bx, by + br * 0.36);
+  ctx.fillRect(bx - 3, by - br * 0.62, 6, br * 0.22);
+  ctx.fillRect(bx - 3, by + br * 0.40, 6, br * 0.22);
+  ctx.setLineDash([6, 8]); ctx.lineDashOffset = -now / 30;
+  ctx.strokeStyle = "rgba(247,147,26,.6)"; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(bx, by, br + 10, 0, 6.283); ctx.stroke(); ctx.setLineDash([]);
+  if (nqcRing > 0.03) {
+    ctx.strokeStyle = "rgba(0,206,201," + nqcRing.toFixed(3) + ")"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(bx, by, br + 10 + (1 - nqcRing) * 30, 0, 6.283); ctx.stroke();
+  }
+  const beams = [
+    [rx + 78 * u, ry + 18 * u, bx - br - 6, by + 10],
+    [rx, ry - 30 * u, bx - br - 6, by - 14]
+  ];
+  beams.forEach((bm, bi) => {
+    ctx.strokeStyle = bi ? "rgba(162,155,254,.25)" : "rgba(0,206,201,.25)";
+    ctx.setLineDash([4, 6]); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(bm[0], bm[1]);
+    ctx.quadraticCurveTo((bm[0] + bm[2]) / 2, (bm[1] + bm[3]) / 2 - 40, bm[2], bm[3]);
+    ctx.stroke(); ctx.setLineDash([]);
+    if (Math.random() < 0.05) nqcPulses.push({ bi, p: 0, sp: 0.008 + Math.random() * 0.01 });
+  });
+  for (let i = nqcPulses.length - 1; i >= 0; i--) {
+    const pl = nqcPulses[i];
+    pl.p += pl.sp;
+    if (pl.p >= 1) { nqcPulses.splice(i, 1); continue; }
+    const bm = beams[pl.bi];
+    const mx2 = (bm[0] + bm[2]) / 2, my2 = (bm[1] + bm[3]) / 2 - 40;
+    const tt = pl.p, it = 1 - tt;
+    const px2 = it * it * bm[0] + 2 * it * tt * mx2 + tt * tt * bm[2];
+    const py2 = it * it * bm[1] + 2 * it * tt * my2 + tt * tt * bm[3];
+    ctx.fillStyle = "#7fe3ff"; ctx.shadowColor = "#00cec9"; ctx.shadowBlur = 8;
+    ctx.beginPath(); ctx.arc(px2, py2, 2.5, 0, 6.283); ctx.fill(); ctx.shadowBlur = 0;
+  }
+  ctx.lineCap = "round";
+  const met = ctx.createLinearGradient(0, ry - 40 * u, 0, ry + 76 * u);
+  met.addColorStop(0, "#c3cdda"); met.addColorStop(1, "#4c586c");
+  ctx.fillStyle = met; ctx.strokeStyle = "rgba(0,206,201,.35)"; ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(rx - 26 * u, ry + 16 * u);
+  ctx.lineTo(rx + 26 * u, ry + 16 * u);
+  ctx.lineTo(rx + 34 * u, ry + 70 * u);
+  ctx.lineTo(rx - 34 * u, ry + 70 * u);
+  ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#2a3342";
+  ctx.fillRect(rx - 8 * u, ry + 4 * u, 16 * u, 14 * u);
+  nqcRRect(ctx, rx - 26 * u, ry - 34 * u, 52 * u, 40 * u, 12 * u);
+  ctx.fillStyle = met; ctx.fill(); ctx.stroke();
+  ctx.fillStyle = "#0a1220";
+  nqcRRect(ctx, rx - 20 * u, ry - 24 * u, 40 * u, 18 * u, 8 * u);
+  ctx.fill();
+  const eyeA = 0.55 + 0.45 * Math.sin(ts * 3);
+  ctx.fillStyle = "rgba(0,206,201," + eyeA.toFixed(3) + ")";
+  ctx.shadowColor = "#00cec9"; ctx.shadowBlur = 10;
+  ctx.beginPath(); ctx.arc(rx - 9 * u, ry - 15 * u, 4 * u, 0, 6.283); ctx.fill();
+  ctx.beginPath(); ctx.arc(rx + 9 * u, ry - 15 * u, 4 * u, 0, 6.283); ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = "#8b95a8"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(rx, ry - 34 * u); ctx.lineTo(rx, ry - 46 * u); ctx.stroke();
+  ctx.fillStyle = Math.sin(ts * 4) > 0 ? "#2ecc71" : "#e74c3c";
+  ctx.beginPath(); ctx.arc(rx, ry - 48 * u, 3 * u, 0, 6.283); ctx.fill();
+  ctx.strokeStyle = "#5a6678"; ctx.lineWidth = 9 * u;
+  ctx.beginPath(); ctx.moveTo(rx + 26 * u, ry + 22 * u); ctx.lineTo(rx + 52 * u, ry + 30 * u); ctx.lineTo(rx + 78 * u, ry + 18 * u); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(rx - 26 * u, ry + 22 * u); ctx.lineTo(rx - 34 * u, ry + 50 * u); ctx.lineTo(rx - 30 * u, ry + 72 * u); ctx.stroke();
+  ctx.fillStyle = "#39424f";
+  [[rx + 26 * u, ry + 22 * u], [rx + 52 * u, ry + 30 * u], [rx - 26 * u, ry + 22 * u]].forEach(j => {
+    ctx.beginPath(); ctx.arc(j[0], j[1], 6 * u, 0, 6.283); ctx.fill();
+  });
+  ctx.fillStyle = "#c3cdda";
+  ctx.beginPath(); ctx.arc(rx + 78 * u, ry + 18 * u, 7 * u, 0, 6.283); ctx.fill();
+  ctx.strokeStyle = "#c3cdda"; ctx.lineWidth = 4 * u;
+  ctx.beginPath(); ctx.moveTo(rx + 84 * u, ry + 16 * u); ctx.lineTo(rx + 96 * u, ry + 12 * u); ctx.stroke();
+  const hx = rx, hy = ry - 14 * u;
+  nqcNodes.forEach(n => { n.a += 0.004 + n.w * 0.004; });
+  ctx.lineWidth = 1;
+  for (let i = 0; i < nqcNodes.length; i++) {
+    for (let j = i + 1; j < nqcNodes.length; j++) {
+      if ((i + j) % 3) continue;
+      const x1 = hx + Math.cos(nqcNodes[i].a) * 36 * u, y1 = hy + Math.sin(nqcNodes[i].a) * 28 * u;
+      const x2 = hx + Math.cos(nqcNodes[j].a) * 36 * u, y2 = hy + Math.sin(nqcNodes[j].a) * 28 * u;
+      ctx.strokeStyle = "rgba(162,155,254,.18)";
+      ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+    }
+  }
+  nqcNodes.forEach(n => {
+    const x = hx + Math.cos(n.a) * 36 * u, y = hy + Math.sin(n.a) * 28 * u;
+    const a = 0.3 + 0.5 * Math.max(0, Math.sin(ts * 2 + n.a * 3));
+    ctx.fillStyle = "rgba(162,155,254," + a.toFixed(3) + ")";
+    ctx.beginPath(); ctx.arc(x, y, 2.2, 0, 6.283); ctx.fill();
+  });
+  ctx.textAlign = "center";
+  ctx.font = "bold 13px Consolas, monospace"; ctx.fillStyle = "#f7931a";
+  ctx.fillText("BTC/USDT " + (P.price > 0 ? "$" + Math.round(P.price).toLocaleString("en-US") : "\u2014"), bx, by + br + 26);
+  const pct = P.open ? (P.price - P.open) / P.open * 100 : 0;
+  ctx.font = "11px Consolas, monospace"; ctx.fillStyle = pct >= 0 ? "#2ecc71" : "#e74c3c";
+  ctx.fillText((pct >= 0 ? "+" : "") + pct.toFixed(2) + "% 24H", bx, by + br + 42);
+  ctx.textAlign = "left";
+  ctx.font = "10px Consolas, monospace"; ctx.fillStyle = "rgba(127,139,163,.9)";
+  const dots = "." .repeat(1 + Math.floor(now / 500) % 3);
+  ctx.fillText("NEURAL QUANT CORE \u00b7 ANALYZING" + dots, 14, H - 26);
+  ctx.fillText("DATA: BINANCE WS \u00b7 LIVE" + (nqcConf !== null ? " \u00b7 CONF " + Math.round(nqcConf) + "%" : ""), 14, H - 12);
+}
+function nqcFrame() {
+  nqcDraw();
+  requestAnimationFrame(nqcFrame);
+}
+requestAnimationFrame(nqcFrame);
 fetchRealPrices();
 setInterval(fetchRealPrices, 30000);
 setInterval(() => { sampleEquity(); aiTick(); goalTick(); saveState(); drawDashboard(); renderAi(); }, 1000);
