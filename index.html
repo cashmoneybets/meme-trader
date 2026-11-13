@@ -1174,7 +1174,7 @@
   <h2>🧬 <span data-i18n="nqcTitle">Neural Quant Core</span> <span class="cc-badge sim" data-i18n="ccSimBadge">SIMULATION &middot; PAPER TRADING</span></h2>
   <div class="nqc-wrap">
     <canvas id="nqcCv"></canvas>
-    <div class="nqc-insp" id="nqcInsp">Holographic AI core scanning the live BTC market &mdash; candles are real Binance prices, the scan line reads the market and pulses are neural data flowing to the Bitcoin core.</div>
+    <div class="nqc-insp" id="nqcInsp">Neural quant core watching the live BTC market &mdash; candles are real Binance prices and the neural ring reacts to every price move.</div>
   </div>
 </section>
 
@@ -4781,43 +4781,7 @@ requestAnimationFrame(lbccFrame);
 
 /* ================= NEURAL QUANT CORE ================= */
 const nqcParticles = Array.from({ length: 40 }, () => ({ x: Math.random(), y: Math.random(), sp: 0.02 + Math.random() * 0.06, sz: 0.6 + Math.random() * 1.6, ph: Math.random() * 6.283 }));
-const nqcNodes = Array.from({ length: 7 }, (_, i) => ({ a: i / 7 * 6.283, w: Math.random() }));
-const nqcPulses = [];
-const nqcFig = [], nqcSegs = [];
-(function () {
-  let prev = null;
-  for (let i = 0; i < 56; i++) {
-    const a = i / 56 * 6.283 - 1.57;
-    nqcFig.push({ nx: Math.cos(a) * 26, ny: Math.sin(a) * 28, sz: 0.9 + Math.random() * 0.9, ph: Math.random() * 6.283, sp: 0.6 + Math.random() * 1.2, v: Math.random() < 0.12 });
-    if (prev !== null) nqcSegs.push([prev, nqcFig.length - 1]);
-    prev = nqcFig.length - 1;
-  }
-  nqcSegs.push([prev, nqcFig.length - 56]);
-  const side = (x1, y1, x2, y2, x3, y3, n) => {
-    let pp = null;
-    for (let i = 0; i <= n; i++) {
-      const tt = i / n;
-      let x, y;
-      if (tt < 0.5) { const t2 = tt / 0.5; x = x1 + (x2 - x1) * t2; y = y1 + (y2 - y1) * t2; }
-      else { const t2 = (tt - 0.5) / 0.5; x = x2 + (x3 - x2) * t2; y = y2 + (y3 - y2) * t2; }
-      nqcFig.push({ nx: x, ny: y, sz: 0.8 + Math.random() * 0.9, ph: Math.random() * 6.283, sp: 0.6 + Math.random() * 1.2, v: Math.random() < 0.12 });
-      if (pp !== null) nqcSegs.push([pp, nqcFig.length - 1]);
-      pp = nqcFig.length - 1;
-    }
-  };
-  side(-11, 30, -26, 46, -40, 64, 9);
-  side(-40, 64, -40, 100, -40, 100, 6);
-  side(11, 30, 26, 46, 40, 64, 9);
-  side(40, 64, 40, 100, 40, 100, 6);
-  side(-40, 100, 0, 103, 40, 100, 10);
-  for (let i = 0; i < 46; i++) {
-    nqcFig.push({ nx: (Math.random() * 2 - 1) * 36, ny: 32 + Math.random() * 66, sz: 0.6 + Math.random() * 0.9, ph: Math.random() * 6.283, sp: 0.6 + Math.random() * 1.6, v: Math.random() < 0.15 });
-  }
-  for (let i = 0; i < 16; i++) {
-    const a = Math.random() * 6.283, r = Math.random() * 22;
-    nqcFig.push({ nx: Math.cos(a) * r, ny: Math.sin(a) * r * 1.05, sz: 0.6 + Math.random() * 0.8, ph: Math.random() * 6.283, sp: 0.8 + Math.random() * 1.6, v: Math.random() < 0.25 });
-  }
-})();
+const nqcNodes = Array.from({ length: 8 }, (_, i) => ({ a: i / 8 * 6.283, w: Math.random() }));
 let nqcLastPx = 0, nqcRing = 0, nqcConf = null;
 setInterval(() => { try { const a = aiAnalysis("BTCUSDT"); nqcConf = a && a.confidence ? a.confidence : null; } catch (e) { nqcConf = null; } }, 1000);
 function nqcCandles() {
@@ -4828,15 +4792,6 @@ function nqcCandles() {
     out.push({ o: a, c: c2, hi: Math.max(a, b, c2), lo: Math.min(a, b, c2) });
   }
   return out.slice(-40);
-}
-function nqcRRect(ctx, x, y, w, h, r) {
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.arcTo(x + w, y, x + w, y + h, r);
-  ctx.arcTo(x + w, y + h, x, y + h, r);
-  ctx.arcTo(x, y + h, x, y, r);
-  ctx.arcTo(x, y, x + w, y, r);
-  ctx.closePath();
 }
 function nqcDraw() {
   const c = document.getElementById("nqcCv");
@@ -4863,8 +4818,10 @@ function nqcDraw() {
   const P = aiPrices.BTCUSDT || { price: 0, open: 0 };
   if (P.price > 0 && nqcLastPx && Math.abs(P.price - nqcLastPx) / P.price > 0.0002) nqcRing = 1;
   nqcLastPx = P.price; nqcRing *= 0.94;
+  const u = Math.min(W, H) / 380;
+  const bx = W * 0.84, by = H * 0.30, br = 40 * u;
   const cds = nqcCandles();
-  const bx0 = W * 0.36, bx1 = W - 30, byT = 24, byB = H * 0.60;
+  const bx0 = W * 0.05, bx1 = bx - br - 40, byT = 26, byB = H * 0.72;
   if (cds.length > 1) {
     let mn = Infinity, mx = -Infinity;
     cds.forEach(cd => { mn = Math.min(mn, cd.lo); mx = Math.max(mx, cd.hi); });
@@ -4877,28 +4834,12 @@ function nqcDraw() {
       const yL = byB - (cd.lo - mn) / (mx - mn) * (byB - byT);
       const yO = byB - (cd.o - mn) / (mx - mn) * (byB - byT);
       const yC = byB - (cd.c - mn) / (mx - mn) * (byB - byT);
-      ctx.strokeStyle = ctx.fillStyle = up ? "rgba(46,204,113,.4)" : "rgba(231,76,60,.4)";
+      ctx.strokeStyle = ctx.fillStyle = up ? "rgba(46,204,113,.42)" : "rgba(231,76,60,.42)";
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(x, yH); ctx.lineTo(x, yL); ctx.stroke();
       ctx.fillRect(x - cw * 0.3, Math.min(yO, yC), Math.max(1.5, cw * 0.6), Math.max(1.5, Math.abs(yC - yO)));
     });
   }
-  const u = Math.min(W, H) / 380;
-  const bob = Math.sin(ts * 1.1) * 4;
-  const rx = W * 0.16, ry = H * 0.38 + bob;
-  ctx.strokeStyle = "rgba(0,206,201,.22)"; ctx.lineWidth = 1;
-  for (let i = 0; i < 4; i++) {
-    const y0 = H * 0.40 - 30 + i * 20, x0 = W * 0.72 + 50 * u + 6;
-    const xm = Math.min(W - 20, x0 + 40 + i * 18);
-    const y1 = y0 + (i % 2 ? 26 : -26);
-    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(xm, y0); ctx.lineTo(xm, y1); ctx.lineTo(W - 14, y1); ctx.stroke();
-    const total = (xm - x0) + Math.abs(y1 - y0) + (W - 14 - xm);
-    let d = ((now / 1400) + i * 0.25) % 1 * total, cx2, cy2;
-    if (d < xm - x0) { cx2 = x0 + d; cy2 = y0; }
-    else { d -= xm - x0; if (d < Math.abs(y1 - y0)) { cx2 = xm; cy2 = y0 + Math.sign(y1 - y0) * d; } else { d -= Math.abs(y1 - y0); cx2 = xm + d; cy2 = y1; } }
-    ctx.fillStyle = "#00cec9"; ctx.beginPath(); ctx.arc(cx2, cy2, 1.8, 0, 6.283); ctx.fill();
-  }
-  const bx = W * 0.72, by = H * 0.40, br = 44 * u;
   const gg = ctx.createRadialGradient(bx, by, 0, bx, by, br * 2);
   gg.addColorStop(0, "rgba(247,147,26,.32)"); gg.addColorStop(1, "rgba(0,0,0,0)");
   ctx.fillStyle = gg; ctx.fillRect(bx - br * 2, by - br * 2, br * 4, br * 4);
@@ -4920,90 +4861,37 @@ function nqcDraw() {
     ctx.strokeStyle = "rgba(0,206,201," + nqcRing.toFixed(3) + ")"; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(bx, by, br + 10 + (1 - nqcRing) * 30, 0, 6.283); ctx.stroke();
   }
-  const beams = [
-    [rx + 40 * u, ry + 40 * u, bx - br - 6, by + 10],
-    [rx + 20 * u, ry - 20 * u, bx - br - 6, by - 14]
-  ];
-  beams.forEach((bm, bi) => {
-    ctx.strokeStyle = bi ? "rgba(162,155,254,.25)" : "rgba(0,206,201,.25)";
-    ctx.setLineDash([4, 6]); ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(bm[0], bm[1]);
-    ctx.quadraticCurveTo((bm[0] + bm[2]) / 2, (bm[1] + bm[3]) / 2 - 40, bm[2], bm[3]);
-    ctx.stroke(); ctx.setLineDash([]);
-    if (Math.random() < 0.05) nqcPulses.push({ bi, p: 0, sp: 0.008 + Math.random() * 0.01 });
-  });
-  for (let i = nqcPulses.length - 1; i >= 0; i--) {
-    const pl = nqcPulses[i];
-    pl.p += pl.sp;
-    if (pl.p >= 1) { nqcPulses.splice(i, 1); continue; }
-    const bm = beams[pl.bi];
-    const mx2 = (bm[0] + bm[2]) / 2, my2 = (bm[1] + bm[3]) / 2 - 40;
-    const tt = pl.p, it = 1 - tt;
-    const px2 = it * it * bm[0] + 2 * it * tt * mx2 + tt * tt * bm[2];
-    const py2 = it * it * bm[1] + 2 * it * tt * my2 + tt * tt * bm[3];
-    ctx.fillStyle = "#7fe3ff"; ctx.shadowColor = "#00cec9"; ctx.shadowBlur = 8;
-    ctx.beginPath(); ctx.arc(px2, py2, 2.5, 0, 6.283); ctx.fill(); ctx.shadowBlur = 0;
-  }
-  const cone = ctx.createLinearGradient(0, ry + 130 * u, 0, ry - 70 * u);
-  cone.addColorStop(0, "rgba(0,206,201,.12)"); cone.addColorStop(1, "rgba(0,206,201,0)");
-  ctx.fillStyle = cone;
-  ctx.beginPath();
-  ctx.moveTo(rx - 34 * u, ry + 128 * u); ctx.lineTo(rx + 34 * u, ry + 128 * u);
-  ctx.lineTo(rx + 44 * u, ry - 70 * u); ctx.lineTo(rx - 44 * u, ry - 70 * u);
-  ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = "rgba(0,206,201,.5)"; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.ellipse(rx, ry + 130 * u, 36 * u, 8 * u, 0, 0, 6.283); ctx.stroke();
-  const scanY = ry - 60 * u + ((now / 3000) % 1) * 190 * u;
-  ctx.strokeStyle = "rgba(127,227,255,.28)"; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(rx - 46 * u, scanY); ctx.lineTo(rx + 46 * u, scanY); ctx.stroke();
-  for (const p of nqcFig) {
-    const jx = Math.sin(ts * p.sp + p.ph) * 1.6, jy = Math.cos(ts * p.sp * 0.8 + p.ph) * 1.6;
-    const x = rx + p.nx * u + jx, y = ry + p.ny * u + jy;
-    const near = Math.max(0, 1 - Math.abs(y - scanY) / (16 * u));
-    const a = Math.min(0.9, 0.16 + 0.22 * (0.5 + 0.5 * Math.sin(ts * 2 + p.ph)) + near * 0.55);
-    ctx.fillStyle = p.v ? "rgba(162,155,254," + a.toFixed(3) + ")" : "rgba(0,206,201," + a.toFixed(3) + ")";
-    ctx.beginPath(); ctx.arc(x, y, p.sz * u * (1 + near * 0.6), 0, 6.283); ctx.fill();
-  }
-  ctx.strokeStyle = "rgba(0,206,201,.16)"; ctx.lineWidth = 1;
-  for (const seg of nqcSegs) {
-    const p1 = nqcFig[seg[0]], p2 = nqcFig[seg[1]];
-    ctx.beginPath();
-    ctx.moveTo(rx + p1.nx * u, ry + p1.ny * u);
-    ctx.lineTo(rx + p2.nx * u, ry + p2.ny * u);
-    ctx.stroke();
-  }
-  const eyeA = 0.55 + 0.45 * Math.sin(ts * 3);
-  ctx.fillStyle = "rgba(127,227,255," + eyeA.toFixed(3) + ")";
-  ctx.shadowColor = "#00cec9"; ctx.shadowBlur = 10;
-  ctx.beginPath(); ctx.arc(rx - 9 * u, ry - 4 * u, 3.4 * u, 0, 6.283); ctx.fill();
-  ctx.beginPath(); ctx.arc(rx + 9 * u, ry - 4 * u, 3.4 * u, 0, 6.283); ctx.fill();
-  ctx.shadowBlur = 0;
-  const coreA = 0.5 + 0.4 * Math.sin(ts * 2.4);
-  const cg3 = ctx.createRadialGradient(rx, ry + 62 * u, 0, rx, ry + 62 * u, 16 * u);
-  cg3.addColorStop(0, "rgba(0,206,201," + (coreA * 0.8).toFixed(3) + ")");
-  cg3.addColorStop(1, "rgba(0,206,201,0)");
-  ctx.fillStyle = cg3;
-  ctx.fillRect(rx - 16 * u, ry + 46 * u, 32 * u, 32 * u);
-  ctx.strokeStyle = "rgba(0,206,201,.7)"; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.arc(rx, ry + 62 * u, 6 * u, 0, 6.283); ctx.stroke();
-  const hx = rx, hy = ry;
-  nqcNodes.forEach(n => { n.a += 0.004 + n.w * 0.004; });
+  nqcNodes.forEach(n => { n.a += 0.005 + n.w * 0.005; });
   ctx.lineWidth = 1;
   for (let i = 0; i < nqcNodes.length; i++) {
     for (let j = i + 1; j < nqcNodes.length; j++) {
       if ((i + j) % 3) continue;
-      const x1 = hx + Math.cos(nqcNodes[i].a) * 36 * u, y1 = hy + Math.sin(nqcNodes[i].a) * 28 * u;
-      const x2 = hx + Math.cos(nqcNodes[j].a) * 36 * u, y2 = hy + Math.sin(nqcNodes[j].a) * 28 * u;
-      ctx.strokeStyle = "rgba(162,155,254,.18)";
+      const x1 = bx + Math.cos(nqcNodes[i].a) * (br + 26), y1 = by + Math.sin(nqcNodes[i].a) * (br + 26);
+      const x2 = bx + Math.cos(nqcNodes[j].a) * (br + 26), y2 = by + Math.sin(nqcNodes[j].a) * (br + 26);
+      ctx.strokeStyle = "rgba(162,155,254,.2)";
       ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
     }
   }
   nqcNodes.forEach(n => {
-    const x = hx + Math.cos(n.a) * 36 * u, y = hy + Math.sin(n.a) * 28 * u;
+    const x = bx + Math.cos(n.a) * (br + 26), y = by + Math.sin(n.a) * (br + 26);
     const a = 0.3 + 0.5 * Math.max(0, Math.sin(ts * 2 + n.a * 3));
     ctx.fillStyle = "rgba(162,155,254," + a.toFixed(3) + ")";
-    ctx.beginPath(); ctx.arc(x, y, 2.2, 0, 6.283); ctx.fill();
+    ctx.beginPath(); ctx.arc(x, y, 2.4, 0, 6.283); ctx.fill();
   });
+  if (W - (bx + br + 14) > 60) {
+    ctx.strokeStyle = "rgba(0,206,201,.22)"; ctx.lineWidth = 1;
+    for (let i = 0; i < 4; i++) {
+      const y0 = by - 30 + i * 20, x0 = bx + br + 10;
+      const xm = Math.min(W - 20, x0 + 40 + i * 18);
+      const y1 = y0 + (i % 2 ? 26 : -26);
+      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(xm, y0); ctx.lineTo(xm, y1); ctx.lineTo(W - 14, y1); ctx.stroke();
+      const total = (xm - x0) + Math.abs(y1 - y0) + (W - 14 - xm);
+      let d = ((now / 1400) + i * 0.25) % 1 * total, cx2, cy2;
+      if (d < xm - x0) { cx2 = x0 + d; cy2 = y0; }
+      else { d -= xm - x0; if (d < Math.abs(y1 - y0)) { cx2 = xm; cy2 = y0 + Math.sign(y1 - y0) * d; } else { d -= Math.abs(y1 - y0); cx2 = xm + d; cy2 = y1; } }
+      ctx.fillStyle = "#00cec9"; ctx.beginPath(); ctx.arc(cx2, cy2, 1.8, 0, 6.283); ctx.fill();
+    }
+  }
   ctx.textAlign = "center";
   ctx.font = "bold 13px Consolas, monospace"; ctx.fillStyle = "#f7931a";
   ctx.fillText("BTC/USDT " + (P.price > 0 ? "$" + Math.round(P.price).toLocaleString("en-US") : "\u2014"), bx, by + br + 26);
@@ -5012,7 +4900,7 @@ function nqcDraw() {
   ctx.fillText((pct >= 0 ? "+" : "") + pct.toFixed(2) + "% 24H", bx, by + br + 42);
   ctx.textAlign = "left";
   ctx.font = "10px Consolas, monospace"; ctx.fillStyle = "rgba(127,139,163,.9)";
-  const dots = "." .repeat(1 + Math.floor(now / 500) % 3);
+  const dots = ".".repeat(1 + Math.floor(now / 500) % 3);
   ctx.fillText("NEURAL QUANT CORE \u00b7 ANALYZING" + dots, 14, H - 26);
   ctx.fillText("DATA: BINANCE WS \u00b7 LIVE" + (nqcConf !== null ? " \u00b7 CONF " + Math.round(nqcConf) + "%" : ""), 14, H - 12);
 }
