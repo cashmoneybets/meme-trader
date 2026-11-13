@@ -507,6 +507,9 @@
   .lbcc-sub { font-size: 10px; color: var(--muted); margin-top: 4px; font-family: Consolas, monospace; }
   .lbcc-strow { font-size: 11.5px; display: flex; align-items: center; gap: 6px; padding: 2px 0; color: var(--text); }
   .lbcc-last { font-size: 12px; color: var(--text); min-height: 30px; font-family: Consolas, monospace; }
+  .quicknav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .qn-btn { display: inline-flex; align-items: center; gap: 6px; background: rgba(108,92,231,.08); border: 1px solid var(--border); color: var(--text); border-radius: 18px; padding: 6px 12px; font-size: 12px; cursor: pointer; }
+  .qn-btn:hover { border-color: var(--accent); box-shadow: 0 0 10px rgba(108,92,231,.35); }
   @media (max-width: 1100px) { .lbcc-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 700px) { .lbcc-grid { grid-template-columns: repeat(2, 1fr); } #lbccChart { height: 230px; } .lbcc-title { font-size: 15px; } .lbcc-v { font-size: 18px; } }
 </style>
@@ -550,6 +553,12 @@
 <main>
   <!-- PAGE MARCHÉ -->
   <section class="page active" id="page-coins">
+    <div class="quicknav">
+      <button class="qn-btn" data-target="cc">🧠 <span data-i18n="ccTitle">AI Command Center</span></button>
+      <button class="qn-btn" data-target="lq">📊 <span data-i18n="lqTitle">Live Quant Control Center</span></button>
+      <button class="qn-btn" data-target="aiBot">🤖 <span data-i18n="aiTitle">AI Trading Bot</span></button>
+      <button class="qn-btn" data-target="ng">🌐 <span data-i18n="ngTitle">Neural Grid</span></button>
+    </div>
     <div class="reset-row"><button id="btnReset" data-i18n="resetAccount">💰 Choose your starting capital</button></div>
     <div class="bot-tv-row">
     <div class="bot-stack">
@@ -674,6 +683,12 @@
 
   <!-- PAGE DASHBOARD -->
   <section class="page" id="page-dashboard">
+    <div class="quicknav">
+      <button class="qn-btn" data-target="cc">🧠 <span data-i18n="ccTitle">AI Command Center</span></button>
+      <button class="qn-btn" data-target="lq">📊 <span data-i18n="lqTitle">Live Quant Control Center</span></button>
+      <button class="qn-btn" data-target="aiBot">🤖 <span data-i18n="aiTitle">AI Trading Bot</span></button>
+      <button class="qn-btn" data-target="ng">🌐 <span data-i18n="ngTitle">Neural Grid</span></button>
+    </div>
     <h2 data-i18n="dashTitle">📊 Performance</h2>
     <div class="stat-cards">
       <div class="scard dash"><div class="dash-ico">📈</div><div class="scard-l" data-i18n="totalPnl">Total P&L</div><div class="scard-v" id="dPnl">—</div><div class="dash-sub" id="dPnlPct">—</div></div>
@@ -715,12 +730,24 @@
 
   <!-- PAGE HISTORIQUE -->
   <section class="page" id="page-history">
+    <div class="quicknav">
+      <button class="qn-btn" data-target="cc">🧠 <span data-i18n="ccTitle">AI Command Center</span></button>
+      <button class="qn-btn" data-target="lq">📊 <span data-i18n="lqTitle">Live Quant Control Center</span></button>
+      <button class="qn-btn" data-target="aiBot">🤖 <span data-i18n="aiTitle">AI Trading Bot</span></button>
+      <button class="qn-btn" data-target="ng">🌐 <span data-i18n="ngTitle">Neural Grid</span></button>
+    </div>
     <h2 data-i18n="historyTitle">📜 Trade history</h2>
     <ul id="history"></ul>
   </section>
 
   <!-- LIVE BOT COMMAND CENTER -->
   <section class="page" id="page-lbcc">
+    <div class="quicknav">
+      <button class="qn-btn" data-target="cc">🧠 <span data-i18n="ccTitle">AI Command Center</span></button>
+      <button class="qn-btn" data-target="lq">📊 <span data-i18n="lqTitle">Live Quant Control Center</span></button>
+      <button class="qn-btn" data-target="aiBot">🤖 <span data-i18n="aiTitle">AI Trading Bot</span></button>
+      <button class="qn-btn" data-target="ng">🌐 <span data-i18n="ngTitle">Neural Grid</span></button>
+    </div>
     <div class="lbcc-head">
       <h2 class="lbcc-title" data-i18n="lbccTitle">LIVE BOT COMMAND CENTER</h2>
       <div class="lbcc-live"><span class="lbcc-dot on"></span><span data-i18n="lbccLive">LIVE</span><span>&middot;</span><span data-i18n="lbccUpdated">Last update</span><b id="lbccUp">&mdash;</b></div>
@@ -4726,6 +4753,9 @@ function lbccFrame() {
 }
 document.querySelectorAll(".lbcc-chip").forEach(ch => {
   ch.onclick = () => { const b = ch.dataset.bot; lbccShow[b] = !lbccShow[b]; ch.classList.toggle("on", lbccShow[b]); };
+});
+document.querySelectorAll(".qn-btn").forEach(b => {
+  b.onclick = () => { const el = document.getElementById(b.dataset.target); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); };
 });
 lbccSample();
 setInterval(lbccSample, 1000);
