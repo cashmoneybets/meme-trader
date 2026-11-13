@@ -539,7 +539,7 @@
             </select>
           </label>
           <label><span data-i18n="stakeLabel">Stake per trade (€)</span>
-            <input type="number" id="botAmountComm" min="10" step="10" value="50">
+            <input type="number" id="botAmountComm" min="1" step="1" value="50">
           </label>
           <label><span data-i18n="tpLabel">Take-profit (%)</span>
             <input type="number" id="botTPComm" min="0.5" step="0.5" value="2">
@@ -561,7 +561,7 @@
             </select>
           </label>
           <label><span data-i18n="stakeLabel">Stake per trade (€)</span>
-            <input type="number" id="botAmountCrypto" min="10" step="10" value="50">
+            <input type="number" id="botAmountCrypto" min="1" step="1" value="50">
           </label>
           <label><span data-i18n="tpLabel">Take-profit (%)</span>
             <input type="number" id="botTPCrypto" min="0.5" step="0.5" value="2">
@@ -4280,12 +4280,13 @@ function openCapModal(mode) {
 function closeCapModal() { const m = document.getElementById("capModal"); if (m) m.classList.remove("open"); }
 function applyCapital(cap) {
   cap = Math.max(10, Math.min(1000000, Math.round(cap)));
+  const botStake = Math.max(1, Math.round(cap * 0.10));
   if (capMode === "reset") {
     state = {
       cash: cap, startCapital: cap, holdings: {}, bets: [], history: [],
       markets: buildMarkets(), coinPrices: {},
-      botComm: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
-      botCrypto: { enabled: false, strategy: "auto", amount: 50, tp: 2, sl: 1.5 },
+      botComm: { enabled: false, strategy: "auto", amount: botStake, tp: 2, sl: 1.5 },
+      botCrypto: { enabled: false, strategy: "auto", amount: botStake, tp: 2, sl: 1.5 },
       equity: [], equityLong: [],
       stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, botPnl: 0, tradePnls: [], fees: 0 },
       ai: { enabled: false, positions: [], trades: [], stats: { trades: 0, wins: 0, losses: 0, best: null, worst: null, totalPnl: 0 }, cooldown: 0, pair: "AUTO", auto: true },
@@ -4296,8 +4297,14 @@ function applyCapital(cap) {
   } else {
     state.startCapital = cap;
     state.cash = cap;
+    state.botComm.amount = botStake;
+    state.botCrypto.amount = botStake;
     saveState(); render(); renderBot(); renderAi();
   }
+  ["botAmountComm", "botAmountCrypto"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = botStake;
+  });
   toast(t("resetToast", { amt: fmtEur(cap) }));
   closeCapModal();
 }
@@ -4326,7 +4333,7 @@ function bindBotToggle(prefix, key) {
     const b = state[key];
     b.enabled = !b.enabled;
     b.strategy = document.getElementById("botStrategy" + prefix).value;
-    b.amount = Math.max(10, parseFloat(document.getElementById("botAmount" + prefix).value) || 50);
+    b.amount = Math.max(1, parseFloat(document.getElementById("botAmount" + prefix).value) || 50);
     b.tp = Math.max(1, parseFloat(document.getElementById("botTP" + prefix).value) || 5);
     b.sl = Math.max(1, parseFloat(document.getElementById("botSL" + prefix).value) || 3);
     saveState(); renderBot();
