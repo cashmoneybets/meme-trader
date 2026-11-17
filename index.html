@@ -1005,7 +1005,7 @@
     <div class="lq-bot" id="lqb4">
       <div class="lq-bhead">
         <span class="lq-live"><span class="lq-dot"></span>LIVE</span>
-        <span class="lq-bname">BOT 04 &middot; TRADE HIGHWAY</span>
+        <span class="lq-bname">BOT 04 &middot; GLOBAL SURVEILLANCE</span>
         <div class="lq-bstats">
           <span>PNL <b id="lq4hpnl">+$0</b></span>
           <span>TRADES <b id="lq4htr">0</b></span>
@@ -1015,7 +1015,7 @@
         <button class="lq-fs" title="Fullscreen">&#9974;</button>
       </div>
       <canvas id="lqc4" class="lq-big"></canvas>
-      <div class="lq-insp" id="lq4insp">Live trade highway &mdash; each car is a trade routed by a bot to its asset gate</div>
+      <div class="lq-insp" id="lq4insp">Futuristic intel grid &mdash; a radar sweep scans the live assets and every trade is an intercepted signal ping</div>
       <div class="lq-sub">
         <div class="lq-cell">
           <div class="lq-ctitle">TRADE ROUTER &mdash; BOT &rarr; ASSET</div>
@@ -3647,11 +3647,11 @@ const lqB = {
   b1: { pnl: 0, trades: 0, wins: 0, hist: [], log: [], fills: [], assets: {}, wf: [], agents: [], d: {} },
   b2: { pnl: 0, trades: 0, wins: 0, hist: [], tape: [], rows: [], sigma: [], hedgeHist: [], d: {} },
   b3: { pnl: 0, trades: 0, wins: 0, hist: [], log: [], minis: Array.from({ length: 8 }, () => []), net: LQ_NET.map((n, i) => ({ n, a: i / 9 * 6.283 - 1.57, w: Math.random() })), links: [], tsi: 0, conf: 50, inst: [], d: {} },
-  b4: { pnl: 0, n: 0, wins: 0, fills: 0, hist: [], tape: [], gates: {}, routes: {}, cars: [], gateFl: {}, trades: [], pnlHist: [], d: {} }
+  b4: { pnl: 0, n: 0, wins: 0, fills: 0, hist: [], tape: [], gates: {}, routes: {}, pings: [], trades: [], pnlHist: [], d: {} }
 };
 for (let i = 0; i < 9; i++) for (let j = i + 1; j < 9; j++) if (Math.random() < 0.35) lqB.b3.links.push([i, j, Math.random()]);
 ["SCOUT", "SIGNAL", "RISK", "EXECUTION", "ARBITRAGE", "MONITOR"].forEach(n => lqB.b1.agents.push({ n, st: "ONLINE" }));
-let lqVisible = true, lqPaused = false, lq4Flash = 0;
+let lqVisible = true, lqPaused = false;
 const lqImps1 = [], lqImps2 = [];
 const LQ_DUSTCOL = ["#b39dff", "#7fe3ff", "#ff9ad5"];
 const lqNebula = [
@@ -3690,8 +3690,9 @@ function lqSpawnCar(b4, lane, asset, hot) {
   const I = lqInstr[asset];
   const mom = I ? I.mom : 0;
   const side = Math.random() < 0.5 + Math.max(-0.35, Math.min(0.35, mom * 0.1)) ? "BUY" : "SELL";
-  b4.cars.push({ lane, x: -30 - Math.random() * 60, sp: lqRnd(60, 130), col: L.col, asset, side, hot });
-  if (b4.cars.length > 40) b4.cars.splice(0, b4.cars.length - 40);
+  b4.pings.push({ asset, side, hot, t: Date.now(), bot: L.bot, col: L.col });
+  if (b4.pings.length > 24) b4.pings.splice(0, b4.pings.length - 24);
+  b4.gates[asset] = (b4.gates[asset] || 0) + 1;
   const key = L.bot + "\u2192" + asset;
   const r = b4.routes[key] || (b4.routes[key] = { n: 0, bot: L.bot, col: L.col, asset });
   r.n++; r.side = side; r.tm = new Date().toTimeString().slice(0, 8);
@@ -3801,7 +3802,6 @@ function lqTick() {
   lqPush(b4.hist, b4.fills, 90);
   if (Math.random() < 0.6) {
     lqTape(b4, Math.random() < 0.5 + lqInstr.BTC.mom ? "BUY" : "SELL", Math.floor(lqRnd(10, 90)), lqRnd(0.3, 0.9), lqRnd(-0.01, 0.05));
-    lq4Flash = 1;
     b4.fills++;
   }
   if (Math.random() < 0.35) {
@@ -4063,81 +4063,151 @@ function lqDraw3() {
 function lqDraw4() {
   const C = lqCtx("lqc4", 320); if (!C) return;
   const { ctx, w, h } = C;
-  const now = Date.now();
+  const now = Date.now(), ts = now / 1000;
   const b4 = lqB.b4;
-  const dt = Math.min(0.05, Math.max(0, (now - (b4._lt || now)) / 1000));
-  b4._lt = now;
   ctx.clearRect(0, 0, w, h);
   lqGridBg(ctx, w, h);
-  const roadTop = 12, roadBot = h - 24, laneH = (roadBot - roadTop) / LQ_LANES.length;
-  const gateX = w - 74;
-  const grd = ctx.createLinearGradient(0, roadTop, 0, roadBot);
-  grd.addColorStop(0, "rgba(10,16,28,.92)"); grd.addColorStop(1, "rgba(6,10,18,.96)");
-  ctx.fillStyle = grd; ctx.fillRect(0, roadTop, gateX, roadBot - roadTop);
-  ctx.setLineDash([10, 18]); ctx.lineDashOffset = -(now / 33) % 28;
-  ctx.strokeStyle = "rgba(127,139,163,.28)"; ctx.lineWidth = 1;
-  for (let i = 1; i < LQ_LANES.length; i++) {
-    const y = roadTop + i * laneH;
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(gateX, y); ctx.stroke();
+  if (!b4.nodes) {
+    const names = ["BTC", "ETH", "SOL", "XAU", "XAG", "WTI", "NG", "DOGE", "HYPE"];
+    b4.nodes = names.map((nm, i) => ({
+      name: nm,
+      a: (i / names.length) * 6.283 + 0.35 + (i % 3) * 0.12,
+      r: 0.30 + ((i * 53) % 100) / 100 * 0.22
+    }));
   }
-  ctx.setLineDash([]);
-  ctx.strokeStyle = "rgba(0,206,201,.55)";
-  ctx.beginPath(); ctx.moveTo(0, roadTop); ctx.lineTo(gateX, roadTop); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(0, roadBot); ctx.lineTo(gateX, roadBot); ctx.stroke();
-  ctx.font = "8px Consolas, monospace"; ctx.textAlign = "left";
-  LQ_LANES.forEach((L, i) => {
-    ctx.globalAlpha = 0.85; ctx.fillStyle = L.col;
-    ctx.fillText(L.bot, 6, roadTop + i * laneH + laneH / 2 + 3);
-    ctx.globalAlpha = 1;
-  });
-  const gateH = (roadBot - roadTop) / LQ_GATES.length;
-  LQ_GATES.forEach((g, i) => {
-    const gy = roadTop + i * gateH;
-    const fl = b4.gateFl[g] || 0;
-    ctx.fillStyle = "rgba(0,206,201," + (0.06 + fl * 0.25).toFixed(3) + ")";
-    ctx.fillRect(gateX, gy + 1, w - gateX - 4, gateH - 2);
-    ctx.strokeStyle = "rgba(0,206,201," + (0.35 + fl * 0.6).toFixed(3) + ")"; ctx.lineWidth = 1;
-    ctx.strokeRect(gateX + 0.5, gy + 1.5, w - gateX - 5, gateH - 3);
-    ctx.font = "bold 8.5px Consolas, monospace"; ctx.textAlign = "left";
-    ctx.fillStyle = fl > 0.3 ? "#7fe3ff" : "rgba(200,210,228,.85)";
-    ctx.fillText(g, gateX + 6, gy + gateH / 2 + 3);
-    ctx.fillStyle = "#00cec9"; ctx.textAlign = "right";
-    ctx.fillText(String(b4.gates[g] || 0), w - 8, gy + gateH / 2 + 3);
-    if (fl > 0.02) b4.gateFl[g] = fl * 0.9;
-  });
-  const gateLine = gateX - 10;
-  for (let i = b4.cars.length - 1; i >= 0; i--) {
-    const c = b4.cars[i];
-    c.x += c.sp * dt;
-    if (c.x >= gateLine) {
-      b4.gates[c.asset] = (b4.gates[c.asset] || 0) + 1;
-      b4.gateFl[c.asset] = 1;
-      b4.cars.splice(i, 1);
-      continue;
+  const cx = w * 0.36, cy = h * 0.50, R = Math.min(w * 0.30, h * 0.42);
+  // phosphor rings + cross
+  ctx.strokeStyle = "rgba(57,255,106,.16)"; ctx.lineWidth = 1;
+  for (let i = 1; i <= 4; i++) { ctx.beginPath(); ctx.arc(cx, cy, R * i / 4, 0, 6.283); ctx.stroke(); }
+  ctx.beginPath(); ctx.moveTo(cx - R, cy); ctx.lineTo(cx + R, cy); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx, cy - R); ctx.lineTo(cx, cy + R); ctx.stroke();
+  // degree ticks
+  ctx.strokeStyle = "rgba(57,255,106,.3)";
+  for (let i = 0; i < 36; i++) {
+    const a = i / 36 * 6.283, r0 = R + 3, r1 = R + (i % 9 ? 6 : 10);
+    ctx.beginPath(); ctx.moveTo(cx + Math.cos(a) * r0, cy + Math.sin(a) * r0);
+    ctx.lineTo(cx + Math.cos(a) * r1, cy + Math.sin(a) * r1); ctx.stroke();
+  }
+  // rotating sweep beam (trailing fade)
+  const sw = (now / 2200) % 6.283;
+  ctx.globalCompositeOperation = "lighter";
+  for (let k = 0; k < 34; k++) {
+    const a = sw - k * 0.035;
+    ctx.strokeStyle = "rgba(57,255,106," + (0.16 * (1 - k / 34)).toFixed(3) + ")";
+    ctx.lineWidth = k ? 2 : 3;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R); ctx.stroke();
+  }
+  ctx.globalCompositeOperation = "source-over";
+  ctx.fillStyle = "#39ff6a";
+  ctx.beginPath(); ctx.arc(cx, cy, 2.4, 0, 6.283); ctx.fill();
+  // recent pings per asset
+  const lastPing = {};
+  for (const p of b4.pings) { const t2 = (now - p.t) / 1200; if (t2 < 1 && (!lastPing[p.asset] || p.t > lastPing[p.asset].t)) lastPing[p.asset] = p; }
+  // target nodes with live prices
+  ctx.font = "8px Consolas, monospace";
+  for (const nd of b4.nodes) {
+    nd.a += 0.0004;
+    const px = lqAssetPx(nd.name);
+    const x = cx + Math.cos(nd.a) * nd.r * R, y = cy + Math.sin(nd.a) * nd.r * R;
+    const p = lastPing[nd.name];
+    const isHot = !!p;
+    // pulse ring on ping
+    if (p) {
+      const t2 = (now - p.t) / 1200;
+      ctx.strokeStyle = "rgba(57,255,106," + (0.8 * (1 - t2)).toFixed(3) + ")";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(x, y, 4 + t2 * 16, 0, 6.283); ctx.stroke();
     }
-    const cy2 = roadTop + c.lane * laneH + laneH / 2;
-    ctx.globalCompositeOperation = "lighter";
-    const cg = ctx.createRadialGradient(c.x, cy2, 0, c.x, cy2, 12);
-    cg.addColorStop(0, c.col); cg.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.globalAlpha = c.hot ? 0.5 : 0.28;
-    ctx.fillStyle = cg;
-    ctx.fillRect(c.x - 12, cy2 - 12, 24, 24);
-    ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
-    ctx.globalAlpha = 0.35; ctx.fillStyle = c.col;
-    ctx.fillRect(c.x - 20, cy2 - 1.5, 10, 3);
-    ctx.globalAlpha = 1;
-    ctx.fillRect(c.x - 9, cy2 - 4, 18, 8);
-    ctx.fillStyle = c.side === "BUY" ? "#2ecc71" : "#e74c3c";
-    ctx.font = "7px Consolas, monospace"; ctx.textAlign = "center";
-    ctx.fillText(c.side === "BUY" ? "\u25b2" : "\u25bc", c.x, cy2 - 6);
-    if (c.hot) {
-      ctx.fillStyle = "#fff"; ctx.font = "bold 7px Consolas, monospace";
-      ctx.fillText(c.asset, c.x, cy2 + 13);
+    // node dot
+    ctx.fillStyle = isHot ? "#aef7c3" : "rgba(57,255,106,.75)";
+    ctx.beginPath(); ctx.arc(x, y, isHot ? 3 : 2, 0, 6.283); ctx.fill();
+    // label + live price
+    ctx.textAlign = "left";
+    ctx.fillStyle = isHot ? "#d9ffe5" : "rgba(174,247,195,.78)";
+    ctx.font = "bold 8px Consolas, monospace";
+    ctx.fillText(nd.name, x + 6, y - 2);
+    ctx.font = "7px Consolas, monospace";
+    ctx.fillStyle = "rgba(57,255,106,.65)";
+    ctx.fillText(px >= 1000 ? Math.round(px).toLocaleString("en-US") : px.toFixed(px < 10 ? 3 : 2), x + 6, y + 7);
+    // target-lock brackets on hot node
+    if (p) {
+      const t2 = (now - p.t) / 1200, s2 = 7 + Math.sin(ts * 8) * 1.5 + t2 * 4;
+      ctx.strokeStyle = p.side === "BUY" ? "rgba(57,255,106,.9)" : "rgba(255,70,85,.9)";
+      ctx.lineWidth = 1;
+      const cl = 5;
+      [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx2, sy2]) => {
+        ctx.beginPath();
+        ctx.moveTo(x + sx2 * s2, y + sy2 * s2 - sy2 * cl);
+        ctx.lineTo(x + sx2 * s2, y + sy2 * s2);
+        ctx.lineTo(x + sx2 * s2 - sx2 * cl, y + sy2 * s2);
+        ctx.stroke();
+      });
+      ctx.font = "7px Consolas, monospace"; ctx.textAlign = "center";
+      ctx.fillStyle = p.side === "BUY" ? "#39ff6a" : "#ff4655";
+      ctx.fillText(p.side + "\u00b7" + p.bot, x, y + s2 + 10);
     }
   }
+  // scanning horizontal line
+  const sy2 = (ts * 40) % h;
+  ctx.strokeStyle = "rgba(57,255,106,.08)"; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0, sy2); ctx.lineTo(w, sy2); ctx.stroke();
+  // right column: intercepted transmissions (real data)
+  const fx0 = cx + R + 18;
+  if (w - fx0 > 70) {
+    ctx.textAlign = "left";
+    ctx.font = "bold 8px Consolas, monospace"; ctx.fillStyle = "rgba(255,176,32,.9)";
+    ctx.fillText("INTERCEPTED SIGNALS", fx0, 14);
+    ctx.strokeStyle = "rgba(255,176,32,.35)";
+    ctx.beginPath(); ctx.moveTo(fx0, 19); ctx.lineTo(w - 8, 19); ctx.stroke();
+    ctx.font = "7.5px Consolas, monospace";
+    b4.nodes.forEach((nd, i) => {
+      const y = 33 + i * 13;
+      if (y > h - 34) return;
+      const I = lqInstr[nd.name];
+      const px2 = lqAssetPx(nd.name);
+      const lat = I ? Math.round(I.lat) : 0;
+      const mom = I ? I.mom.toFixed(3) : "0.000";
+      const hash = ((Math.sin(ts * 3 + i * 7) * 4294967) >>> 0).toString(16).slice(0, 6).toUpperCase();
+      const fl = b4.gates[nd.name] || 0;
+      const hotRow = lastPing[nd.name];
+      ctx.fillStyle = hotRow ? "#ffd75e" : "rgba(127,139,163,.75)";
+      ctx.fillText(nd.name, fx0, y);
+      ctx.fillStyle = "rgba(127,139,163,.6)";
+      ctx.fillText("$" + (px2 >= 1000 ? Math.round(px2).toLocaleString("en-US") : px2.toFixed(2)), fx0 + 34, y);
+      ctx.fillStyle = "rgba(57,255,106,.55)";
+      ctx.fillText("LAT " + lat + "ms", fx0 + 86, y);
+      ctx.fillStyle = "rgba(255,176,32,.45)";
+      ctx.fillText("#" + hash + " x" + fl, fx0 + 128, y);
+    });
+  }
+  // oscilloscope strip (real momentum of tracked assets)
+  const oy = h - 20, ox = 8, ow = w - 16;
+  ctx.strokeStyle = "rgba(57,255,106,.5)"; ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let x = 0; x <= ow; x += 3) {
+    const k = x / ow * 6.283;
+    let vsum = 0, wt = 0;
+    b4.nodes.forEach((nd, i) => { const I = lqInstr[nd.name]; vsum += Math.sin(k * 3 + ts * 4 + i * 1.7) * (I ? I.mom : 0) * 20; wt += Math.abs(I ? I.mom : 0); });
+    const amp = 6 + Math.min(6, Math.abs(wt) * 2);
+    const v = Math.sin(k * 3 + ts * 5) * amp + vsum;
+    if (x === 0) ctx.moveTo(ox + x, oy + v); else ctx.lineTo(ox + x, oy + Math.max(-14, Math.min(14, v)));
+  }
+  ctx.stroke();
+  ctx.strokeStyle = "rgba(57,255,106,.15)";
+  ctx.beginPath(); ctx.moveTo(ox, oy - 14); ctx.lineTo(ox + ow, oy - 14); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(ox, oy + 14); ctx.lineTo(ox + ow, oy + 14); ctx.stroke();
+  // headers / stamps
+  ctx.textAlign = "left";
+  ctx.font = "bold 11px Consolas, monospace"; ctx.fillStyle = "#39ff6a";
+  ctx.fillText("SIGINT \u00b7 GLOBAL MARKET SURVEILLANCE", 8, 13);
+  ctx.textAlign = "right";
+  ctx.font = "bold 9px Consolas, monospace"; ctx.fillStyle = "rgba(255,70,85,.95)";
+  ctx.fillText("EYES ONLY", w - 8, 13);
+  ctx.strokeStyle = "rgba(255,70,85,.55)"; ctx.lineWidth = 1;
+  ctx.strokeRect(w - 8 - ctx.measureText("EYES ONLY").width - 4, 4, ctx.measureText("EYES ONLY").width + 8, 12);
   ctx.textAlign = "center";
-  ctx.font = "bold 12px Consolas, monospace"; ctx.fillStyle = "#00cec9";
-  ctx.fillText("TRADE HIGHWAY \u00b7 " + b4.fills + " FILLS ROUTED", w / 2, h - 8);
+  ctx.font = "bold 10px Consolas, monospace"; ctx.fillStyle = "rgba(174,247,195,.9)";
+  ctx.fillText("INTERCEPTS " + b4.fills + " \u00b7 TARGETS " + b4.nodes.length + " \u00b7 SWEEP ACTIVE", w / 2, h - 2);
 }
 
 function lqDrawSpark() {
